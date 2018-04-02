@@ -71,8 +71,8 @@ char *DEL[4] =
         ")",
     };
 
-int isID(char*);
-int isNumber(char*);
-int isText(char*);
+int isValidID (const char *);
+int isValidNumber (const char *);
+int isValidText (const char *);
 
 #endif //VISUDEF_H

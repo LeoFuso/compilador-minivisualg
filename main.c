@@ -1,22 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+
 #include "visudef.h"
 
 int
 main (int argc, char *argv[])
 {
   FILE *filePtr;
-
-  char * first = "%1test";
-  char * second = "test";
-  char * third = "test1";
-
-  int a = isID(first);
-  printf("%d", a);
- // isID (second);
- // isID (third);
-
 
   /*--------- Tenta ler o arquivo: --------*/
 
@@ -63,9 +55,24 @@ main (int argc, char *argv[])
 
 }
 
-int isID(char* word){
-  if(isalpha(word[0])) word++;
+int isValidID (const char *word)
+{
+  if (isalpha(*word)) word++;
   else
     return 0;
-  return (isalnum (word));
+
+  if (!*word)
+    return 1;
+
+  return (isalnum (*word));
+}
+
+int isValidText (const char *word)
+{
+  return (isalnum (*word));
+}
+
+int isValidNumber (const char *word)
+{
+  return (isdigit (*word));
 }
