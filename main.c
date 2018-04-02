@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
 #include "visudef.h"
 
@@ -24,7 +23,7 @@ main (int argc, char *argv[])
 
       if ((filePtr = fopen (argv[1], "r")) == NULL && (filePtr = fopen (strcat (argv[1], ".visualg"), "r")) == NULL)
       {
-        printf ("Não foi possível ler o arquivo.\n");
+        printf ("Arquivo não encontrado.\n");
         exit (1);
       }
 
@@ -53,26 +52,4 @@ main (int argc, char *argv[])
 
   /*--------- Começa a verificar por caracteres inválidos e linhas muito compridas: --------*/
 
-}
-
-int isValidID (const char *word)
-{
-  if (isalpha(*word)) word++;
-  else
-    return 0;
-
-  if (!*word)
-    return 1;
-
-  return (isalnum (*word));
-}
-
-int isValidText (const char *word)
-{
-  return (isalnum (*word));
-}
-
-int isValidNumber (const char *word)
-{
-  return (isdigit (*word));
 }

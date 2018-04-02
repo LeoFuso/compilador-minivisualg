@@ -7,13 +7,7 @@
 
 #include <ctype.h>
 
-/*
 #define LINE_SIZE 120
-#define TEXT_PATTERN "^[A-Za-z0-9]*$"
-#define NUMBER_PATTERN "^[0-9]*$"
-#define IDENTIFIER_PATTERN "^([a-zA-Z_][a-zA-Z0-9]+)"
-*/
-
 
 char *KEYWORDS[21] =
     {
