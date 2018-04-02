@@ -8,6 +8,11 @@
 #include <ctype.h>
 
 #define LINE_SIZE 120
+#define KEYWORDS_SIZE 21
+#define OP_SIZE 7
+#define LOGIC_OP_SIZE 8
+#define DEL_SIZE 4
+
 
 char *KEYWORDS[21] =
     {

@@ -4,6 +4,36 @@
 
 #include "visudef.h"
 
+int check(char *piece, size_t count)
+{
+  int matches = 0;
+  int i;
+  char * destination = malloc (count+1);
+  strncpy(destination,piece,count);
+
+  printf ("%s\n",destination);
+
+  for(i = 0; i < KEYWORDS_SIZE; i++ )
+  {
+    if(strcmp (destination, KEYWORDS[i]) == 0){
+      printf ("MATCHES!\n");
+    }
+  }
+
+}
+
+void loop(char *word, size_t length)
+{
+  size_t count = 0;
+  while (length--)
+  {
+    check (word, count);
+    count++;
+  }
+}
+
+
+
 int
 main (int argc, char *argv[])
 {
@@ -49,6 +79,17 @@ main (int argc, char *argv[])
   {
     rewind (filePtr);
   }
+
+  //Testing things out
+
+  char *ordinary_line = malloc (LINE_SIZE);
+
+  fgets(ordinary_line, LINE_SIZE, filePtr);
+
+  printf (ordinary_line);
+
+  loop (ordinary_line, strlen(ordinary_line));
+
 
   /*--------- Começa a verificar por caracteres inválidos e linhas muito compridas: --------*/
 

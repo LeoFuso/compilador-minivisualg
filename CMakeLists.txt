@@ -3,4 +3,4 @@ project(compilador_minivisualg C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(compilador_minivisualg main.c visudef.h visudef.c)
+add_executable(compilador_minivisualg main.c visudef.h)
