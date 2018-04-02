@@ -1,11 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "visudef.h"
 
 int
 main (int argc, char *argv[])
 {
   FILE *filePtr;
+
+  char * first = "%1test";
+  char * second = "test";
+  char * third = "test1";
+
+  int a = isID(first);
+  printf("%d", a);
+ // isID (second);
+ // isID (third);
+
 
   /*--------- Tenta ler o arquivo: --------*/
 
@@ -50,4 +61,11 @@ main (int argc, char *argv[])
 
   /*--------- Começa a verificar por caracteres inválidos e linhas muito compridas: --------*/
 
+}
+
+int isID(char* word){
+  if(isalpha(word[0])) word++;
+  else
+    return 0;
+  return (isalnum (word));
 }

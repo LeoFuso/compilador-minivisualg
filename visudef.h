@@ -5,19 +5,15 @@
 #ifndef VISUDEF_H
 #define VISUDEF_H
 
-#define LINE_SIZE 120
+#include <ctype.h>
 
-typedef enum {
-    IDENTIFIER,
-    KEYWORD,
-    NUMBER,
-    TEXT,
-    LOGIC_OPERATOR,
-    OPERATOR,
-    DELIMITER,
-    UNDEFINED,
-    EOT
-} TokenType;
+/*
+#define LINE_SIZE 120
+#define TEXT_PATTERN "^[A-Za-z0-9]*$"
+#define NUMBER_PATTERN "^[0-9]*$"
+#define IDENTIFIER_PATTERN "^([a-zA-Z_][a-zA-Z0-9]+)"
+*/
+
 
 char *KEYWORDS[21] =
     {
@@ -44,7 +40,7 @@ char *KEYWORDS[21] =
         "fimalgoritmo",
     };
 
-char *OP[6] =
+char *OP[7] =
     {
         "+",
         "-",
@@ -75,10 +71,8 @@ char *DEL[4] =
         ")",
     };
 
-typedef struct {
-    TokenType tokenType;
-    char *value;
-    int line_address;
-};
+int isID(char*);
+int isNumber(char*);
+int isText(char*);
 
 #endif //VISUDEF_H
