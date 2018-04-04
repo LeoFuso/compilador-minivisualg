@@ -4,14 +4,16 @@
 
 #include "token.h"
 
-char *KEYWORDS[21] =
+char *KEYWORDS[23] =
     {
         "VERDADEIRO",
         "FALSO",
+        "var",
         "inteiro",
         "logico",
         "leia",
         "escreva",
+        "escreval",
         "se",
         "entao",
         "senao",
@@ -60,7 +62,8 @@ char *DEL[4] =
         ")",
     };
 
-int countChar(const char *, char);
+int
+countChar(const char *, char);
 
 int
 isValidID(const char *word)
@@ -94,7 +97,8 @@ countChar(const char *haystack, char needle)
     unsigned int cnt = 0;
 
     for (; *haystack != '\0'; ++haystack)
-        if (*haystack == needle) ++cnt;
+        if (*haystack == needle)
+            ++cnt;
 
     return cnt;
 }
@@ -130,6 +134,68 @@ _visualgLine(char *line)
 struct Token
 identifyToken(const char *token)
 {
-    printf("%s\n", token);
+    struct Token identifiedToken;
+
+    int i;
+
+    for (i = 0; i < KEYWORDS_SIZE; ++i)
+        if (strcmp(token, KEYWORDS[i]) == 0)
+        {
+            printf("         Keyword: %s\n", token);
+            return identifiedToken;
+        }
+
+    for (i = 0; i < OP_SIZE; ++i)
+        if (strcmp(token, OP[i]) == 0)
+        {
+            printf("        Operator: %s\n", token);
+            return identifiedToken;
+        }
+
+    for (i = 0; i < LOGIC_OP_SIZE; ++i)
+        if (strcmp(token, LOGIC_OP[i]) == 0)
+        {
+            printf("  Logic Operator: %s\n", token);
+            return identifiedToken;
+        }
+
+    for (i = 0; i < DEL_SIZE; ++i)
+        if (strcmp(token, DEL[i]) == 0)
+        {
+            printf("       Delimiter: %s\n", token);
+            return identifiedToken;
+        }
+
+    if (!strncmp(token, "\"", 1))
+    {
+        token++;
+        if (isValidText(token))
+        {
+            printf("          String: %s\n", token);
+            return identifiedToken;
+        }
+        else
+        {
+            printf("    Parser error. \n");
+            return identifiedToken;
+        }
+    }
+
+    if (isValidID(token))
+    {
+        printf("              ID: %s\n", token);
+        return identifiedToken;
+    }
+
+    else if (isValidNumber(token))
+    {
+        printf("          NUMBER: %s\n", token);
+        return identifiedToken;
+    }
+    else
+    {
+        printf("    Parser error. \n");
+        return identifiedToken;
+    }
 }
 

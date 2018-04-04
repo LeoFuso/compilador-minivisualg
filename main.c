@@ -11,23 +11,21 @@ main(int argc, char *argv[])
 
     /*--------- Tenta ler o arquivo: --------*/
 
-     switch (argc)
-     {
-       case 1:
-         printf ("Sintaxe: main [arquivo] (.visualg é implícito)\n");
-         printf ("Nenhum arquivo fonte especificado. Encerrando...\n");
-         exit (0);
-       case 2:
-         if ((filePtr = fopen (argv[1], "r")) == NULL && (filePtr = fopen (strcat (argv[1], ".visualg"), "r")) == NULL)
-         {
-           printf ("Arquivo não encontrado.\n");
-           exit (1);
-         }
-         break;
-       default:
-         printf ("Sintaxe: main [arquivo] (.visualg é implícito)\n");
-         exit (0);
-     }
+    switch (argc)
+    {
+        case 1:printf("Sintaxe: main [arquivo] (.visualg é implícito)\n");
+            printf("Nenhum arquivo fonte especificado. Encerrando...\n");
+            exit(0);
+        case 2:
+            if ((filePtr = fopen(argv[1], "r")) == NULL && (filePtr = fopen(strcat(argv[1], ".visualg"), "r")) == NULL)
+            {
+                printf("Arquivo não encontrado.\n");
+                exit(1);
+            }
+            break;
+        default:printf("Sintaxe: main [arquivo] (.visualg é implícito)\n");
+            exit(0);
+    }
 
     /*--------- Verifica se o arquivo está vazio: --------*/
 
@@ -46,13 +44,15 @@ main(int argc, char *argv[])
     /* ---------- Aloca um espaço máximo para linhas do arquivo arbitrárias */
     char *raw_line = malloc(LINE_SIZE);
 
-    /*----------- Itera pelas linhas do arquivo fazendo sua leitura */
+    /*----------- Percorre as linhas do arquivo, uma a uma, produzindo Tokens */
     while (fgets(raw_line, LINE_SIZE, filePtr) != NULL)
     {
+        /*
+         * Faz a troca do '\n' por '\0'
+         */
         *(strchr(raw_line, '\n')) = '\0';
 
         _visualgLine(raw_line);
     }
-
 
 }
