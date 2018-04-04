@@ -4,23 +4,46 @@
 
 #include "visudef.h"
 
-int isValidID (const char *word)
+int
+isValidID(const char *word)
 {
-  if (isalpha(*word)) word++;
-  else
-    return 0;
+    if (isalpha(*word))
+        word++;
+    else
+        return 0;
 
-  if (!*word) return 1;
+    if (!*word)
+        return 1;
 
-  return (isalnum (*word));
+    return (isalnum (*word));
 }
 
-int isValidText (const char *word)
+int
+isValidText(const char *word)
 {
-  return (isalnum (*word));
+    return (isalnum (*word));
 }
 
-int isValidNumber (const char *word)
+int
+isValidNumber(const char *word)
 {
-  return (isdigit (*word));
+    return (isdigit (*word));
 }
+
+int
+formatLine(char *line)
+{
+    unsigned int token_size;
+    unsigned int line_size;
+
+    token_size = 0;
+    line_size = strlen(line);
+
+    char * token = malloc(line_size);
+
+    while (line_size--)
+    {
+
+    }
+}
+

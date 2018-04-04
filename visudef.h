@@ -73,5 +73,6 @@ char *DEL[4] =
 int isValidID (const char *);
 int isValidNumber (const char *);
 int isValidText (const char *);
+int formatLine(char *);
 
 #endif //VISUDEF_H

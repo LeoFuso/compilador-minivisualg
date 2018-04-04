@@ -5,8 +5,8 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
-
-typedef enum {
+typedef enum
+{
     IDENTIFIER,
     KEYWORD,
     NUMBER,
@@ -18,12 +18,17 @@ typedef enum {
     EOT
 } TokenType;
 
-
-typedef struct {
+struct Token
+{
     TokenType tokenType;
     char *value;
-    int line_address;
 };
 
+struct Line
+{
+    int line_address;
+    char *body;
+    Token *tokens;
+};
 
 #endif //TOKEN_H
