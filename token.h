@@ -17,62 +17,6 @@
 #define LOGIC_OP_SIZE 8
 #define DEL_SIZE 4
 
-char *KEYWORDS[21] =
-    {
-        "VERDADEIRO",
-        "FALSO",
-        "inteiro",
-        "logico",
-        "leia",
-        "escreva",
-        "se",
-        "entao",
-        "senao",
-        "fimse",
-        "para",
-        "de",
-        "ate",
-        "fimpara",
-        "enquanto",
-        "faca",
-        "passo",
-        "fimenquanto",
-        "algoritmo",
-        "inicio",
-        "fimalgoritmo",
-    };
-
-char *OP[7] =
-    {
-        "+",
-        "-",
-        "*",
-        "/",
-        "mod",
-        "exp",
-        "<-"
-    };
-
-char *LOGIC_OP[8] =
-    {
-        ">",
-        ">=",
-        "<",
-        "<=",
-        "=",
-        "<>",
-        "e",
-        "ou"
-    };
-
-char *DEL[4] =
-    {
-        ",",
-        ":",
-        "(",
-        ")",
-    };
-
 typedef enum
 {
     IDENTIFIER,

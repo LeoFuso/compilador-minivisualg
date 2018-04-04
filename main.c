@@ -44,9 +44,9 @@ main(int argc, char *argv[])
     }
 
     /* ---------- Aloca um espaço máximo para linhas do arquivo arbitrárias */
-
     char *raw_line = malloc(LINE_SIZE);
 
+    /*----------- Itera pelas linhas do arquivo fazendo sua leitura */
     while (fgets(raw_line, LINE_SIZE, filePtr) != NULL)
     {
         *(strchr(raw_line, '\n')) = '\0';
