@@ -6,6 +6,11 @@
 #define VISUDEF_H
 
 #include <ctype.h>
+#include <zconf.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 
 #define LINE_SIZE 120
 #define KEYWORDS_SIZE 21
@@ -73,6 +78,6 @@ char *DEL[4] =
 int isValidID (const char *);
 int isValidNumber (const char *);
 int isValidText (const char *);
-int formatLine(char *);
+int formatLine(char*);
 
 #endif //VISUDEF_H
