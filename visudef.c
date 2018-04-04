@@ -10,8 +10,7 @@ int isValidID (const char *word)
   else
     return 0;
 
-  if (!*word)
-    return 1;
+  if (!*word) return 1;
 
   return (isalnum (*word));
 }
