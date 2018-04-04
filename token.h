@@ -100,7 +100,7 @@ struct Line
 };
 
 void _visualgLine(char *line);
-struct Token _identifyToken(const char *);
+struct Token identifyToken(const char *);
 void saveToken(struct Token*);
 
 int isValidID (const char *);
