@@ -2,47 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-const char *
-identifyToken(const char *token)
-{
-    // identifica essa besteira aí
-    return "Le Tokener";
-}
-
-void
-saveToken(const char *token)
-{
-    printf("%s\n",token);
-    //printf("<%s | %s>\n", identifyToken(token), token);
-}
-
-
-void
-_visualgLine(char *line)
-{
-    char *dlim_spc = " ";
-    char *dlim_str = "\"";
-    char *dlim = dlim_spc;
-    char *token, *string_sep;
-
-    for (token = strtok(line, dlim); token != NULL; token = strtok(NULL, dlim)) {
-        if ((string_sep = strchr(token, '"')) != NULL) {
-            if (dlim == dlim_spc) {
-                dlim = dlim_str;
-                *(strchr(string_sep, '\0')) = ' ';
-            } else {
-                dlim = dlim_spc;
-            }
-        }
-
-        if (!strncmp(token, "//", 2))
-            break;
-
-        saveToken(token);
-
-    }
-}
-
+#include "token.h"
 
 int
 main(int argc, char *argv[])
@@ -85,13 +45,12 @@ main(int argc, char *argv[])
 
     /* ---------- Aloca um espaço máximo para linhas do arquivo arbitrárias */
 
-    unsigned int LINE_SIZE = 150;
-
     char *raw_line = malloc(LINE_SIZE);
 
     while (fgets(raw_line, LINE_SIZE, filePtr) != NULL)
     {
         *(strchr(raw_line, '\n')) = '\0';
+
         _visualgLine(raw_line);
     }
 
