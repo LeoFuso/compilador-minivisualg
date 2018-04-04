@@ -25,15 +25,32 @@ check(char *piece, size_t count)
 }
 
 void
+verify(char *piece)
+{
+    int i = 0;
+    printf("\n");
+    printf(piece);
+    /*for (i = 0; i < KEYWORDS_SIZE; i++)
+    {
+        if (strcmp(piece, KEYWORDS[i]) == 0)
+        {
+            printf("\n");
+            printf(KEYWORDS[i]);
+            printf("  -  MATCHES!\n");
+        }
+    }*/
+}
+
+void
 loop(char *word, size_t length)
 {
     size_t count = 0;
-    while (length--)
+    /*while (length--)
     {
 
         check(word, count);
         count++;
-    }
+    }*/
 
     while (*word != '\0') // Até o fim da linha
     {
@@ -43,6 +60,68 @@ loop(char *word, size_t length)
             printf("%c", *word);      // take it save it or print it
         }
         word++; //proceed
+    }
+}
+
+void
+read_line(char *line, size_t length)
+{
+    size_t count = 0;
+
+    char *toCompare;
+    int isCommentary = 0;
+    int isString = 0;
+
+    while (length--) // Até o fim da linha
+    {
+
+        if (isString && *(line + count) == '\"') // Procura pela última ocorrência de \" para verificar uma String
+        {
+            toCompare = malloc(count+1);
+            strncpy(toCompare, line, count+1);
+
+            for (int i = 0; i < count+1; i++)
+                line++;
+
+            verify(toCompare);
+            count = 0;
+
+            while (*line == ' ')
+                line++;
+
+            isString = 0;
+
+        }
+
+        if (*(line + count) == '/' && *(line + count + 1) == '/')
+        {
+            isCommentary = 1;
+        }
+
+        if ((*(line + count) == ' ' || *(line + count) == '\0' || *(line + count) == '\n') && isCommentary == 0 && isString == 0)
+        {
+            toCompare = malloc(count);
+            strncpy(toCompare, line, count);
+
+            for (int i = 0; i < count; i++)
+                line++;
+
+            verify(toCompare);
+            count = 0;
+
+            while (*line == ' ')
+                line++;
+        }
+
+        if (*(line + count) == '\"')
+        {
+            if (!isCommentary)
+            {
+                isString = 1;
+            }
+        }
+
+        count++;
     }
 }
 
@@ -98,11 +177,17 @@ main(int argc, char *argv[])
 
     char *ordinary_line = malloc(LINE_SIZE);
 
-    fgets(ordinary_line, LINE_SIZE, filePtr);
+    //fgets(ordinary_line, LINE_SIZE, filePtr);
 
-    printf(ordinary_line);
+    while (fgets(ordinary_line, LINE_SIZE, filePtr) != NULL)
+    {
+        read_line(ordinary_line, strlen(ordinary_line));
+    }
 
-    loop(ordinary_line, strlen(ordinary_line));
+    // printf(ordinary_line);
+
+    // loop(ordinary_line, strlen(ordinary_line));
+
 
 
     /*--------- Começa a verificar por caracteres inválidos e linhas muito compridas: --------*/
