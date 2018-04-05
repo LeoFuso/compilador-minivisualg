@@ -65,6 +65,9 @@ char *DEL[4] =
 int
 countChar(const char *, char);
 
+struct Token
+_idtkn(unsigned int, const char *);
+
 int
 isValidID(const char *word)
 {
@@ -104,15 +107,29 @@ countChar(const char *haystack, char needle)
 }
 
 void
-_visualgLine(char *line)
+_strbldr(unsigned int lnum, char *line)
 {
+    /*
+     * Delimitadores de espaço
+     */
     char *dlim_spc = " ";
     char *dlim_str = "\"";
     char *dlim = dlim_spc;
+
+    /*
+     * Token em forma de cadeia de caracteres
+     */
     char *token;
 
+    /*
+     * Uma estrutura de repetição que percorre os pedaços recortados da string
+     * utilizando os delimitadores de espaço como parâmetro
+     */
     for (token = strtok(line, dlim); token != NULL; token = strtok(NULL, dlim))
     {
+        /*
+         * Verifica se dado comentário aberto, está fechado
+         */
         if (countChar(token, '"') % 2 != 0)
         {
             token[strlen(token)] = ' ';
@@ -123,16 +140,23 @@ _visualgLine(char *line)
             token[strlen(token) - 1] = '\0';
         }
 
+        /*
+         * Verificaçao de comentários na linha:
+         * Tudo que está após o '//', inclusive, é ignorado
+         */
         if (!strncmp(token, "//", 2))
             break;
 
-        identifyToken(token);
+        /*
+         * Tenta criar um token a partir do pedaço da string recortado
+         */
+        _idtkn(lnum, token);
 
     }
 }
 
 struct Token
-identifyToken(const char *token)
+_idtkn(unsigned int lnum, const char *token)
 {
     struct Token identifiedToken;
 

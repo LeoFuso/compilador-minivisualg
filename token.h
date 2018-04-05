@@ -43,8 +43,7 @@ struct Line
     struct Token *tokens;
 };
 
-void _visualgLine(char *line);
-struct Token identifyToken(const char *);
+void _strbldr(unsigned int, char*);
 void saveToken(struct Token*);
 
 int isValidID (const char *);

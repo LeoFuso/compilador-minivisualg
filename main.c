@@ -8,9 +8,11 @@ int
 main(int argc, char *argv[])
 {
     FILE *filePtr;
+    char *raw_line = NULL;
 
-    /*--------- Tenta ler o arquivo: --------*/
-
+    /*
+     *  Tenta ler o arquivo
+     */
     switch (argc)
     {
         case 1:printf("Sintaxe: main [arquivo] (.visualg é implícito)\n");
@@ -27,8 +29,9 @@ main(int argc, char *argv[])
             exit(0);
     }
 
-    /*--------- Verifica se o arquivo está vazio: --------*/
-
+    /*
+     *  Verifica se o arquivo está vazio
+     */
     fseek(filePtr, 0, SEEK_END);
 
     if (ftell(filePtr) == 0)
@@ -41,18 +44,26 @@ main(int argc, char *argv[])
         rewind(filePtr);
     }
 
-    /* ---------- Aloca um espaço máximo para linhas do arquivo arbitrárias */
-    char *raw_line = malloc(LINE_SIZE);
 
-    /*----------- Percorre as linhas do arquivo, uma a uma, produzindo Tokens */
-    while (fgets(raw_line, LINE_SIZE, filePtr) != NULL)
+    /*
+     *  Aloca o espaço de memória necessário para uma linha do código-fonte
+     */
+    raw_line = malloc(LINE_SIZE * sizeof(char));
+
+    /*
+     *  Percorre as linhas do arquivo, uma a uma, produzindo Tokens
+     */
+    for(unsigned int lnum = 1; (fgets(raw_line,LINE_SIZE,filePtr) != NULL); ++lnum)
     {
         /*
          * Faz a troca do '\n' por '\0'
          */
         *(strchr(raw_line, '\n')) = '\0';
 
-        _visualgLine(raw_line);
+        /*
+         * Monta os Tokens usando as informações da linha
+         */
+        _strbldr(lnum, raw_line);
     }
 
 }
