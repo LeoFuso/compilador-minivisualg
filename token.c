@@ -150,7 +150,7 @@ _crtln(char *ln, unsigned int lnum)
 {
     struct Line *line = NULL;
 
-    line = malloc(sizeof(struct Line));
+    line = (struct Line *) malloc(sizeof(struct Line));
 
     /*
     * body: linha original
@@ -159,7 +159,7 @@ _crtln(char *ln, unsigned int lnum)
     */
     line->body = ln;
     line->line_address = lnum;
-    line->tokens = malloc(LINE_SIZE * sizeof(struct Token *));
+    line->tokens = (struct Token **) malloc(LINE_SIZE * sizeof(struct Token *));
 
     return line;
 }
@@ -253,6 +253,8 @@ int
 _getid(const char *name)
 {
     int x;
+    char *cp = NULL;
+    cp = (char *) malloc(strlen(name) * sizeof(char));
 
     /*
     * Pilha está vazia
@@ -260,7 +262,7 @@ _getid(const char *name)
     if (!var_count)
     {
         ids = realloc(ids, ++var_count * sizeof(char *));
-        ids[var_count - 1] = strdup(name);
+        ids[var_count - 1] = strcpy(cp, name);
         return var_count - 1;
     }
 
@@ -273,7 +275,7 @@ _getid(const char *name)
         return x;
 
     ids = realloc(ids, ++var_count * sizeof(char *));
-    ids[var_count - 1] = strdup(name);
+    ids[var_count - 1] = strcpy(cp, name);
     return var_count - 1;
 }
 
@@ -284,8 +286,8 @@ _crtkn(TokenType type, const char *body, unsigned int lnum)
     struct Token *token = NULL;
     char *tmp = NULL;
 
-    token = malloc(sizeof(struct Token));
-    tmp = malloc(sizeof(char) * LINE_SIZE);
+    token = (struct Token *) malloc(sizeof(struct Token));
+    tmp = (char *) malloc(sizeof(char) * LINE_SIZE);
 
     token->raw = body;
     token->tokenType = type;
