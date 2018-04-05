@@ -12,7 +12,7 @@ i <- 0
 teste <- 1
 contador <- 0
 para i de 1 ate 5 passo 1 faca
-   escreva ( "Digite o salario do funcionario" , i , "oi" )
+   escreva ( "Digite o salario do funcionario" , i , "yep" )
    leia ( sal )
    se sal > 500 entao
       contador <- contador + 1

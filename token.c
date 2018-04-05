@@ -86,6 +86,9 @@ _crtkn(TokenType, const char *, unsigned int);
 int
 isValidID(const char *word)
 {
+    if (!*word)
+        return 0;
+
     if (isalpha(*word))
         word++;
     else
@@ -105,6 +108,9 @@ isValidID(const char *word)
 int
 isValidText(const char *word)
 {
+    if (!*word)
+        return 0;
+
     while (*word)
         if (*(word) != ' ' && isalnum(*word) == 0)
             return 0;
@@ -116,6 +122,9 @@ isValidText(const char *word)
 int
 isValidNumber(const char *word)
 {
+    if (!*word)
+        return 0;
+
     while (*word)
         if (isdigit(*word) == 0)
             return 0;
