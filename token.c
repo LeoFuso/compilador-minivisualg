@@ -65,11 +65,17 @@ char *DEL[4] =
 int
 countChar(const char *, char);
 
+int
+_getid(const char *);
+
 struct Token *
 _idtkn(unsigned int, const char *);
 
 struct Line *
 _crtln(char *, unsigned int);
+
+struct Token *
+_crtkn(TokenType, const char *, unsigned int);
 
 int
 isValidID(const char *word)
@@ -147,7 +153,7 @@ _strbldr(unsigned int lnum, char *line)
      * struct Line para, mais tarde, ser jogado no arquivo de texto
      */
     struct Line *lnstrct = NULL;
-    struct Token * tmptknstrct = NULL;
+    struct Token *tmptknstrct = NULL;
 
     unsigned int numtkns;
 
@@ -188,82 +194,117 @@ _strbldr(unsigned int lnum, char *line)
         /*
          * Se sucedido, insere um novo token na lista de tokens
          */
-        if(tmptknstrct != NULL)
+        if (tmptknstrct != NULL)
             lnstrct->tokens[numtkns++] = tmptknstrct;
-        else{
+        else
+        {
             printf("Comportamento inesperado: L188token.c - encerrando...");
             exit(1);
         }
     }
 
+    lnstrct->numtkns = numtkns;
+
     return lnstrct;
+}
+
+int
+_getid(const char *name)
+{
+    static unsigned int var_count = 0;
+    return var_count++;
+}
+
+struct Token *
+_crtkn(TokenType type, const char *body, unsigned int lnum)
+{
+
+    struct Token *token = NULL;
+    char *tmp = NULL;
+
+    token = malloc(sizeof(struct Token));
+    tmp = malloc(sizeof(char) * strlen(body + 1));
+
+    token->raw = body;
+    token->tokenType = type;
+
+    switch (type)
+    {
+        case IDENTIFIER: printf("              ID: %s\n", body);
+            snprintf(tmp, LINE_SIZE, "<ID | %d >", _getid(body));
+            break;
+
+        case KEYWORD: printf("         Keyword: %s\n", body);
+            snprintf(tmp, LINE_SIZE, "<%s>", body);
+            break;
+
+        case NUMBER: printf("          NUMBER: %s\n", body);
+            snprintf(tmp, LINE_SIZE, "<NUM | %s >", body);
+            break;
+
+        case TEXT: printf("          String: %s\n", body);
+            snprintf(tmp, LINE_SIZE, "<STR | '%s' >", body);
+            break;
+
+        case LOGIC_OPERATOR: printf("  Logic Operator: %s\n", body);
+            snprintf(tmp, LINE_SIZE, "<LOP | %s >", body);
+            break;
+
+        case OPERATOR: printf("        Operator: %s\n", body);
+            snprintf(tmp, LINE_SIZE, "<OP | %s >", body);
+            break;
+
+        case DELIMITER: printf("       Delimiter: %s\n", body);
+            snprintf(tmp, LINE_SIZE, "<DEL | %s >", body);
+            break;
+
+        case UNDEFINED: printf("    Parser error on line %d in '%s' \n", lnum, body);
+            exit(1);
+
+        default: snprintf(tmp, LINE_SIZE, "<ERROR | %s >", body);
+            break;
+    }
+
+    token->value = tmp;
+
+    return token;
 }
 
 struct Token *
 _idtkn(unsigned int lnum, const char *token)
 {
-    struct Token * identifiedToken;
-
     int i;
 
     for (i = 0; i < KEYWORDS_SIZE; ++i)
         if (strcmp(token, KEYWORDS[i]) == 0)
-        {
-            printf("         Keyword: %s\n", token);
-            return identifiedToken;
-        }
+            return _crtkn(KEYWORD, token, 0);
 
     for (i = 0; i < OP_SIZE; ++i)
         if (strcmp(token, OP[i]) == 0)
-        {
-            printf("        Operator: %s\n", token);
-            return identifiedToken;
-        }
+            return _crtkn(OPERATOR, token, 0);
 
     for (i = 0; i < LOGIC_OP_SIZE; ++i)
         if (strcmp(token, LOGIC_OP[i]) == 0)
-        {
-            printf("  Logic Operator: %s\n", token);
-            return identifiedToken;
-        }
+            return _crtkn(LOGIC_OPERATOR, token, 0);
 
     for (i = 0; i < DEL_SIZE; ++i)
         if (strcmp(token, DEL[i]) == 0)
-        {
-            printf("       Delimiter: %s\n", token);
-            return identifiedToken;
-        }
+            return _crtkn(DELIMITER, token, 0);
 
     if (!strncmp(token, "\"", 1))
     {
         token++;
         if (isValidText(token))
-        {
-            printf("          String: %s\n", token);
-            return identifiedToken;
-        }
+            return _crtkn(TEXT, token, 0);
         else
-        {
-            printf("    Parser error. \n");
-            return identifiedToken;
-        }
+            return _crtkn(UNDEFINED, token, lnum);
     }
 
     if (isValidID(token))
-    {
-        printf("              ID: %s\n", token);
-        return identifiedToken;
-    }
-
+        return _crtkn(IDENTIFIER, token, 0);
     else if (isValidNumber(token))
-    {
-        printf("          NUMBER: %s\n", token);
-        return identifiedToken;
-    }
+        return _crtkn(NUMBER, token, 0);
     else
-    {
-        printf("    Parser error. \n");
-        return identifiedToken;
-    }
+        return _crtkn(UNDEFINED, token, lnum);
 }
 

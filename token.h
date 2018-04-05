@@ -26,20 +26,21 @@ typedef enum
     LOGIC_OPERATOR,
     OPERATOR,
     DELIMITER,
-    UNDEFINED,
-    EOT
+    UNDEFINED
 } TokenType;
 
 struct Token
 {
     TokenType tokenType;
-    char *value;
+    const char *value;
+    const char *raw;
 };
 
 struct Line
 {
     int line_address;
     char *body;
+    unsigned numtkns;
     struct Token **tokens;
 };
 

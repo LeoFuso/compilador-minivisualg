@@ -9,6 +9,7 @@ main(int argc, char *argv[])
 {
     FILE *filePtr;
     char *raw_line = NULL;
+    struct Line * lncomplete = NULL;
 
     /*
      *  Tenta ler o arquivo
@@ -53,7 +54,7 @@ main(int argc, char *argv[])
     /*
      *  Percorre as linhas do arquivo, uma a uma, produzindo Tokens
      */
-    for(unsigned int lnum = 1; (fgets(raw_line,LINE_SIZE,filePtr) != NULL); ++lnum)
+    for (unsigned int lnum = 1; (fgets(raw_line, LINE_SIZE, filePtr) != NULL); ++lnum)
     {
         /*
          * Faz a troca do '\n' por '\0'
@@ -63,7 +64,15 @@ main(int argc, char *argv[])
         /*
          * Monta os Tokens usando as informações da linha
          */
-        _strbldr(lnum, raw_line);
+        lncomplete = _strbldr(lnum, raw_line);
+
+        printf("Line: %d\n", lnum);
+        for(int i = 0; i < lncomplete->numtkns; i++)
+        {
+            printf("%s\n",lncomplete->tokens[i]->value);
+        }
+        printf("\n\n");
+
     }
 
 }
