@@ -40,14 +40,22 @@ struct Line
 {
     int line_address;
     char *body;
-    struct Token *tokens;
+    struct Token **tokens;
 };
 
-void _strbldr(unsigned int, char*);
-void saveToken(struct Token*);
+struct Line *
+_strbldr(unsigned int, char *);
 
-int isValidID (const char *);
-int isValidNumber (const char *);
-int isValidText (const char *);
+void
+saveToken(struct Token *);
+
+int
+isValidID(const char *);
+
+int
+isValidNumber(const char *);
+
+int
+isValidText(const char *);
 
 #endif //TOKEN_H

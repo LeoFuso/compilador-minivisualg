@@ -65,8 +65,11 @@ char *DEL[4] =
 int
 countChar(const char *, char);
 
-struct Token
+struct Token *
 _idtkn(unsigned int, const char *);
+
+struct Line *
+_crtln(char *, unsigned int);
 
 int
 isValidID(const char *word)
@@ -106,7 +109,26 @@ countChar(const char *haystack, char needle)
     return cnt;
 }
 
-void
+struct Line *
+_crtln(char *ln, unsigned int lnum)
+{
+    struct Line *line = NULL;
+
+    line = malloc(sizeof(struct Line));
+
+    /*
+    * body: linha original
+    * line_address: número da linha
+    * tokens: lista com os tokens gerados nesta linha
+    */
+    line->body = ln;
+    line->line_address = lnum;
+    line->tokens = malloc(LINE_SIZE * sizeof(struct Token));
+
+    return line;
+}
+
+struct Line *
 _strbldr(unsigned int lnum, char *line)
 {
     /*
@@ -120,6 +142,17 @@ _strbldr(unsigned int lnum, char *line)
      * Token em forma de cadeia de caracteres
      */
     char *token;
+
+    /*
+     * struct Line para, mais tarde, ser jogado no arquivo de texto
+     */
+    struct Line *lnstrct = NULL;
+    struct Token * tmptknstrct = NULL;
+
+    unsigned int numtkns;
+
+    lnstrct = _crtln(line, lnum);
+    numtkns = 0;
 
     /*
      * Uma estrutura de repetição que percorre os pedaços recortados da string
@@ -148,17 +181,28 @@ _strbldr(unsigned int lnum, char *line)
             break;
 
         /*
-         * Tenta criar um token a partir do pedaço da string recortado
+         * Tenta criar um token a partir do pedaço da string recortada
          */
-        _idtkn(lnum, token);
+        tmptknstrct = _idtkn(lnum, token);
 
+        /*
+         * Se sucedido, insere um novo token na lista de tokens
+         */
+        if(tmptknstrct != NULL)
+            lnstrct->tokens[numtkns++] = tmptknstrct;
+        else{
+            printf("Comportamento inesperado: L188token.c - encerrando...");
+            exit(1);
+        }
     }
+
+    return lnstrct;
 }
 
-struct Token
+struct Token *
 _idtkn(unsigned int lnum, const char *token)
 {
-    struct Token identifiedToken;
+    struct Token * identifiedToken;
 
     int i;
 
