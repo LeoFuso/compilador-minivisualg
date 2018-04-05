@@ -49,6 +49,9 @@ main(int argc, char *argv[])
         rewind(filePtr);
     }
 
+    printf("\n---------------------------------------------------------------------------------\n\n");
+    printf("Arquivo de nome '%s' aberto com sucesso.\n",argv[1]);
+
 
     /*
      *  Aloca o espaço de memória necessário para uma linha do código-fonte
@@ -72,6 +75,9 @@ main(int argc, char *argv[])
      */
     program = (struct Line **) malloc(lncnt * (sizeof(struct Line *)));
     lncnt = 0;
+
+    printf("\n---------------------------------------------------------------------------------\n\n");
+    printf("Tokens identificados:\n\n\n");
 
 
     /*
@@ -98,6 +104,10 @@ main(int argc, char *argv[])
         }
     }
 
+
+    printf("\n---------------------------------------------------------------------------------\n\n");
+    printf("-- Gravando no arquivo --\n");
+
     fileOut = fopen(strcat(argv[1], ".token"), "w");
 
     /*
@@ -115,6 +125,9 @@ main(int argc, char *argv[])
             fprintf(fileOut, "%s", program[i]->tokens[j]->value);
         fprintf(fileOut, "\n");
     }
+
+    printf("\n---------------------------------------------------------------------------------\n\n\n");
+    printf("\nSucesso.\n\nOs tokens foram criados no arquivo '%s' \ndeste mesmo diretório.\n\n\n", argv[1]);
 
 
     /*
