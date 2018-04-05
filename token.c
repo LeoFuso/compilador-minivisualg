@@ -260,7 +260,7 @@ _crtkn(TokenType type, const char *body, unsigned int lnum)
     char *tmp = NULL;
 
     token = malloc(sizeof(struct Token));
-    tmp = malloc(sizeof(char) * strlen(body + 11));
+    tmp = malloc(sizeof(char) * LINE_SIZE);
 
     token->raw = body;
     token->tokenType = type;
