@@ -129,7 +129,7 @@ _crtln(char *ln, unsigned int lnum)
     */
     line->body = ln;
     line->line_address = lnum;
-    line->tokens = malloc(LINE_SIZE * sizeof(struct Token));
+    line->tokens = malloc(LINE_SIZE * sizeof(struct Token *));
 
     return line;
 }
@@ -223,7 +223,7 @@ _crtkn(TokenType type, const char *body, unsigned int lnum)
     char *tmp = NULL;
 
     token = malloc(sizeof(struct Token));
-    tmp = malloc(sizeof(char) * strlen(body + 1));
+    tmp = malloc(sizeof(char) * strlen(body + 11));
 
     token->raw = body;
     token->tokenType = type;
@@ -243,7 +243,7 @@ _crtkn(TokenType type, const char *body, unsigned int lnum)
             break;
 
         case TEXT: printf("          String: %s\n", body);
-            snprintf(tmp, LINE_SIZE, "<STR | '%s' >", body);
+            snprintf(tmp, LINE_SIZE, "<STR | \"%s\" >", body);
             break;
 
         case LOGIC_OPERATOR: printf("  Logic Operator: %s\n", body);

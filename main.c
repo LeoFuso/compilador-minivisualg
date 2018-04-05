@@ -8,8 +8,11 @@ int
 main(int argc, char *argv[])
 {
     FILE *filePtr;
+
+    unsigned int lncnt = 0;
     char *raw_line = NULL;
-    struct Line * lncomplete = NULL;
+    struct Line **program = NULL;
+    struct Line *lncomplete = NULL;
 
     /*
      *  Tenta ler o arquivo
@@ -52,6 +55,25 @@ main(int argc, char *argv[])
     raw_line = malloc(LINE_SIZE * sizeof(char));
 
     /*
+     * Conta quantas linhas o arquivo tem
+     */
+    while (fgets(raw_line, LINE_SIZE, filePtr) != NULL)
+        lncnt++;
+
+
+    /*
+     * Rebobina o arquivo
+     */
+    rewind(filePtr);
+
+    /*
+     * Aloca o espaço de memória necessário para todo o programa
+     */
+    program = (struct Line **) malloc(lncnt * (sizeof(struct Line *)));
+    lncnt = 0;
+
+
+    /*
      *  Percorre as linhas do arquivo, uma a uma, produzindo Tokens
      */
     for (unsigned int lnum = 1; (fgets(raw_line, LINE_SIZE, filePtr) != NULL); ++lnum)
@@ -66,13 +88,30 @@ main(int argc, char *argv[])
          */
         lncomplete = _strbldr(lnum, raw_line);
 
-        printf("Line: %d\n", lnum);
-        for(int i = 0; i < lncomplete->numtkns; i++)
+        if (lncomplete != NULL)
+            program[lncnt++] = lncomplete;
+        else
         {
-            printf("%s\n",lncomplete->tokens[i]->value);
+            printf("Comportamento inesperado: L88main.c - encerrando...");
+            exit(1);
         }
-        printf("\n\n");
 
     }
+
+    for(int i = 0; i < lncnt; i++)
+    {
+        printf("Line: %d\n", i+1);
+        for (int j = 0; j < program[i]->numtkns; j++)
+        {
+            printf("%s\n", program[i]->tokens[j]->value);
+        }
+        printf("\n\n");
+    }
+
+
+    /*
+     * Encerra o arquivo
+     */
+    fclose(filePtr);
 
 }
