@@ -4,6 +4,9 @@
 
 #include "token.h"
 
+const char **ids = NULL;
+static unsigned int var_count = 0;
+
 char *KEYWORDS[23] =
     {
         "VERDADEIRO",
@@ -64,6 +67,9 @@ char *DEL[4] =
 
 int
 countChar(const char *, char);
+
+int
+_lookup(const char *);
 
 int
 _getid(const char *);
@@ -209,10 +215,41 @@ _strbldr(unsigned int lnum, char *line)
 }
 
 int
+_lookup(const char *name)
+{
+    int i;
+    for (i = 0; i < var_count; i++)
+        if (!strcmp(ids[i], name))
+            return i;
+
+    return -1;
+}
+
+int
 _getid(const char *name)
 {
-    static unsigned int var_count = 0;
-    return var_count++;
+    int x;
+
+    /*
+    * Pilha está vazia
+    */
+    if (!var_count){
+        ids = realloc(ids, ++var_count * sizeof(char *));
+        ids[var_count - 1] = strdup(name);
+        return var_count - 1;
+    }
+
+    /*
+     * Verifica se já existe
+     */
+    x = _lookup(name);
+
+    if (x != -1)
+        return x;
+
+    ids = realloc(ids, ++var_count * sizeof(char *));
+    ids[var_count - 1] = strdup(name);
+    return var_count - 1;
 }
 
 struct Token *
