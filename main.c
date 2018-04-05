@@ -95,8 +95,9 @@ main(int argc, char *argv[])
             printf("Comportamento inesperado: L88main.c - encerrando...");
             exit(1);
         }
-
     }
+
+
 
     for(int i = 0; i < lncnt; i++)
     {

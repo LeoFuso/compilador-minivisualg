@@ -94,19 +94,34 @@ isValidID(const char *word)
     if (!*word)
         return 1;
 
-    return (isalnum(*word));
+    while (*word)
+        if (isalnum(*word) == 0)
+            return 0;
+        else
+            word++;
+    return 1;
 }
 
 int
 isValidText(const char *word)
 {
-    return (isalnum(*word));
+    while (*word)
+        if (*(word) != ' ' && isalnum(*word) == 0)
+            return 0;
+        else
+            word++;
+    return 1;
 }
 
 int
 isValidNumber(const char *word)
 {
-    return (isdigit(*word));
+    while (*word)
+        if (isdigit(*word) == 0)
+            return 0;
+        else
+            word++;
+    return 1;
 }
 
 int
@@ -233,7 +248,8 @@ _getid(const char *name)
     /*
     * Pilha está vazia
     */
-    if (!var_count){
+    if (!var_count)
+    {
         ids = realloc(ids, ++var_count * sizeof(char *));
         ids[var_count - 1] = strdup(name);
         return var_count - 1;
