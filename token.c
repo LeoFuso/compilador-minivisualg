@@ -295,7 +295,7 @@ _crtkn(TokenType type, const char *body, unsigned int lnum)
             snprintf(tmp, LINE_SIZE, "<DEL | %s >", body);
             break;
 
-        case UNDEFINED: printf("    Parser error on line %d in '%s' \n", lnum, body);
+        case UNDEFINED: printf("    Erro de parseamento na linha %d durante a palavra '%s' \n", lnum, body);
             exit(1);
 
         default: snprintf(tmp, LINE_SIZE, "<ERROR | %s >", body);

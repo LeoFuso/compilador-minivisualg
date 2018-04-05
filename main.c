@@ -100,7 +100,7 @@ main(int argc, char *argv[])
 
     for(int i = 0; i < lncnt; i++)
     {
-        printf("Line: %d\n", i+1);
+        printf("Linha: %d\n", i+1);
         for (int j = 0; j < program[i]->numtkns; j++)
         {
             printf("%s\n", program[i]->tokens[j]->value);
