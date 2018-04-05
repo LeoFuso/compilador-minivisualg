@@ -8,6 +8,16 @@ int
 main(int argc, char *argv[])
 {
     FILE *filePtr;
+    FILE *fout = fopen("file.txt", "w");
+
+    /*
+     * Checa se arquivo de saida esta vivo
+     */
+    if (fout == NULL)
+    {
+      printf("Error opening file!\n");
+      exit(1);
+    }
 
     unsigned int lncnt = 0;
     char *raw_line = NULL;
@@ -105,14 +115,17 @@ main(int argc, char *argv[])
         for (int j = 0; j < program[i]->numtkns; j++)
         {
             printf("%s\n", program[i]->tokens[j]->value);
+            fprintf(fout, "%s", program[i]->tokens[j]->value);
         }
         printf("\n\n");
+        fprintf(fout, "\n ");
     }
 
 
     /*
-     * Encerra o arquivo
+     * Encerra os arquivos
      */
     fclose(filePtr);
+    fclose(fout);
 
 }
