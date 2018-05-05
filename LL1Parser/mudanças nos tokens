@@ -1,0 +1,12 @@
+Para adaptar os tokens, todas as letras devem ser minusculas, todas as letras 'e' devem ser trocadas por 'w' pois 'e' é usado como 'vazio'
+
+os simbolos nao terminais DEVEM ser sempre uma (1) letra MAIUSCULA
+
+nao deve ter espaços entre os tokens, os mesmos devem estar em uma única linha.
+
+outras alterações:
+<STR | "ksdljfhbds"> -> <str>
+<ID | !NOVO! > -> <idn>
+<ID | !VELHO!> -> <idv>
+e -> w
+LOP -> op
