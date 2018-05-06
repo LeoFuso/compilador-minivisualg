@@ -3,4 +3,4 @@ project(compilador_minivisualg C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(compilador_minivisualg main.c token.c)
+add_executable(main main.c token.c)

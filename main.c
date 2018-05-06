@@ -7,6 +7,7 @@
 int
 main(int argc, char *argv[])
 {
+
     FILE *filePtr;
     FILE *fileOut;
 
@@ -20,7 +21,7 @@ main(int argc, char *argv[])
      */
     switch (argc)
     {
-        case 1:printf("Sintaxe: main [arquivo] (.visualg é implícito)\n");
+        case 1:printf("Sintaxe: main [arquivo] (.visualg eh implicito)\n");
             printf("Nenhum arquivo fonte especificado. Encerrando...\n");
             exit(0);
         case 2:
@@ -30,18 +31,18 @@ main(int argc, char *argv[])
                 exit(1);
             }
             break;
-        default:printf("Sintaxe: main [arquivo] (.visualg é implícito)\n");
+        default:printf("Sintaxe: main [arquivo] (.visualg e implicito)\n");
             exit(0);
     }
 
     /*
-     *  Verifica se o arquivo está vazio
+     *  Verifica se o arquivo esta vazio
      */
     fseek(filePtr, 0, SEEK_END);
 
     if (ftell(filePtr) == 0)
     {
-        printf("Arquivo está vazio.\n");
+        printf("Arquivo esta vazio.\n");
         exit(1);
     }
     else
@@ -50,13 +51,13 @@ main(int argc, char *argv[])
     }
 
     printf("\n---------------------------------------------------------------------------------\n\n");
-    printf("Arquivo de nome '%s' aberto com sucesso.\n",argv[1]);
+    printf("Arquivo de nome '%s' aberto com sucesso.\n", argv[1]);
 
 
     /*
-     *  Aloca o espaço de memória necessário para uma linha do código-fonte
+     *  Aloca o espaço de memoria necessario para uma linha do codigo-fonte
      */
-    raw_line = malloc(LINE_SIZE * sizeof(char));
+    raw_line = (char *) malloc(LINE_SIZE * sizeof(char) + 1);
 
     /*
      * Conta quantas linhas o arquivo tem
@@ -71,7 +72,7 @@ main(int argc, char *argv[])
     rewind(filePtr);
 
     /*
-     * Aloca o espaço de memória necessário para todo o programa
+     * Aloca o espaco de memoria necessario para todo o programa
      */
     program = (struct Line **) malloc(lncnt * (sizeof(struct Line *)));
     lncnt = 0;
@@ -79,19 +80,20 @@ main(int argc, char *argv[])
     printf("\n---------------------------------------------------------------------------------\n\n");
     printf("Tokens identificados:\n\n\n");
 
-
     /*
      *  Percorre as linhas do arquivo, uma a uma, produzindo Tokens
      */
-    for (unsigned int lnum = 1; (fgets(raw_line, LINE_SIZE, filePtr) != NULL); ++lnum)
+    unsigned int lnum;
+    for (lnum = 1; (fgets(raw_line, LINE_SIZE, filePtr) != NULL); ++lnum)
     {
         /*
-         * Faz a troca do '\n' por '\0'
-         */
-        *(strchr(raw_line, '\n')) = '\0';
+        * Faz a troca do '\n' por '\0'
+        */
+        if (strchr(raw_line, '\n') != NULL)
+            *(strchr(raw_line, '\n')) = '\0';
 
         /*
-         * Monta os Tokens usando as informações da linha
+         * Monta os Tokens usando as informacoes da linha
          */
         lncomplete = _strbldr(lnum, raw_line);
 
@@ -99,11 +101,13 @@ main(int argc, char *argv[])
             program[lncnt++] = lncomplete;
         else
         {
-            printf("Comportamento inesperado: L88main.c - encerrando...");
+            printf("Comportamento inesperado: L104main.c - encerrando...");
             exit(1);
         }
-    }
 
+        if (lncomplete->error != 0)
+            break;
+    }
 
     printf("\n---------------------------------------------------------------------------------\n\n");
     printf("-- Gravando no arquivo --\n");
@@ -111,7 +115,7 @@ main(int argc, char *argv[])
     fileOut = fopen(strcat(argv[1], ".token"), "w");
 
     /*
-     * Verifica se arquivo de saída foi criado
+     * Verifica se arquivo de saida foi criado
      */
     if (fileOut == NULL)
     {
@@ -119,16 +123,17 @@ main(int argc, char *argv[])
         exit(1);
     }
 
-    for (int i = 0; i < lncnt; i++)
+    int i;
+    int j;
+    for (i = 0; i < lncnt; i++)
     {
-        for (int j = 0; j < program[i]->numtkns; j++)
+        for (j = 0; j < program[i]->numtkns; j++)
             fprintf(fileOut, "%s", program[i]->tokens[j]->value);
         fprintf(fileOut, "\n");
     }
 
     printf("\n---------------------------------------------------------------------------------\n\n\n");
-    printf("\nSucesso.\n\nOs tokens foram criados no arquivo '%s' \ndeste mesmo diretório.\n\n\n", argv[1]);
-
+    printf("\nSucesso.\n\nOs tokens foram criados no arquivo '%s' \ndeste mesmo diretorio.\n\n\n", argv[1]);
 
     /*
      * Encerra os arquivos

@@ -7,10 +7,8 @@
 const char **ids = NULL;
 static unsigned int var_count = 0;
 
-char *KEYWORDS[23] =
+char *KEYWORDS[21] =
     {
-        "VERDADEIRO",
-        "FALSO",
         "var",
         "inteiro",
         "logico",
@@ -31,7 +29,7 @@ char *KEYWORDS[23] =
         "fimenquanto",
         "algoritmo",
         "inicio",
-        "fimalgoritmo",
+        "fimalgoritmo"
     };
 
 char *OP[7] =
@@ -57,6 +55,12 @@ char *LOGIC_OP[8] =
         "ou"
     };
 
+char *BOOLEAN_DATA[2] =
+    {
+        "VERDADEIRO",
+        "FALSO"
+    };
+
 char *DEL[4] =
     {
         ",",
@@ -66,7 +70,7 @@ char *DEL[4] =
     };
 
 int
-countChar(const char *, char);
+chrcntr(const char *, char);
 
 int
 _lookup(const char *);
@@ -84,7 +88,7 @@ struct Token *
 _crtkn(TokenType, const char *, unsigned int);
 
 int
-isValidID(const char *word)
+is_valid_id(const char *word)
 {
     if (!*word)
         return 0;
@@ -106,7 +110,7 @@ isValidID(const char *word)
 }
 
 int
-isValidText(const char *word)
+is_valid_txt(const char *word)
 {
     if (!*word)
         return 0;
@@ -120,7 +124,7 @@ isValidText(const char *word)
 }
 
 int
-isValidNumber(const char *word)
+is_valid_num(const char *word)
 {
     if (!*word)
         return 0;
@@ -134,7 +138,7 @@ isValidNumber(const char *word)
 }
 
 int
-countChar(const char *haystack, char needle)
+chrcntr(const char *haystack, char needle)
 {
     unsigned int cnt = 0;
 
@@ -160,6 +164,7 @@ _crtln(char *ln, unsigned int lnum)
     line->body = ln;
     line->line_address = lnum;
     line->tokens = (struct Token **) malloc(LINE_SIZE * sizeof(struct Token *));
+    line->error = 0;
 
     return line;
 }
@@ -199,7 +204,7 @@ _strbldr(unsigned int lnum, char *line)
         /*
          * Verifica se dado comentário aberto, está fechado
          */
-        if (countChar(token, '"') % 2 != 0)
+        if (chrcntr(token, '"') % 2 != 0)
         {
             token[strlen(token)] = ' ';
             strtok(NULL, dlim_str);
@@ -224,12 +229,18 @@ _strbldr(unsigned int lnum, char *line)
         /*
          * Se sucedido, insere um novo token na lista de tokens
          */
-        if (tmptknstrct != NULL)
+        if (tmptknstrct == NULL)
+        {
+            printf("Comportamento inesperado: L234token.c - encerrando...");
+            exit(1);
+        }
+
+        if (tmptknstrct->value != NULL)
             lnstrct->tokens[numtkns++] = tmptknstrct;
         else
         {
-            printf("Comportamento inesperado: L188token.c - encerrando...");
-            exit(1);
+            lnstrct->error = 1;
+            break;
         }
     }
 
@@ -254,14 +265,14 @@ _getid(const char *name)
 {
     int x;
     char *cp = NULL;
-    cp = (char *) malloc(strlen(name) * sizeof(char));
+    cp = (char *) malloc(strlen(name) * sizeof(char) + 1);
 
     /*
     * Pilha está vazia
     */
     if (!var_count)
     {
-        ids = realloc(ids, ++var_count * sizeof(char *));
+        ids = realloc(ids, ++var_count * sizeof(char *) + 1);
         ids[var_count - 1] = strcpy(cp, name);
         return var_count - 1;
     }
@@ -274,7 +285,7 @@ _getid(const char *name)
     if (x != -1)
         return x;
 
-    ids = realloc(ids, ++var_count * sizeof(char *));
+    ids = realloc(ids, ++var_count * sizeof(char *) + 1);
     ids[var_count - 1] = strcpy(cp, name);
     return var_count - 1;
 }
@@ -286,8 +297,8 @@ _crtkn(TokenType type, const char *body, unsigned int lnum)
     struct Token *token = NULL;
     char *tmp = NULL;
 
-    token = (struct Token *) malloc(sizeof(struct Token));
-    tmp = (char *) malloc(sizeof(char) * LINE_SIZE);
+    token = (struct Token *) malloc(sizeof(struct Token) + 1);
+    tmp = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
 
     token->raw = body;
     token->tokenType = type;
@@ -299,6 +310,10 @@ _crtkn(TokenType type, const char *body, unsigned int lnum)
             break;
 
         case KEYWORD: printf("         Keyword: %s\n", body);
+            snprintf(tmp, LINE_SIZE, "<%s>", body);
+            break;
+
+        case LOGIC: printf("           LOGIC: %s\n", body);
             snprintf(tmp, LINE_SIZE, "<%s>", body);
             break;
 
@@ -323,9 +338,11 @@ _crtkn(TokenType type, const char *body, unsigned int lnum)
             break;
 
         case UNDEFINED: printf("    Erro de parseamento na linha %d durante a palavra '%s' \n", lnum, body);
-            exit(1);
+            tmp = NULL;
+            break;
 
         default: snprintf(tmp, LINE_SIZE, "<ERROR | %s >", body);
+            tmp = NULL;
             break;
     }
 
@@ -343,6 +360,10 @@ _idtkn(unsigned int lnum, const char *token)
         if (strcmp(token, KEYWORDS[i]) == 0)
             return _crtkn(KEYWORD, token, 0);
 
+    for (i = 0; i < BOOLEAN_DATA_SIZE; ++i)
+        if (strcmp(token, BOOLEAN_DATA[i]) == 0)
+            return _crtkn(LOGIC, token, 0);
+
     for (i = 0; i < OP_SIZE; ++i)
         if (strcmp(token, OP[i]) == 0)
             return _crtkn(OPERATOR, token, 0);
@@ -358,15 +379,15 @@ _idtkn(unsigned int lnum, const char *token)
     if (!strncmp(token, "\"", 1))
     {
         token++;
-        if (isValidText(token))
+        if (is_valid_txt(token))
             return _crtkn(TEXT, token, 0);
         else
             return _crtkn(UNDEFINED, token, lnum);
     }
 
-    if (isValidID(token))
+    if (is_valid_id(token))
         return _crtkn(IDENTIFIER, token, 0);
-    else if (isValidNumber(token))
+    else if (is_valid_num(token))
         return _crtkn(NUMBER, token, 0);
     else
         return _crtkn(UNDEFINED, token, lnum);

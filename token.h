@@ -11,15 +11,17 @@
 #include <stdio.h>
 
 #define LINE_SIZE 120
-#define KEYWORDS_SIZE 23
+#define KEYWORDS_SIZE 21
 #define OP_SIZE 7
 #define LOGIC_OP_SIZE 8
+#define BOOLEAN_DATA_SIZE 2
 #define DEL_SIZE 4
 
 typedef enum
 {
     IDENTIFIER,
     KEYWORD,
+    LOGIC,
     NUMBER,
     TEXT,
     LOGIC_OPERATOR,
@@ -41,21 +43,19 @@ struct Line
     char *body;
     unsigned numtkns;
     struct Token **tokens;
+    int error;
 };
 
 struct Line *
 _strbldr(unsigned int, char *);
 
-void
-saveToken(struct Token *);
+int
+is_valid_id(const char *);
 
 int
-isValidID(const char *);
+is_valid_num(const char *);
 
 int
-isValidNumber(const char *);
-
-int
-isValidText(const char *);
+is_valid_txt(const char *);
 
 #endif //TOKEN_H
