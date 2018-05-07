@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 
 	if (argc!=2)
 	{
-		printf("Improper number of arguments\n");
+		printf("1 Improper number of arguments\n");
 		return -1;
 	}
 
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 		numRarray[ruleCount] = getc(fp);			
 	}
 
-	printf("Number of rules: %d \n\n",no_rules);
+	printf("2 Number of rules: %d \n\n",no_rules);
 	char rules[no_rules][100];
 	char non_term[no_rules];
 	char term[no_t];
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 	
 	getTermNTerm(no_rules,rules,&(non_term[0]),&(term[0]),&no_nt,&no_t);
 
-	printf("\n");
+	printf("3 \n");
 
 	char first[no_nt][no_t+1];
 	char follow[no_nt][no_t+1];
@@ -150,12 +150,12 @@ int main(int argc, char *argv[])
 			code = (int)str_to_pass[i];
 			if ((code >= 65) && (code <= 90))
 			{
-				printf("Only terminals are allowed in the string.\nTerminal symbols cannot be capital letters.\n");
+				printf("4 Only terminals are allowed in the string.\nTerminal symbols cannot be capital letters.\n");
 				valid = 0;
 			}
 			else if (code == 101)
 			{
-				printf("Sorry 'e' is reserved. It cannot be used as a terminal symbol.\n");
+				printf("5 Sorry 'e' is reserved. It cannot be used as a terminal symbol.\n");
 				valid = 0;
 			}
 		}
@@ -164,20 +164,22 @@ int main(int argc, char *argv[])
 	char end[] = "$";
 	strcat(str_to_pass,end);
 
-	printf("\nString Received: %s\n\n",str_to_pass);
+	printf("6 \nString Received: %s\n\n",str_to_pass);
 	start_nt = non_term[0];
 	current_nt = start_nt;	
 	sentinal_string[0] = current_nt;
 	sentinal_string[1] = '\0';
 	temp[0] = '\0';
+	int CONTADOR = 0;
 	while (strcmp(str_to_pass,sentinal_string)!=0)
 	{		
 		current_nt_index = get_symbol_index(non_term,current_nt);
 		if (current_nt_index == -1)
 		{
-			printf("Undefined Non Terminal found");
+			printf("7 Undefined Non Terminal found");
 			return -1;
 		}
+		CONTADOR++;
 
 		current_t = str_to_pass[str_pointer];
 		current_t_index = get_symbol_index(term, current_t);
@@ -200,15 +202,21 @@ int main(int argc, char *argv[])
 		strcat(temp,&sentinal_string[sentinal_pointer+1]);
 		temp[strlen(temp)] = '\0';
 		strcpy(sentinal_string,temp);
-		printf("%s\n",sentinal_string);
+		// printf("8 %s\n",sentinal_string);
 		
 		value_get_nt = get_first_nt(sentinal_string, &sentinal_pointer, &current_nt);
 		value_update_s = update_str_pointer(str_to_pass,sentinal_string,&str_pointer);
 
 		if ((value_get_nt == -1)&&(value_update_s == -1))
 		{
-			printf("String successfully parsed.\n");
+			printf("9 String successfully parsed.\n");
 			return 1;
+		}
+
+		if(CONTADOR > 1500)
+		{
+			printf("O padrao %s nao pode ser aplicada.\n", sentinal_string);
+			return -1;
 		}
 	}	
 }
@@ -253,7 +261,7 @@ int update_str_pointer(char str_to_pass[], char sentinal_string[], int *str_poin
 	
 	if (strncmp(str_to_pass,sentinal_string,strlen(sentinal_string)) == 0)
 	{
-		printf("The string has been parsed successfully!!\n");
+		printf("10 The string has been parsed successfully!!\n");
 		return -1;		
 	}
 
@@ -297,7 +305,7 @@ int getTermNTerm(int no_rules, char rules[no_rules][100], char *non_term_vector,
 	char *term = term_vector;
 	for (ruleCount=0;ruleCount<no_rules;ruleCount++)
 	{
-		printf("%d. %s\n",ruleCount,(rules[ruleCount]));
+		printf("11 %d. %s\n",ruleCount,(rules[ruleCount]));
 
 		for (i=0;i<strlen(rules[ruleCount]);i++)
 		{	
@@ -347,8 +355,8 @@ int getTermNTerm(int no_rules, char rules[no_rules][100], char *non_term_vector,
 	term[temp1] = '\0';
 	*no_nt = strlen(non_term);
 	*no_t = strlen(term);
-	printf("\nNon Terminals: %s, number of non-terminals = %d\n",non_term,*no_nt);
-	printf("Terminals: %s, number of terminals = %d\n",term,*no_t);
+	printf("12 \nNon Terminals: %s, number of non-terminals = %d\n",non_term,*no_nt);
+	printf("13 Terminals: %s, number of terminals = %d\n",term,*no_t);
 	return 1;
 }
 
@@ -446,7 +454,7 @@ int find_first(int no_nt,int no_t,int no_rules,char non_term[no_rules],char term
 
 	for (temp1 = 0;temp1<no_nt;temp1++)
 	{
-		printf("first[%c] = %s\n",non_term[temp1],first[temp1]);		
+		printf("14 first[%c] = %s\n",non_term[temp1],first[temp1]);		
 	}
 }
 
@@ -462,7 +470,7 @@ int find_follow(int no_nt,int no_t,int no_rules,char non_term[no_rules],char ter
 	char left_nt;
 	int left_nt_index;
 	
-	printf("\n");
+	printf("15 \n");
 
 	follow[0][0] = '$';
 	follow[0][1] = '\0';
@@ -596,7 +604,7 @@ int find_follow(int no_nt,int no_t,int no_rules,char non_term[no_rules],char ter
 	}
 	for	(i=0;i<no_nt;i++)	
 	{
-		printf("follow[%c] = %s\n",non_term[i],follow[i]);
+		printf("16 follow[%c] = %s\n",non_term[i],follow[i]);
 	}
 }
 
@@ -706,24 +714,24 @@ void make_table(int no_nt,int no_t,int no_rules,char non_term[no_rules],char ter
 			parser[left_nt_index][first_t_index] = rule_count;
 		}
 	}
-	printf("\n   ");
+	printf("17 \n   ");
 	for (t_count=0;t_count<no_t;t_count++)
 	{
-		printf("%c    ",term[t_count]);
+		printf("18 %c    ",term[t_count]);
 	}
-	printf("\n");
+	printf("19 \n");
 	for (nt_count=0;nt_count<no_nt;nt_count++)
-	{	printf("%c  ",non_term[nt_count]);
+	{	printf("20 %c  ",non_term[nt_count]);
 		for (t_count=0;t_count<no_t;t_count++)
 		{
 			if (parser[nt_count][t_count] == -1)
 			{
-				printf("     ",parser[nt_count][t_count]);	
+				printf("21     ",parser[nt_count][t_count]);	
 			}else
 			{
-				printf("%d    ",parser[nt_count][t_count]);
+				printf("22 %d    ",parser[nt_count][t_count]);
 			}
 		}
-		printf("\n");
+		printf("23 \n");
 	}
 }
