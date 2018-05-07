@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 
 	if (argc!=2)
 	{
-		printf("Improper number of arguments\n");
+		printf("Numero de argumentos errado\n");
 		return -1;
 	}
 
@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 
 	if (fp == NULL)
 	{
-		puts("Could not open the file");
+		puts("Nao foi possivel abrir arquivo");
 		return -1;
 	}
 	
@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
 
 	if (fp1 == NULL)
 	{
-		puts("Could not open the string file");
+		puts("Arquivo com o codigo nao pode ser aberto");
 		return -1;
 	}
 
@@ -150,12 +150,12 @@ int main(int argc, char *argv[])
 			code = (int)str_to_pass[i];
 			if ((code >= 65) && (code <= 90))
 			{
-				printf("Only terminals are allowed in the string.\nTerminal symbols cannot be capital letters.\n");
+				printf("Somente terminais sao permitidos.\nTerminais sao podem ser maiusculos.\n");
 				valid = 0;
 			}
 			else if (code == 101)
 			{
-				printf("Sorry 'e' is reserved. It cannot be used as a terminal symbol.\n");
+				printf("'e' e reservado, use outro simbolo.\n");
 				valid = 0;
 			}
 		}
@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
 	char end[] = "$";
 	strcat(str_to_pass,end);
 
-	printf(" \nString Received: %s\n\n",str_to_pass);
+	printf(" \nString recebida: %s\n\n",str_to_pass);
 	start_nt = non_term[0];
 	current_nt = start_nt;	
 	sentinal_string[0] = current_nt;
@@ -176,7 +176,7 @@ int main(int argc, char *argv[])
 		current_nt_index = get_symbol_index(non_term,current_nt);
 		if (current_nt_index == -1)
 		{
-			printf("Undefined Non Terminal found");
+			printf("nao terminal indefinido encontrado");
 			return -1;
 		}
 		CONTADOR++;
@@ -261,7 +261,7 @@ int update_str_pointer(char str_to_pass[], char sentinal_string[], int *str_poin
 	
 	if (strncmp(str_to_pass,sentinal_string,strlen(sentinal_string)) == 0)
 	{
-		printf("String parseada con exito!!\n");
+		printf("String parseada com exito!!\n");
 		return -1;		
 	}
 
