@@ -82,7 +82,7 @@ function getFirstSetOfRHS (RHS) {
 
 // We just manually define our First and Follow sets for a given grammar,
 // see again diff (2) where we automatically generated these sets.
-
+/*
 var grammar = {
   1: ['S', '->', 'F'],
   2: ['S', '->', '(', 'S', '+', 'F', ')'],
@@ -116,7 +116,7 @@ console.log(buildParsingTable(grammar))
 // | S  2  -  1  -  - |
 // | F  -  -  3  -  - |
 // +------------------+
-
+*/
 // ----------------------------------------------------------------------
 // Example 2, for the "calculator" grammar, e.g. (a + a) * a.
 // ----------------------------------------------------------------------
@@ -175,3 +175,28 @@ console.log(buildParsingTable(grammar))
 // | F  7  -  -  8  -  - |
 // +---------------------+
 */
+
+var grammar = {
+  1: [ 'S', '->', '<ini>', 'D', '<cod>', 'C', '<fim>' ],
+  2: [ 'D', '->', '<id>', 'D' ],
+  3: [ 'D', '->', 'ε' ],
+  4: [ 'C', '->', '<exp>', 'C' ],
+  5: [ 'C', '->', 'ε' ]
+}
+
+var firstSets = {
+  'S': [ '<ini>' ],
+  '<ini>': [ '<ini>' ],
+  'D': [ '<id>', 'ε' ],
+  '<id>': [ '<id>' ],
+  'C': [ '<exp>', 'ε' ],
+  '<exp>': [ '<exp>' ]
+}
+
+var followSets = {
+  'S': [ '$' ],
+  'D': [ '<cod>' ],
+  'C': [ '<fim>' ]
+}
+
+console.log(buildParsingTable(grammar))

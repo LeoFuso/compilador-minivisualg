@@ -83,11 +83,20 @@ var grammar = {
   3: ['F', 'a'] // 3. F -> a
 }
 */
-
+/*
 var grammar = {
   1: ['S', 'F'], // 1. S -> F
   2: ['S', '(', 'S', '+', 'F', ')'], // 2. S -> (S + F)
   3: ['F', 'a'] // 3. F -> a
+}
+*/
+var EPSILON = 'ε'
+var grammar = {
+  1: [ 'S', '<ini>', 'D', '<cod>', 'C', '<fim>' ],
+  2: [ 'D', '<id>', 'D' ],
+  3: [ 'D', 'ε' ],
+  4: [ 'C', '<exp>', 'C' ],
+  5: [ 'C', 'ε' ]
 }
 
 /**
@@ -126,6 +135,7 @@ function buildTable (grammar, source) {
   // | F  -  -  3  -  - |
   // +------------------+
   //
+  /*
   return {
     'S': {
       '(': 2,
@@ -133,6 +143,20 @@ function buildTable (grammar, source) {
     },
     'F': {
       'a': 3
+    }
+  }
+  */
+  return {
+    'S': {
+      '<ini>': 1
+    },
+    'D': {
+      '<id>': 2,
+      '<cod>': 3
+    },
+    'C': {
+      '<exp>': 4,
+      '<fim>': 5
     }
   }
 }
@@ -154,6 +178,9 @@ function parseFromTable (source, table) {
     console.log('STACK: ' + stack)
     var current = source[cursor]
     var top = stack.shift()
+    if (top === EPSILON) {
+      top = stack.shift()
+    }
     // Terminal is on the stack, just advance.
     if (isTerminal(top, table) && top === current) {
       // We already shifted the symbol from the stack,
@@ -189,12 +216,11 @@ function getProduction (table, top, current) {
   // '(', 'S', '+', 'F', ')' for '(S + F)', since
   // each symbol should be pushed onto the stack.
   // return nextProduction[1].split(/\s*/)
-  console.log(nextProduction)
   return nextProduction.slice(1)
 }
 
 // Test:
-parse(['(', 'a', '+', 'a', ')'])
+parse(['<ini>', '<id>', '<id>', '<cod>', '<exp>', '<exp>', '<fim>'])
 
 // Output:
 

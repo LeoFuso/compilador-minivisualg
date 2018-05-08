@@ -260,6 +260,7 @@ var grammar = {
   3: ['F', '->', 'a'],
 }; */
 
+/*
 var grammar = {
   1: ['E', '->', 'T', 'X'],
   2: ['X', '->', '+', 'T', 'X'],
@@ -272,6 +273,25 @@ var grammar = {
 }
 
 var START_SYMBOL = 'E'
+
+printGrammar(grammar)
+
+buildFirstSets(grammar)
+printSet('First sets', firstSets)
+
+buildFollowSets(grammar)
+printSet('Follow sets', followSets)
+*/
+
+var grammar = {
+  1: 'S -> <ini> D <cod> C <fim>'.split(' '),
+  2: 'D -> <id> D'.split(' '),
+  3: 'D -> ε'.split(' '),
+  4: 'C -> <exp> C'.split(' '),
+  5: 'C -> ε'.split(' ')
+}
+
+var START_SYMBOL = 'S'
 
 printGrammar(grammar)
 
