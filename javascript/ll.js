@@ -76,9 +76,17 @@
  * Our grammar representation. Key is a production number from
  * the grammar, the value is: 0 - LHS, 1 - RHS of the production.
  */
+/*
 var grammar = {
   1: ['S', 'F'], // 1. S -> F
   2: ['S', '(S + F)'], // 2. S -> (S + F)
+  3: ['F', 'a'] // 3. F -> a
+}
+*/
+
+var grammar = {
+  1: ['S', 'F'], // 1. S -> F
+  2: ['S', '(', 'S', '+', 'F', ')'], // 2. S -> (S + F)
   3: ['F', 'a'] // 3. F -> a
 }
 
@@ -141,7 +149,7 @@ function parseFromTable (source, table) {
   printGrammar(grammar)
   console.log('Source:', source)
   // retira todos os espacos
-  source = source.replace(/\s+/g, '')
+  // source = source.replace(/\s+/g, '')
   for (var cursor = 0; cursor < source.length;) {
     console.log('STACK: ' + stack)
     var current = source[cursor]
@@ -180,11 +188,13 @@ function getProduction (table, top, current) {
   // Return an array of symbols from a production, e.g.
   // '(', 'S', '+', 'F', ')' for '(S + F)', since
   // each symbol should be pushed onto the stack.
-  return nextProduction[1].split(/\s*/)
+  // return nextProduction[1].split(/\s*/)
+  console.log(nextProduction)
+  return nextProduction.slice(1)
 }
 
 // Test:
-parse('(a + a)')
+parse(['(', 'a', '+', 'a', ')'])
 
 // Output:
 
