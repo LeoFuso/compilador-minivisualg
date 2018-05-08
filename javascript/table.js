@@ -89,9 +89,6 @@ var grammar = {
   3: ['F', '->', 'a']
 }
 
-// See https://gist.github.com/DmitrySoshnikov/924ceefb1784b30c5ca6
-// for the sets construction.
-
 var firstSets = {
   'S': ['a', '('],
   'F': ['a'],
@@ -123,6 +120,7 @@ console.log(buildParsingTable(grammar))
 // ----------------------------------------------------------------------
 // Example 2, for the "calculator" grammar, e.g. (a + a) * a.
 // ----------------------------------------------------------------------
+
 /*
 var grammar = {
   1: ['E', '->', 'T', 'X'],
@@ -134,9 +132,6 @@ var grammar = {
   7: ['F', '->', 'a'],
   8: ['F', '->', '(', 'E', ')']
 }
-
-// See https://gist.github.com/DmitrySoshnikov/924ceefb1784b30c5ca6
-// for the sets construction.
 
 var firstSets = {
   'E': ['a', '('],

@@ -125,7 +125,6 @@ function getRHS (production) {
  * - If there is a production A → aBb, where FIRST(b) contains ε,
  *   then everything in FOLLOW(A) is in FOLLOW(B)
  */
-
 function buildFollowSets (grammar) {
   followSets = {}
   buildSet(followOf)
