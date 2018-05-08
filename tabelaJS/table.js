@@ -58,7 +58,7 @@ function getRHS(production) {
  * Returns First set of RHS.
  */
 function getFirstSetOfRHS(RHS) {
-	
+
 	// For simplicity, in this educational parser, we assume that
 	// the first symbol (if it's a non-terminal) cannot produces `ε`.
 	// Since in real parser, we need to get the First set of the whole RHS.
@@ -83,7 +83,7 @@ function getFirstSetOfRHS(RHS) {
 
 // We just manually define our First and Follow sets for a given grammar,
 // see again diff (2) where we automatically generated these sets.
-
+/*
 var grammar = {
 	1: ['S', '->', 'F'],
 	2: ['S', '->', '(', 'S', '+', 'F', ')'],
@@ -94,15 +94,15 @@ var grammar = {
 // for the sets construction.
 
 var firstSets = {
-	'S': ['a', '('],
-	'F': ['a'],
-	'a': ['a'],
-	'(': ['('],
+	'S' : [ 'a', '(' ],
+	'F' : [ 'a' ],
+	'a' : [ 'a' ],
+	'(' : [ '(' ]
 };
 
 var followSets = {
-	'S': ['$', '+'],
-	'F': ['$', '+', ')'],
+	'S' : [ '$', '+' ],
+	'F' : [ '$', '+', ')' ]
 };
 
 console.log(buildParsingTable(grammar));
@@ -120,7 +120,7 @@ console.log(buildParsingTable(grammar));
 // | S  2  -  1  -  - |
 // | F  -  -  3  -  - |
 // +------------------+
-
+*/
 // ----------------------------------------------------------------------
 // Example 2, for the "calculator" grammar, e.g. (a + a) * a.
 // ----------------------------------------------------------------------

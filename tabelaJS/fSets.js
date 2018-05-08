@@ -144,6 +144,7 @@ function followOf(symbol) {
   var follow = followSets[symbol] = {};
 
   // Start symbol always contain `$` in its follow set.
+  //console.log(symbol + '<<')
   if (symbol === START_SYMBOL) {
     follow['$'] = true;
   }
@@ -237,6 +238,8 @@ function printGrammar(grammar) {
     console.log('  ', grammar[k]);
   }
   console.log('');
+  console.log(JSON.stringify(grammar))
+  console.log('--');
 }
 
 function printSet(name, set) {
@@ -245,6 +248,8 @@ function printSet(name, set) {
     console.log('  ', k, ':', Object.keys(set[k]));
   }
   console.log('');
+  console.log(JSON.stringify(set))
+  console.log('--');
 }
 
 // Testing
@@ -253,13 +258,26 @@ function printSet(name, set) {
 // Example 1 of a simple grammar, generates: a, or (a + a), etc.
 // --------------------------------------------------------------------------
 
+/*
 var grammar = {
   1: ['S', '->', 'F'],
   2: ['S', '->', '(', 'S', '+', 'F', ')'],
   3: ['F', '->', 'a'],
+};*/
+
+
+var grammar = {
+  1: ['E', '->', 'T', 'X'],
+  2: ['X', '->', '+', 'T', 'X'],
+  3: ['X', '->', 'ε'],
+  4: ['T', '->', 'F', 'Y'],
+  5: ['Y', '->', '*', 'F', 'Y'],
+  6: ['Y', '->', 'ε'],
+  7: ['F', '->', 'a'],
+  8: ['F', '->', '(', 'E', ')'],
 };
 
-var START_SYMBOL = 'S';
+var START_SYMBOL = 'E';
 
 printGrammar(grammar);
 
