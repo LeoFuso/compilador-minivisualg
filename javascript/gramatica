@@ -1,1 +1,78 @@
-GRAMATICA AQUI
+A			-> <algoritmo> <str> LISTADECLAR <inicio> CODIGO <fimalgoritmo>
+
+LISTADECLAR	-> UNIDECLAR LISTADECLAR
+LISTADECLAR	-> MULTIDECLAR LISTADECLAR
+LISTADECLAR	-> /e/
+
+UNIDECLAR	-> <var> <id> <del|:> TIPO
+
+MULTIDECLAR	-> IDLIST <del|:> TIPO
+
+TIPO		-> <inteiro>
+TIPO		-> <logico>
+
+IDLIST		-> <id> IDLIST
+IDLIST		-> <del|,> <id> IDLIST
+IDLIST		-> /e/
+
+KEYWORDS
+    <var>
+    <inteiro>
+    <logico>
+    <leia>
+    <escreva>
+    <escreval>
+    <se>
+    <entao>
+    <senao>
+    <fimse>
+    <para>
+    <de>
+    <ate>
+    <fimpara>
+    <enquanto>
+    <faca>
+    <passo>
+    <fimenquanto>
+    <algoritmo>
+    <inicio>
+    <fimalgoritmo>
+
+OP
+    <OP | + >			-> <op|+>
+    <OP | - >			-> <op|->
+    <OP | * >			-> <op|*>
+    <OP | / >			-> <op|/>
+    <OP | mod >			-> <op|mod>
+    <OP | exp >			-> <op|exp>
+    <OP | <- >			-> <op|<->
+
+BOOLEAN_DATA
+    <VERDADEIRO>		-> <verdadeiro>
+    <FALSO>				-> <falso>
+
+NUMBER
+	<NUM | %d>			-> <num>
+
+TEXT
+	<STR | %s>			-> <str>
+
+DEL
+	<DEL | , >			-> <del|,>
+	<DEL | : >			-> <del|:>
+	<DEL | ( >			-> <del|(>
+	<DEL | ) >			-> <del|)>
+
+LOGIC_OP
+    <LOP | > >			-> <lop|>>
+    <LOP | >= >			-> <lop|>=>
+    <LOP | < >			-> <lop|<>
+    <LOP | <= >			-> <lop|<=>
+    <LOP | = >			-> <lop|=>
+    <LOP | <> >			-> <lop|<>>
+    <LOP | e >			-> <lop|e>
+    <LOP | ou >			-> <lop|ou>
+
+ID
+	<ID| %s>			-> <id>
+
