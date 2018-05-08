@@ -21,7 +21,7 @@ typedef enum
 {
     IDENTIFIER,
     KEYWORD,
-    LOGIC,
+    BOOLEAN_OPERATOR,
     NUMBER,
     TEXT,
     LOGIC_OPERATOR,
@@ -34,7 +34,8 @@ struct Token
 {
     TokenType tokenType;
     const char *value;
-    const char *raw;
+    const char *body;
+    const char *source;
 };
 
 struct Line

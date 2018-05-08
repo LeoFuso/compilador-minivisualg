@@ -32,7 +32,7 @@ char *KEYWORDS[21] =
         "fimalgoritmo"
     };
 
-char *OP[7] =
+char *OPERATORS[7] =
     {
         "+",
         "-",
@@ -43,7 +43,7 @@ char *OP[7] =
         "<-"
     };
 
-char *LOGIC_OP[8] =
+char *LOGIC_OPERATORS[8] =
     {
         ">",
         ">=",
@@ -55,13 +55,13 @@ char *LOGIC_OP[8] =
         "ou"
     };
 
-char *BOOLEAN_DATA[2] =
+char *BOOLEAN_OPERATORS[2] =
     {
         "VERDADEIRO",
         "FALSO"
     };
 
-char *DEL[4] =
+char *DELIMITERS[4] =
     {
         ",",
         ":",
@@ -86,6 +86,9 @@ _crtln(char *, unsigned int);
 
 struct Token *
 _crtkn(TokenType, const char *, unsigned int);
+
+struct Token *
+_new_tkn(struct Token *);
 
 int
 is_valid_id(const char *word)
@@ -235,7 +238,7 @@ _strbldr(unsigned int lnum, char *line)
             exit(1);
         }
 
-        if (tmptknstrct->value != NULL)
+        if (tmptknstrct->body != NULL)
             lnstrct->tokens[numtkns++] = tmptknstrct;
         else
         {
@@ -291,62 +294,86 @@ _getid(const char *name)
 }
 
 struct Token *
+_new_tkn(struct Token *token)
+{
+    token = (struct Token *) malloc(sizeof(struct Token) + 1);
+
+    token->value = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
+    token->body = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
+    token->source = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
+    return token;
+}
+
+struct Token *
 _crtkn(TokenType type, const char *body, unsigned int lnum)
 {
 
     struct Token *token = NULL;
-    char *tmp = NULL;
+    char *tmp_body = NULL;
+    char *tmp_value = NULL;
 
-    token = (struct Token *) malloc(sizeof(struct Token) + 1);
-    tmp = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
+    token = _new_tkn(token);
+    tmp_body = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
+    tmp_value = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
 
-    token->raw = body;
     token->tokenType = type;
+    token->source = body;
 
     switch (type)
     {
         case IDENTIFIER: printf("              ID: %s\n", body);
-            snprintf(tmp, LINE_SIZE, "<ID | %d >", _getid(body));
+            sprintf(tmp_value, "%d", _getid(body));
+            snprintf(tmp_body, LINE_SIZE, "<id | %s >", tmp_value);
             break;
 
         case KEYWORD: printf("         Keyword: %s\n", body);
-            snprintf(tmp, LINE_SIZE, "<%s>", body);
+            strcpy(tmp_value, body);
+            snprintf(tmp_body, LINE_SIZE, "<%s>", body);
             break;
 
-        case LOGIC: printf("           LOGIC: %s\n", body);
-            snprintf(tmp, LINE_SIZE, "<%s>", body);
+        case BOOLEAN_OPERATOR: printf("Boolean Operator: %s\n", body);
+            strcpy(tmp_value, body);
+            snprintf(tmp_body, LINE_SIZE, "<%s>", body);
             break;
 
-        case NUMBER: printf("          NUMBER: %s\n", body);
-            snprintf(tmp, LINE_SIZE, "<NUM | %s >", body);
+        case NUMBER: printf("          Number: %s\n", body);
+            strcpy(tmp_value, body);
+            snprintf(tmp_body, LINE_SIZE, "<num | %s >", body);
             break;
 
         case TEXT: printf("          String: %s\n", body);
-            snprintf(tmp, LINE_SIZE, "<STR | \"%s\" >", body);
+            strcpy(tmp_value, body);
+            snprintf(tmp_body, LINE_SIZE, "<str | \"%s\" >", body);
             break;
 
         case LOGIC_OPERATOR: printf("  Logic Operator: %s\n", body);
-            snprintf(tmp, LINE_SIZE, "<LOP | %s >", body);
+            strcpy(tmp_value, body);
+            snprintf(tmp_body, LINE_SIZE, "<lop | %s >", body);
             break;
 
         case OPERATOR: printf("        Operator: %s\n", body);
-            snprintf(tmp, LINE_SIZE, "<OP | %s >", body);
+            strcpy(tmp_value, body);
+            snprintf(tmp_body, LINE_SIZE, "<op | %s >", body);
             break;
 
         case DELIMITER: printf("       Delimiter: %s\n", body);
-            snprintf(tmp, LINE_SIZE, "<DEL | %s >", body);
+            strcpy(tmp_value, body);
+            snprintf(tmp_body, LINE_SIZE, "<del | %s >", body);
             break;
 
         case UNDEFINED: printf("    Erro de parseamento na linha %d durante a palavra '%s' \n", lnum, body);
-            tmp = NULL;
+            tmp_value = NULL;
+            tmp_body = NULL;
             break;
 
-        default: snprintf(tmp, LINE_SIZE, "<ERROR | %s >", body);
-            tmp = NULL;
+        default: snprintf(tmp_body, LINE_SIZE, "<ERROR | %s >", body);
+            tmp_value = NULL;
+            tmp_body = NULL;
             break;
     }
 
-    token->value = tmp;
+    token->value =  tmp_value;
+    token->body = tmp_body;
 
     return token;
 }
@@ -361,19 +388,19 @@ _idtkn(unsigned int lnum, const char *token)
             return _crtkn(KEYWORD, token, 0);
 
     for (i = 0; i < BOOLEAN_DATA_SIZE; ++i)
-        if (strcmp(token, BOOLEAN_DATA[i]) == 0)
-            return _crtkn(LOGIC, token, 0);
+        if (strcmp(token, BOOLEAN_OPERATORS[i]) == 0)
+            return _crtkn(BOOLEAN_OPERATOR, token, 0);
 
     for (i = 0; i < OP_SIZE; ++i)
-        if (strcmp(token, OP[i]) == 0)
+        if (strcmp(token, OPERATORS[i]) == 0)
             return _crtkn(OPERATOR, token, 0);
 
     for (i = 0; i < LOGIC_OP_SIZE; ++i)
-        if (strcmp(token, LOGIC_OP[i]) == 0)
+        if (strcmp(token, LOGIC_OPERATORS[i]) == 0)
             return _crtkn(LOGIC_OPERATOR, token, 0);
 
     for (i = 0; i < DEL_SIZE; ++i)
-        if (strcmp(token, DEL[i]) == 0)
+        if (strcmp(token, DELIMITERS[i]) == 0)
             return _crtkn(DELIMITER, token, 0);
 
     if (!strncmp(token, "\"", 1))

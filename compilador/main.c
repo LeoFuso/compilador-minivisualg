@@ -128,7 +128,7 @@ main(int argc, char *argv[])
     for (i = 0; i < lncnt; i++)
     {
         for (j = 0; j < program[i]->numtkns; j++)
-            fprintf(fileOut, "%s", program[i]->tokens[j]->value);
+            fprintf(fileOut, "%s", program[i]->tokens[j]->body);
         fprintf(fileOut, "\n");
     }
 
