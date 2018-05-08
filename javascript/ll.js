@@ -172,8 +172,6 @@ var productionNumbers = []
 function parseFromTable (source, table) {
   printGrammar(grammar)
   console.log('Source:', source)
-  // retira todos os espacos
-  // source = source.replace(/\s+/g, '')
   for (var cursor = 0; cursor < source.length;) {
     console.log('STACK: ' + stack)
     var current = source[cursor]
@@ -202,8 +200,10 @@ function isTerminal (symbol, table) {
 }
 
 function getProduction (table, top, current) {
+  // Seleciona o numero da producao (regra) cruzando o nao terminal 'top', com o atual terminal 'current'
   var nextProductionNumber = table[top][current]
 
+  // Se nao achar uma producao na tabela, current é um token errado
   if (!nextProductionNumber) {
     throw Error('Parse error, unexpected token: ' + current)
   }
