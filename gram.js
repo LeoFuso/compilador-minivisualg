@@ -1,4 +1,4 @@
-var grammar = {
+var gramatica = {
 	1: ['A', '->', '<algoritmo>', '<str>', 'LISTADECLAR', '<inicio>', 'CODIGO', '<fimalgoritmo>'],
 	2: ['LISTADECLAR', '->', 'UNIDECLAR', 'LISTADECLAR'],
 	3: ['LISTADECLAR', '->', 'MULTIDECLAR', 'LISTADECLAR'],
@@ -12,7 +12,7 @@ var grammar = {
 	11: ['IDLIST', '->', '/e/'],
 	12: ['CODIGO', '->', 'COMANDO', 'CODIGO'],
 	13: ['CODIGO', '->', '/e/'],
-	14: ['COMANDO', '->', '<id>', '<op|<->', 'ATRIBUICAO'],
+	14: ['COMANDO', '->', '<id>', '<op|<->', 'EXPRESSAO'],
 	15: ['COMANDO', '->', '<leia>', '<del|(>', 'IDLIST', '<del|)>'],
 	16: ['COMANDO', '->', '<escreva>', '<del|(>', 'STROUT', '<del|)>'],
 	17: ['COMANDO', '->', '<se>', 'EXPRESSAOLOGICA', '<entao>', 'CODIGO', '<senao>', 'CODIGO', '<fimse>'],
@@ -20,9 +20,9 @@ var grammar = {
 	19: ['COMANDO', '->', '<enquanto>', 'EXPRESSAOLOGICA', '<faca>', 'CODIGO', '<fimenquanto>'],
 	20: ['PASSO', '->', '<passo>', '<num>'],
 	21: ['PASSO', '->', '/e/'],
-	22: ['ATRIBUICAO', '->', 'DATA', 'ATRIBUICAO'],
-	23: ['ATRIBUICAO', '->', 'OP', 'DATA', 'ATRIBUICAO'],
-	24: ['ATRIBUICAO', '->', '/e/'],
+	22: ['EXPRESSAO', '->', 'EXPRESSAO', 'OP', 'EXPRESSAO'],
+	23: ['EXPRESSAO', '->', 'DATA'],
+	24: ['EXPRESSAO', '->', '/e/'],
 	25: ['STROUT', '->', 'PRINTABLE', 'STROUT'],
 	26: ['STROUT', '->', '<del|,>', 'PRINTABLE', 'STROUT'],
 	27: ['STROUT', '->', '/e/'],

@@ -17,12 +17,12 @@ var followSets = {}
  *       to First(Y1Y2..Yk) as well.
  */
 
-function buildFirstSets(grammar) {
+function buildFirstSets (grammar) {
   firstSets = {}
   buildSet(firstOf)
 }
 
-function firstOf(symbol) {
+function firstOf (symbol) {
   // A set may already be built from some previous analysis
   // of a RHS, so check whether it's already there and don't rebuild.
   if (firstSets[symbol]) {
@@ -88,7 +88,7 @@ function firstOf(symbol) {
  * Given symbol `S`, the function returns `S -> F`,
  * and `S -> (S + F)` productions.
  */
-function getProductionsForSymbol(symbol) {
+function getProductionsForSymbol (symbol) {
   var productionsForSymbol = {}
   for (var k in grammar) {
     if (grammar[k][0] === symbol) {
@@ -101,7 +101,7 @@ function getProductionsForSymbol(symbol) {
 /**
  * Given production `S -> F`, returns `S`.
  */
-function getLHS(production) {
+function getLHS (production) {
   // return production.split('->')[0].replace(/\s+/g, '');
   return production[0]
 }
@@ -109,7 +109,7 @@ function getLHS(production) {
 /**
  * Given production `S -> F`, returns `F`.
  */
-function getRHS(production) {
+function getRHS (production) {
   // return production.split('->')[1].replace(/\s+/g, '');
   return production.slice(2)
 }
@@ -125,12 +125,12 @@ function getRHS(production) {
  * - If there is a production A → aBb, where FIRST(b) contains ε,
  *   then everything in FOLLOW(A) is in FOLLOW(B)
  */
-function buildFollowSets(grammar) {
+function buildFollowSets (grammar) {
   followSets = {}
   buildSet(followOf)
 }
 
-function followOf(symbol) {
+function followOf (symbol) {
   // If was already calculated from some previous run.
   if (followSets[symbol]) {
     return followSets[symbol]
@@ -191,7 +191,7 @@ function followOf(symbol) {
   return follow
 }
 
-function buildSet(builder) {
+function buildSet (builder) {
   for (var k in grammar) {
     builder(grammar[k][0])
   }
@@ -202,7 +202,7 @@ function buildSet(builder) {
  * symbol `S` it finds production `(S + F)`, and for the symbol `F`
  * it finds productions `F` and `(S + F)`.
  */
-function getProductionsWithSymbol(symbol) {
+function getProductionsWithSymbol (symbol) {
   var productionsWithSymbol = {}
   for (var k in grammar) {
     var production = grammar[k]
@@ -214,11 +214,11 @@ function getProductionsWithSymbol(symbol) {
   return productionsWithSymbol
 }
 
-function isTerminal(symbol) {
+function isTerminal (symbol) {
   return !/[A-Z]/.test(symbol)
 }
 
-function merge(to, from, exclude) {
+function merge (to, from, exclude) {
   exclude || (exclude = [])
   for (var k in from) {
     if (exclude.indexOf(k) === -1) {
@@ -227,7 +227,7 @@ function merge(to, from, exclude) {
   }
 }
 
-function printGrammar(grammar) {
+function printGrammar (grammar) {
   console.log('Grammar:\n')
   for (var k in grammar) {
     console.log('  ', grammar[k])
@@ -237,7 +237,7 @@ function printGrammar(grammar) {
   console.log('--')
 }
 
-function printSet(name, set) {
+function printSet (name, set) {
   console.log(name + ': \n')
   console.log('{')
   for (var k in set) {
@@ -299,7 +299,7 @@ var grammar = {
   11: ['IDLIST', '->', '/e/'],
   12: ['CODIGO', '->', 'COMANDO', 'CODIGO'],
   13: ['CODIGO', '->', '/e/'],
-  14: ['COMANDO', '->', '<id>', '<op|<->', 'ATRIBUICAO'],
+  14: ['COMANDO', '->', '<id>', '<op|<->', 'EXPRESSAO'],
   15: ['COMANDO', '->', '<leia>', '<del|(>', 'IDLIST', '<del|)>'],
   16: ['COMANDO', '->', '<escreva>', '<del|(>', 'STROUT', '<del|)>'],
   17: ['COMANDO', '->', '<se>', 'EXPRESSAOLOGICA', '<entao>', 'CODIGO', '<senao>', 'CODIGO', '<fimse>'],
@@ -307,9 +307,9 @@ var grammar = {
   19: ['COMANDO', '->', '<enquanto>', 'EXPRESSAOLOGICA', '<faca>', 'CODIGO', '<fimenquanto>'],
   20: ['PASSO', '->', '<passo>', '<num>'],
   21: ['PASSO', '->', '/e/'],
-  22: ['ATRIBUICAO', '->', 'DATA', 'ATRIBUICAO'],
-  23: ['ATRIBUICAO', '->', 'OP', 'DATA', 'ATRIBUICAO'],
-  24: ['ATRIBUICAO', '->', '/e/'],
+  22: ['EXPRESSAO', '->', 'EXPRESSAO', 'OP', 'EXPRESSAO'],
+  23: ['EXPRESSAO', '->', 'DATA'],
+  24: ['EXPRESSAO', '->', '/e/'],
   25: ['STROUT', '->', 'PRINTABLE', 'STROUT'],
   26: ['STROUT', '->', '<del|,>', 'PRINTABLE', 'STROUT'],
   27: ['STROUT', '->', '/e/'],

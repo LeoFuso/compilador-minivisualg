@@ -18,7 +18,7 @@ IDLIST		-> /e/
 CODIGO      -> COMANDO CODIGO
 CODIGO      -> /e/
 
-COMANDO     -> <id> <op|<-> ATRIBUICAO
+COMANDO     -> <id> <op|<-> EXPRESSAO
 COMANDO     -> <leia> <del|(> IDLIST <del|)>
 COMANDO     -> <escreva> <del|(> STROUT <del|)>
 COMANDO     -> <se> EXPRESSAOLOGICA <entao> CODIGO <senao> CODIGO <fimse>
@@ -28,9 +28,9 @@ COMANDO     -> <enquanto> EXPRESSAOLOGICA <faca> CODIGO <fimenquanto>
 PASSO       -> <passo> <num>
 PASSO       -> /e/
 
-ATRIBUICAO  -> DATA ATRIBUICAO
-ATRIBUICAO  -> OP DATA ATRIBUICAO
-ATRIBUICAO  -> /e/
+EXPRESSAO   -> EXPRESSAO OP EXPRESSAO
+EXPRESSAO   -> DATA
+EXPRESSAO   -> /e/
 
 STROUT      -> PRINTABLE STROUT
 STROUT      -> <del|,> PRINTABLE STROUT
