@@ -107,7 +107,7 @@ var grammar = {
   11: ['IDLIST', '/e/'],
   12: ['CODIGO', 'COMANDO', 'CODIGO'],
   13: ['CODIGO', '/e/'],
-  14: ['COMANDO', 'ATRIBUICAO'],
+  14: ['COMANDO', '<id>', '<op|<->', 'DATA'],
   15: ['COMANDO', '<leia>', '<del|(>', 'IDLIST', '<del|)>'],
   16: ['COMANDO', '<escreva>', '<del|(>', 'STROUT', '<del|)>'],
   17: ['COMANDO', '<se>', 'EXPRESSAOLOGICA', '<entao>', 'CODIGO', '<senao>', 'CODIGO', '<fimse>'],
@@ -115,35 +115,33 @@ var grammar = {
   19: ['COMANDO', '<enquanto>', 'EXPRESSAOLOGICA', '<faca>', 'CODIGO', '<fimenquanto>'],
   20: ['PASSO', '<passo>', '<num>'],
   21: ['PASSO', '/e/'],
-  22: ['ATRIBUICAO', '<id>', '<op|<->', 'DATA'],
-  23: ['STROUT', '<str>', 'STROUT'],
-  24: ['STROUT', 'DATA', 'STROUT'],
-  25: ['STROUT', '<del|,>', 'DATA', 'STROUT'],
-  26: ['STROUT', '/e/'],
-  27: ['EXPRESSAOLOGICA', '<id>', 'LOGICOP', 'DATA'],
-  28: ['DATA', '<num>'],
-  29: ['DATA', '<str>'],
-  30: ['DATA', '<verdadeiro>'],
-  31: ['DATA', '<falso>'],
-  32: ['DATA', '<id>'],
-  33: ['DATA', 'EXPRESSAO'],
-  34: ['DATA', 'EXPRESSAOLOGICA'],
-  35: ['EXPRESSAO', '<id>', 'OP', 'DATA'],
-  36: ['LOGICOP', '<lop|>>'],
-  37: ['LOGICOP', '<lop|>=>'],
-  38: ['LOGICOP', '<lop|<>'],
-  39: ['LOGICOP', '<lop|<=>'],
-  40: ['LOGICOP', '<lop|=>'],
-  41: ['LOGICOP', '<lop|<>>'],
-  42: ['LOGICOP', '<lop|e>'],
-  43: ['LOGICOP', '<lop|ou>'],
-  44: ['OP', '<op|+>'],
-  45: ['OP', '<op|->'],
-  46: ['OP', '<op|*>'],
-  47: ['OP', '<op|/>'],
-  48: ['OP', '<op|mod>'],
-  49: ['OP', '<op|exp>'],
-  50: ['OP', 'LOGICOP']
+  22: ['STROUT', 'DATA', 'STROUT'],
+  23: ['STROUT', '<del|,>', 'DATA', 'STROUT'],
+  24: ['STROUT', '/e/'],
+  25: ['EXPRESSAOLOGICA', '<id>', 'LOGICOP', 'DATA'],
+  26: ['DATA', '<num>'],
+  27: ['DATA', '<str>'],
+  28: ['DATA', '<verdadeiro>'],
+  29: ['DATA', '<falso>'],
+  30: ['DATA', '<id>'],
+  31: ['DATA', 'EXPRESSAO'],
+  32: ['DATA', 'EXPRESSAOLOGICA'],
+  33: ['EXPRESSAO', '<id>', 'OP', 'DATA'],
+  34: ['LOGICOP', '<lop|>>'],
+  35: ['LOGICOP', '<lop|>=>'],
+  36: ['LOGICOP', '<lop|<>'],
+  37: ['LOGICOP', '<lop|<=>'],
+  38: ['LOGICOP', '<lop|=>'],
+  39: ['LOGICOP', '<lop|<>>'],
+  40: ['LOGICOP', '<lop|e>'],
+  41: ['LOGICOP', '<lop|ou>'],
+  42: ['OP', '<op|+>'],
+  43: ['OP', '<op|->'],
+  44: ['OP', '<op|*>'],
+  45: ['OP', '<op|/>'],
+  46: ['OP', '<op|mod>'],
+  47: ['OP', '<op|exp>'],
+  48: ['OP', 'LOGICOP']
 }
 
 /**
@@ -246,52 +244,53 @@ function buildTable (grammar, source) {
       '<passo>': 20,
       '<faca>': 21
     },
-    ATRIBUICAO: {
-      '<id>': 23
-    },
     STROUT: {
-      '<str>': 24,
-      '<id>': 25,
-      '<del|,>': 27,
-      '<del|)>': 28
+      '<num>': 22,
+      '<str>': 22,
+      '<verdadeiro>': 22,
+      '<falso>': 22,
+      '<id>': 22,
+      '<del|,>': 23,
+      '<del|)>': 24
     },
     EXPRESSAOLOGICA: {
-      '<id>': 30
+      '<id>': 25
     },
     DATA: {
-      '<num>': 31,
-      '<str>': 32,
-      '<verdadeiro>': 33,
-      '<falso>': 34
+      '<num>': 26,
+      '<str>': 27,
+      '<verdadeiro>': 28,
+      '<falso>': 29,
+      '<id>': 32
     },
     EXPRESSAO: {
-      '<id>': 36
+      '<id>': 33
     },
     LOGICOP: {
-      '<lop|>>': 37,
-      '<lop|>=>': 38,
-      '<lop|<>': 39,
-      '<lop|<=>': 40,
-      '<lop|=>': 41,
-      '<lop|<>>': 42,
-      '<lop|e>': 43,
-      '<lop|ou>': 44
+      '<lop|>>': 34,
+      '<lop|>=>': 35,
+      '<lop|<>': 36,
+      '<lop|<=>': 37,
+      '<lop|=>': 38,
+      '<lop|<>>': 39,
+      '<lop|e>': 40,
+      '<lop|ou>': 41
     },
     OP: {
-      '<op|+>': 45,
-      '<op|->': 46,
-      '<op|*>': 47,
-      '<op|/>': 48,
-      '<op|mod>': 49,
-      '<op|exp>': 50,
-      '<lop|>>': 51,
-      '<lop|>=>': 51,
-      '<lop|<>': 51,
-      '<lop|<=>': 51,
-      '<lop|=>': 51,
-      '<lop|<>>': 51,
-      '<lop|e>': 51,
-      '<lop|ou>': 51
+      '<op|+>': 42,
+      '<op|->': 43,
+      '<op|*>': 44,
+      '<op|/>': 45,
+      '<op|mod>': 46,
+      '<op|exp>': 47,
+      '<lop|>>': 48,
+      '<lop|>=>': 48,
+      '<lop|<>': 48,
+      '<lop|<=>': 48,
+      '<lop|=>': 48,
+      '<lop|<>>': 48,
+      '<lop|e>': 48,
+      '<lop|ou>': 48
     }
   }
 }
@@ -359,7 +358,7 @@ function getProduction (table, top, current) {
 
 // Test:
 
-var alg = '<algoritmo> <str> <var> <id> <del|:> <inteiro> <var> <id> <del|:> <logico> <id> <del|,> <id> <del|:> <inteiro> <inicio> <id> <op|<-> <num> <id> <op|<-> <num> <para> <id> <de> <num> <ate> <num> <passo> <num> <faca> <escreva> <del|(> <id> <del|)> <leia> <del|(> <id> <del|)> <se> <id> <lop|>> <num> <entao> <id> <op|<-> <id> <op|+> <num> <fimse> <fimpara> <escreva> <del|(> <id> <del|)> <fimalgoritmo>'.split(' ')
+var alg = '<algoritmo> <str> <var> <id> <del|:> <inteiro> <var> <id> <del|:> <logico> <id> <del|,> <id> <del|:> <inteiro> <inicio> <id> <op|<-> <num> <id> <op|<-> <num> <para> <id> <de> <num> <ate> <num> <passo> <num> <faca> <escreva> <del|(> <id> <del|)> <leia> <del|(> <id> <del|)> <se> <id> <lop|>> <num> <entao> <id> <op|<-> <id> <op|+> <num> <senao> <fimse> <fimpara> <escreva> <del|(> <id> <del|)> <fimalgoritmo>'.split(' ')
 
 parse(alg)
 
