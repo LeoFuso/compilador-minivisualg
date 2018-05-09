@@ -91,60 +91,62 @@ var grammar = {
 }
 */
 var EPSILON = '/e/'
+
+// Lembre de tirar os '->',
 var grammar = {
-  1: ['A', '<algoritmo>', '<str>', 'B', '<inicio>', 'C', '<fimalgoritmo>'],
-  2: ['B', 'D', 'B'],
-  3: ['B', 'F', 'B'],
-  4: ['B', '/e/'],
-  5: ['D', '<var>', '<id>', '<del|:>', 'E'],
-  6: ['F', 'G', '<del|:>', 'E'],
-  7: ['E', '<inteiro>'],
-  8: ['E', '<logico>'],
-  9: ['G', '<id>', 'G'],
-  10: ['G', '<del|,>', '<id>', 'G'],
-  11: ['G', '/e/'],
-  12: ['C', 'H', 'C'],
-  13: ['C', '/e/'],
-  14: ['H', 'I'],
-  15: ['H', '<leia>', '<del|(>', 'G', '<del|)>'],
-  16: ['H', '<escreva>', '<del|(>', 'J', '<del|)>'],
-  17: ['H', '<se>', 'K', '<entao>', 'C', '<senao>', 'C', '<fimse>'],
-  18: ['H', '<para>', '<id>', '<de>', '<num>', '<ate>', '<num>', 'P', '<faca>', 'C', '<fimpara>'],
-  19: ['H', '<enquanto>', 'K', '<faca>', 'C', '<fimenquanto>'],
-  20: ['I', '<id>', '<op|<->', 'L'],
-  21: ['I', '<id>', '<op|<->', 'M'],
-  22: ['J', '<str>', 'J'],
-  23: ['J', '<id>', 'J'],
-  24: ['J', '<del|,>', '<id>', 'J'],
-  25: ['J', '<del|,>', '<str>', 'J'],
-  26: ['J', '/e/'],
-  27: ['K', 'M', 'N', 'M'],
-  28: ['L', '<num>'],
-  29: ['L', '<str>'],
-  30: ['L', '<verdadeiro>'],
-  31: ['L', '<falso>'],
-  32: ['M', '<id>', 'M'],
-  33: ['M', 'L', 'M'],
-  34: ['M', 'O', '<id>', 'M'],
-  35: ['M', 'O', 'L', 'M'],
-  36: ['M', '/e/'],
-  37: ['N', '<lop|>>'],
-  38: ['N', '<lop|>=>'],
-  39: ['N', '<lop|<>'],
-  40: ['N', '<lop|<=>'],
-  41: ['N', '<lop|=>'],
-  42: ['N', '<lop|<>>'],
-  43: ['N', '<lop|e>'],
-  44: ['N', '<lop|ou>'],
-  45: ['O', '<op|+>'],
-  46: ['O', '<op|->'],
-  47: ['O', '<op|*>'],
-  48: ['O', '<op|/>'],
-  49: ['O', '<op|mod>'],
-  50: ['O', '<op|exp>'],
-  51: ['O', 'N'],
-  52: ['P', '<passo>', '<num>'],
-  53: ['P', '/e/']
+  1: ['A', '<algoritmo>', '<str>', 'LISTADECLAR', '<inicio>', 'CODIGO', '<fimalgoritmo>'],
+  2: ['LISTADECLAR', 'UNIDECLAR', 'LISTADECLAR'],
+  3: ['LISTADECLAR', 'MULTIDECLAR', 'LISTADECLAR'],
+  4: ['LISTADECLAR', '/e/'],
+  5: ['UNIDECLAR', '<var>', '<id>', '<del|:>', 'TIPO'],
+  6: ['MULTIDECLAR', 'IDLIST', '<del|:>', 'TIPO'],
+  7: ['TIPO', '<inteiro>'],
+  8: ['TIPO', '<logico>'],
+  9: ['IDLIST', '<id>', 'IDLIST'],
+  10: ['IDLIST', '<del|,>', '<id>', 'IDLIST'],
+  11: ['IDLIST', '/e/'],
+  12: ['CODIGO', 'COMANDO', 'CODIGO'],
+  13: ['CODIGO', '/e/'],
+  14: ['COMANDO', 'ATRIBUICAO'],
+  15: ['COMANDO', '<leia>', '<del|(>', 'IDLIST', '<del|)>'],
+  16: ['COMANDO', '<escreva>', '<del|(>', 'STROUT', '<del|)>'],
+  17: ['COMANDO', '<se>', 'EXPRESSAOLOGICA', '<entao>', 'CODIGO', '<senao>', 'CODIGO', '<fimse>'],
+  18: ['COMANDO', '<para>', '<id>', '<de>', '<num>', '<ate>', '<num>', 'PASSO', '<faca>', 'CODIGO', '<fimpara>'],
+  19: ['COMANDO', '<enquanto>', 'EXPRESSAOLOGICA', '<faca>', 'CODIGO', '<fimenquanto>'],
+  20: ['PASSO', '<passo>', '<num>'],
+  21: ['PASSO', '/e/'],
+  22: ['ATRIBUICAO', '<id>', '<op|<->', 'DATA'],
+  23: ['ATRIBUICAO', '<id>', '<op|<->', 'EXPRESSAO'],
+  24: ['STROUT', '<str>', 'STROUT'],
+  25: ['STROUT', '<id>', 'STROUT'],
+  26: ['STROUT', '<del|,>', '<id>', 'STROUT'],
+  27: ['STROUT', '<del|,>', '<str>', 'STROUT'],
+  28: ['STROUT', '/e/'],
+  29: ['EXPRESSAOLOGICA', 'EXPRESSAO', 'LOGICOP', 'EXPRESSAO'],
+  30: ['DATA', '<num>'],
+  31: ['DATA', '<str>'],
+  32: ['DATA', '<verdadeiro>'],
+  33: ['DATA', '<falso>'],
+  34: ['EXPRESSAO', '<id>', 'EXPRESSAO'],
+  35: ['EXPRESSAO', 'DATA', 'EXPRESSAO'],
+  36: ['EXPRESSAO', 'OP', '<id>', 'EXPRESSAO'],
+  37: ['EXPRESSAO', 'OP', 'DATA', 'EXPRESSAO'],
+  38: ['EXPRESSAO', '/e/'],
+  39: ['LOGICOP', '<lop|>>'],
+  40: ['LOGICOP', '<lop|>=>'],
+  41: ['LOGICOP', '<lop|<>'],
+  42: ['LOGICOP', '<lop|<=>'],
+  43: ['LOGICOP', '<lop|=>'],
+  44: ['LOGICOP', '<lop|<>>'],
+  45: ['LOGICOP', '<lop|e>'],
+  46: ['LOGICOP', '<lop|ou>'],
+  47: ['OP', '<op|+>'],
+  48: ['OP', '<op|->'],
+  49: ['OP', '<op|*>'],
+  50: ['OP', '<op|/>'],
+  51: ['OP', '<op|mod>'],
+  52: ['OP', '<op|exp>'],
+  53: ['OP', 'LOGICOP']
 }
 
 /**
@@ -198,32 +200,32 @@ function buildTable (grammar, source) {
     A: {
       '<algoritmo>': 1
     },
-    B: {
+    LISTADECLAR: {
       '<var>': 2,
       '<id>': 3,
       '<del|,>': 3,
       '<del|:>': 3,
       '<inicio>': 4
     },
-    D: {
+    UNIDECLAR: {
       '<var>': 5
     },
-    F: {
+    MULTIDECLAR: {
       '<id>': 6,
       '<del|,>': 6,
       '/e/': 6
     },
-    E: {
+    TIPO: {
       '<inteiro>': 7,
       '<logico>': 8
     },
-    G: {
+    IDLIST: {
       '<id>': 9,
       '<del|,>': 10,
       '<del|:>': 11,
       '<del|)>': 11
     },
-    C: {
+    CODIGO: {
       '<id>': 12,
       '<leia>': 12,
       '<escreva>': 12,
@@ -235,106 +237,110 @@ function buildTable (grammar, source) {
       '<fimpara>': 13,
       '<fimenquanto>': 13
     },
-    H: {
+    COMANDO: {
       '<id>': 14,
       '<leia>': 15,
       '<escreva>': 16,
       '<se>': 17,
-      '<para>': 19,
-      '<enquanto>': 20
+      '<para>': 18,
+      '<enquanto>': 19
     },
-    I: {
-      '<id>': 22
+    PASSO: {
+      '<passo>': 20,
+      '<faca>': 21
     },
-    J: {
-      '<str>': 23,
-      '<id>': 24,
-      '<del|,>': 26,
-      '<del|)>': 27
+    ATRIBUICAO: {
+      '<id>': 23
     },
-    K: {
-      '<id>': 28,
-      '<num>': 28,
-      '<str>': 28,
-      '<verdadeiro>': 28,
-      '<falso>': 28,
-      '<op|+>': 28,
-      '<op|->': 28,
-      '<op|*>': 28,
-      '<op|/>': 28,
-      '<op|mod>': 28,
-      '<op|exp>': 28,
-      '<lop|>>': 28,
-      '<lop|>=>': 28,
-      '<lop|<>': 28,
-      '<lop|<=>': 28,
-      '<lop|=>': 28,
-      '<lop|<>>': 28,
-      '<lop|e>': 28,
-      '<lop|ou>': 28,
-      '/e/': 28
+    STROUT: {
+      '<str>': 24,
+      '<id>': 25,
+      '<del|,>': 27,
+      '<del|)>': 28
     },
-    L: {
+    EXPRESSAOLOGICA: {
+      '<id>': 29,
       '<num>': 29,
-      '<str>': 30,
-      '<verdadeiro>': 31,
-      '<falso>': 32
+      '<str>': 29,
+      '<verdadeiro>': 29,
+      '<falso>': 29,
+      '<op|+>': 29,
+      '<op|->': 29,
+      '<op|*>': 29,
+      '<op|/>': 29,
+      '<op|mod>': 29,
+      '<op|exp>': 29,
+      '<lop|>>': 29,
+      '<lop|>=>': 29,
+      '<lop|<>': 29,
+      '<lop|<=>': 29,
+      '<lop|=>': 29,
+      '<lop|<>>': 29,
+      '<lop|e>': 29,
+      '<lop|ou>': 29,
+      '/e/': 29
     },
-    M: {
-      '<id>': 37,
-      '<num>': 34,
-      '<str>': 34,
-      '<verdadeiro>': 34,
-      '<falso>': 34,
-      '<op|+>': 36,
-      '<op|->': 36,
-      '<op|*>': 36,
-      '<op|/>': 36,
-      '<op|mod>': 36,
-      '<op|exp>': 36,
-      '<lop|>>': 37,
-      '<lop|>=>': 37,
-      '<lop|<>': 37,
-      '<lop|<=>': 37,
-      '<lop|=>': 37,
-      '<lop|<>>': 37,
-      '<lop|e>': 37,
-      '<lop|ou>': 37,
-      '<leia>': 37,
-      '<escreva>': 37,
-      '<se>': 37,
-      '<para>': 37,
-      '<enquanto>': 37,
-      '<fimalgoritmo>': 37,
-      '<senao>': 37,
-      '<fimpara>': 37,
-      '<fimenquanto>': 37
+    DATA: {
+      '<num>': 30,
+      '<str>': 31,
+      '<verdadeiro>': 32,
+      '<falso>': 33
     },
-    N: {
+    EXPRESSAO: {
+      '<id>': 38,
+      '<num>': 35,
+      '<str>': 35,
+      '<verdadeiro>': 35,
+      '<falso>': 35,
+      '<op|+>': 37,
+      '<op|->': 37,
+      '<op|*>': 37,
+      '<op|/>': 37,
+      '<op|mod>': 37,
+      '<op|exp>': 37,
       '<lop|>>': 38,
-      '<lop|>=>': 39,
-      '<lop|<>': 40,
-      '<lop|<=>': 41,
-      '<lop|=>': 42,
-      '<lop|<>>': 43,
-      '<lop|e>': 44,
-      '<lop|ou>': 45
+      '<lop|>=>': 38,
+      '<lop|<>': 38,
+      '<lop|<=>': 38,
+      '<lop|=>': 38,
+      '<lop|<>>': 38,
+      '<lop|e>': 38,
+      '<lop|ou>': 38,
+      '<leia>': 38,
+      '<escreva>': 38,
+      '<se>': 38,
+      '<para>': 38,
+      '<enquanto>': 38,
+      '<fimalgoritmo>': 38,
+      '<senao>': 38,
+      '<fimpara>': 38,
+      '<fimenquanto>': 38
     },
-    O: {
-      '<op|+>': 46,
-      '<op|->': 47,
-      '<op|*>': 48,
-      '<op|/>': 49,
-      '<op|mod>': 50,
-      '<op|exp>': 51,
-      '<lop|>>': 52,
-      '<lop|>=>': 52,
-      '<lop|<>': 52,
-      '<lop|<=>': 52,
-      '<lop|=>': 52,
-      '<lop|<>>': 52,
-      '<lop|e>': 52,
-      '<lop|ou>': 52
+    LOGICOP: {
+      '<lop|>>': 39,
+      '<lop|>=>': 40,
+      '<lop|<>': 41,
+      '<lop|<=>': 42,
+      '<lop|=>': 43,
+      '<lop|<>>': 44,
+      '<lop|e>': 45,
+      '<lop|ou>': 46
+    },
+    OP: {
+      '<op|+>': 47,
+      '<op|->': 48,
+      '<op|*>': 49,
+      '<op|/>': 50,
+      '<op|mod>': 51,
+      '<op|exp>': 52,
+      '<lop|>>': 53,
+      '<lop|>=>': 53,
+      '<lop|<>': 53,
+      '<lop|<=>': 53,
+      '<lop|=>': 53,
+      '<lop|<>>': 53,
+      '<lop|e>': 53,
+      '<lop|ou>': 53
     }
   }
 }
@@ -381,6 +387,7 @@ function isTerminal (symbol, table) {
 
 function getProduction (table, top, current) {
   // Seleciona o numero da producao (regra) cruzando o nao terminal 'top', com o atual terminal 'current'
+  console.log('T: ' + top + ' C: ' + current)
   var nextProductionNumber = table[top][current]
 
   // Se nao achar uma producao na tabela, current é um token errado
@@ -401,7 +408,7 @@ function getProduction (table, top, current) {
 
 // Test:
 
-var alg = '<algoritmo> <str> <var> <id> <del|:> <inteiro> <var> <id> <del|:> <logico> <id> <del|,> <id> <del|:> <inteiro> <inicio> <id> <op|<-> <num> <id> <op|<-> <num> <para> <id> <de> <num> <ate> <num> <passo> <num> <faca> <escreva> <del|(> <id> <del|)> <leia> <del|(> <id> <del|)> <se> <sal> <lop|>> <num> <entao> <id> <op|<-> <id> <op|+> <num> <fimse> <fimpara> <escreva> <del|(> <id> <del|)> <fimalgoritmo>'.split(' ')
+var alg = '<algoritmo> <str> <var> <id> <del|:> <inteiro> <var> <id> <del|:> <logico> <id> <del|,> <id> <del|:> <inteiro> <inicio> <id> <op|<-> <num> <id> <op|<-> <num> <para> <id> <de> <num> <ate> <num> <passo> <num> <faca> <escreva> <del|(> <id> <del|)> <leia> <del|(> <id> <del|)> <se> <id> <lop|>> <num> <entao> <id> <op|<-> <id> <op|+> <num> <fimse> <fimpara> <escreva> <del|(> <id> <del|)> <fimalgoritmo>'.split(' ')
 
 parse(alg)
 

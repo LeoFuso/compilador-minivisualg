@@ -5,4 +5,4 @@
 <inicio>
 <id> <op|<-> <num>
 <id> <op|<-> <num>
-<para> <id> <de> <num> <ate> <num> <passo> <num> <faca> <escreva> <del|(> <id> <del|)> <leia> <del|(> <id> <del|)> <se> <sal> <lop|>> <num> <entao> <id> <op|<-> <id> <op|+> <num> <fimse> <fimpara> <escreva> <del|(> <id> <del|)> <fimalgoritmo>
+<para> <id> <de> <num> <ate> <num> <passo> <num> <faca> <escreva> <del|(> <id> <del|)> <leia> <del|(> <id> <del|)> <se> <id> <lop|>> <num> <entao> <id> <op|<-> <id> <op|+> <num> <fimse> <fimpara> <escreva> <del|(> <id> <del|)> <fimalgoritmo>
