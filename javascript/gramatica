@@ -63,6 +63,7 @@ OP          -> <op|*>
 OP          -> <op|/>
 OP          -> <op|mod>
 OP          -> <op|exp>
+OP          -> LOGICOP
 
 
 
