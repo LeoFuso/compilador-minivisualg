@@ -22,9 +22,11 @@ COMANDO     -> ATRIBUICAO
 COMANDO     -> <leia> <del|(> IDLIST <del|)>
 COMANDO     -> <escreva> <del|(> STROUT <del|)>
 COMANDO     -> <se> EXPRESSAOLOGICA <entao> CODIGO <senao> CODIGO <fimse>
-COMANDO     -> <para> <id> <de> <num> <ate> <num> <passo> <num> <faca> CODIGO <fimpara>
-COMANDO     -> <para> <id> <de> <num> <ate> <num> <faca> CODIGO <fimpara>
+COMANDO     -> <para> <id> <de> <num> <ate> <num> PASSO <faca> CODIGO <fimpara>
 COMANDO     -> <enquanto> EXPRESSAOLOGICA <faca> CODIGO <fimenquanto>
+
+PASSO       -> <passo> <num>
+PASSO       -> /e/
 
 ATRIBUICAO  -> <id> <op|<-> DATA
 ATRIBUICAO  -> <id> <op|<-> EXPRESSAO

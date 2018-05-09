@@ -1,11 +1,11 @@
 // Special "empty" symbol.
-var EPSILON = 'ε'
+var EPSILON = '/e/'
 
 /**
  * Given a grammar builds a LL(1) parsing table based on the
  * First and Follow sets of this grammar.
  */
-function buildParsingTable (grammar) {
+function buildParsingTable(grammar) {
   var parsingTable = {}
 
   for (var k in grammar) {
@@ -41,7 +41,7 @@ function buildParsingTable (grammar) {
 /**
  * Given production `S -> F`, returns `S`.
  */
-function getLHS (production) {
+function getLHS(production) {
   // return production.split('->')[0].replace(/\s+/g, '');
   return production[0]
 }
@@ -49,7 +49,7 @@ function getLHS (production) {
 /**
  * Given production `S -> F`, returns `F`.
  */
-function getRHS (production) {
+function getRHS(production) {
   // return production.split('->')[1].replace(/\s+/g, '');
   return production.slice(2)
 }
@@ -57,7 +57,7 @@ function getRHS (production) {
 /**
  * Returns First set of RHS.
  */
-function getFirstSetOfRHS (RHS) {
+function getFirstSetOfRHS(RHS) {
   // For simplicity, in this educational parser, we assume that
   // the first symbol (if it's a non-terminal) cannot produces `ε`.
   // Since in real parser, we need to get the First set of the whole RHS.
@@ -177,26 +177,124 @@ console.log(buildParsingTable(grammar))
 */
 
 var grammar = {
-  1: [ 'S', '->', '<ini>', 'D', '<cod>', 'C', '<fim>' ],
-  2: [ 'D', '->', '<id>', 'D' ],
-  3: [ 'D', '->', 'ε' ],
-  4: [ 'C', '->', '<exp>', 'C' ],
-  5: [ 'C', '->', 'ε' ]
+  1: ['A', '->', '<algoritmo>', '<str>', 'B', '<inicio>', 'C', '<fimalgoritmo>'],
+  2: ['B', '->', 'D', 'B'],
+  3: ['B', '->', 'F', 'B'],
+  4: ['B', '->', '/e/'],
+  5: ['D', '->', '<var>', '<id>', '<del|:>', 'E'],
+  6: ['F', '->', 'G', '<del|:>', 'E'],
+  7: ['E', '->', '<inteiro>'],
+  8: ['E', '->', '<logico>'],
+  9: ['G', '->', '<id>', 'G'],
+  10: ['G', '->', '<del|,>', '<id>', 'G'],
+  11: ['G', '->', '/e/'],
+  12: ['C', '->', 'H', 'C'],
+  13: ['C', '->', '/e/'],
+  14: ['H', '->', 'I'],
+  15: ['H', '->', '<leia>', '<del|(>', 'G', '<del|)>'],
+  16: ['H', '->', '<escreva>', '<del|(>', 'J', '<del|)>'],
+  17: ['H', '->', '<se>', 'K', '<entao>', 'C', '<senao>', 'C', '<fimse>'],
+  18: ['H', '->', '<para>', '<id>', '<de>', '<num>', '<ate>', '<num>', '<passo>', '<num>', '<faca>', 'C', '<fimpara>'],
+  19: ['H', '->', '<para>', '<id>', '<de>', '<num>', '<ate>', '<num>', '<faca>', 'C', '<fimpara>'],
+  20: ['H', '->', '<enquanto>', 'K', '<faca>', 'C', '<fimenquanto>'],
+  21: ['I', '->', '<id>', '<op|<->', 'L'],
+  22: ['I', '->', '<id>', '<op|<->', 'M'],
+  23: ['J', '->', '<str>', 'J'],
+  24: ['J', '->', '<id>', 'J'],
+  25: ['J', '->', '<del|,>', '<id>', 'J'],
+  26: ['J', '->', '<del|,>', '<str>', 'J'],
+  27: ['J', '->', '/e/'],
+  28: ['K', '->', 'M', 'N', 'M'],
+  29: ['L', '->', '<num>'],
+  30: ['L', '->', '<str>'],
+  31: ['L', '->', '<verdadeiro>'],
+  32: ['L', '->', '<falso>'],
+  33: ['M', '->', '<id>', 'M'],
+  34: ['M', '->', 'L', 'M'],
+  35: ['M', '->', 'O', '<id>', 'M'],
+  36: ['M', '->', 'O', 'L', 'M'],
+  37: ['M', '->', '/e/'],
+  38: ['N', '->', '<lop|>>'],
+  39: ['N', '->', '<lop|>=>'],
+  40: ['N', '->', '<lop|<>'],
+  41: ['N', '->', '<lop|<=>'],
+  42: ['N', '->', '<lop|=>'],
+  43: ['N', '->', '<lop|<>>'],
+  44: ['N', '->', '<lop|e>'],
+  45: ['N', '->', '<lop|ou>'],
+  46: ['O', '->', '<op|+>'],
+  47: ['O', '->', '<op|->'],
+  48: ['O', '->', '<op|*>'],
+  49: ['O', '->', '<op|/>'],
+  50: ['O', '->', '<op|mod>'],
+  51: ['O', '->', '<op|exp>'],
+  52: ['O', '->', 'N']
 }
 
 var firstSets = {
-  'S': [ '<ini>' ],
-  '<ini>': [ '<ini>' ],
-  'D': [ '<id>', 'ε' ],
-  '<id>': [ '<id>' ],
-  'C': [ '<exp>', 'ε' ],
-  '<exp>': [ '<exp>' ]
+  'A': ['<algoritmo>'],
+  '<algoritmo>': ['<algoritmo>'],
+  'B': ['<var>', '<id>', '<del|,>', '<del|:>', '/e/'],
+  'D': ['<var>'],
+  '<var>': ['<var>'],
+  'F': ['<id>', '<del|,>', '<del|:>'],
+  'G': ['<id>', '<del|,>', '/e/'],
+  '<id>': ['<id>'],
+  '<del|,>': ['<del|,>'],
+  '<del|:>': ['<del|:>'],
+  'E': ['<inteiro>', '<logico>'],
+  '<inteiro>': ['<inteiro>'],
+  '<logico>': ['<logico>'],
+  'C': ['<id>', '<leia>', '<escreva>', '<se>', '<para>', '<enquanto>', '/e/'],
+  'H': ['<id>', '<leia>', '<escreva>', '<se>', '<para>', '<enquanto>'],
+  'I': ['<id>'],
+  '<leia>': ['<leia>'],
+  '<escreva>': ['<escreva>'],
+  '<se>': ['<se>'],
+  '<para>': ['<para>'],
+  '<enquanto>': ['<enquanto>'],
+  'J': ['<str>', '<id>', '<del|,>', '/e/'],
+  '<str>': ['<str>'],
+  'K': ['<id>', '<num>', '<str>', '<verdadeiro>', '<falso>', '<op|+>', '<op|->', '<op|*>', '<op|/>', '<op|mod>', '<op|exp>', '<lop|>>', '<lop|>=>', '<lop|<>', '<lop|<=>', '<lop|=>', '<lop|<>>', '<lop|e>', '<lop|ou>'],
+  'M': ['<id>', '<num>', '<str>', '<verdadeiro>', '<falso>', '<op|+>', '<op|->', '<op|*>', '<op|/>', '<op|mod>', '<op|exp>', '<lop|>>', '<lop|>=>', '<lop|<>', '<lop|<=>', '<lop|=>', '<lop|<>>', '<lop|e>', '<lop|ou>', '/e/'],
+  'L': ['<num>', '<str>', '<verdadeiro>', '<falso>'],
+  '<num>': ['<num>'],
+  '<verdadeiro>': ['<verdadeiro>'],
+  '<falso>': ['<falso>'],
+  'O': ['<op|+>', '<op|->', '<op|*>', '<op|/>', '<op|mod>', '<op|exp>', '<lop|>>', '<lop|>=>', '<lop|<>', '<lop|<=>', '<lop|=>', '<lop|<>>', '<lop|e>', '<lop|ou>'],
+  '<op|+>': ['<op|+>'],
+  '<op|->': ['<op|->'],
+  '<op|*>': ['<op|*>'],
+  '<op|/>': ['<op|/>'],
+  '<op|mod>': ['<op|mod>'],
+  '<op|exp>': ['<op|exp>'],
+  'N': ['<lop|>>', '<lop|>=>', '<lop|<>', '<lop|<=>', '<lop|=>', '<lop|<>>', '<lop|e>', '<lop|ou>'],
+  '<lop|>>': ['<lop|>>'],
+  '<lop|>=>': ['<lop|>=>'],
+  '<lop|<>': ['<lop|<>'],
+  '<lop|<=>': ['<lop|<=>'],
+  '<lop|=>': ['<lop|=>'],
+  '<lop|<>>': ['<lop|<>>'],
+  '<lop|e>': ['<lop|e>'],
+  '<lop|ou>': ['<lop|ou>']
 }
 
 var followSets = {
-  'S': [ '$' ],
-  'D': [ '<cod>' ],
-  'C': [ '<fim>' ]
+  'A': ['$'],
+  'B': ['<inicio>'],
+  'D': ['<var>', '<id>', '<del|,>', '<del|:>', '<inicio>'],
+  'F': ['<var>', '<id>', '<del|,>', '<del|:>', '<inicio>'],
+  'E': ['<var>', '<id>', '<del|,>', '<del|:>', '<inicio>'],
+  'G': ['<del|:>', '<del|)>'],
+  'C': ['<fimalgoritmo>', '<senao>', '<fimpara>', '<fimenquanto>'],
+  'H': ['<id>', '<leia>', '<escreva>', '<se>', '<para>', '<enquanto>', '<fimalgoritmo>', '<senao>', '<fimpara>', '<fimenquanto>'],
+  'I': ['<id>', '<leia>', '<escreva>', '<se>', '<para>', '<enquanto>', '<fimalgoritmo>', '<senao>', '<fimpara>', '<fimenquanto>'],
+  'J': ['<del|)>'],
+  'K': ['<entao>', '<faca>'],
+  'L': ['<id>', '<leia>', '<escreva>', '<se>', '<para>', '<enquanto>', '<fimalgoritmo>', '<senao>', '<fimpara>', '<fimenquanto>', '<num>', '<str>', '<verdadeiro>', '<falso>', '<op|+>', '<op|->', '<op|*>', '<op|/>', '<op|mod>', '<op|exp>', '<lop|>>', '<lop|>=>', '<lop|<>', '<lop|<=>', '<lop|=>', '<lop|<>>', '<lop|e>', '<lop|ou>'],
+  'M': ['<id>', '<leia>', '<escreva>', '<se>', '<para>', '<enquanto>', '<fimalgoritmo>', '<senao>', '<fimpara>', '<fimenquanto>', '<lop|>>', '<lop|>=>', '<lop|<>', '<lop|<=>', '<lop|=>', '<lop|<>>', '<lop|e>', '<lop|ou>'],
+  'N': ['<id>', '<num>', '<str>', '<verdadeiro>', '<falso>', '<op|+>', '<op|->', '<op|*>', '<op|/>', '<op|mod>', '<op|exp>', '<lop|>>', '<lop|>=>', '<lop|<>', '<lop|<=>', '<lop|=>', '<lop|<>>', '<lop|e>', '<lop|ou>', '<entao>', '<faca>'],
+  'O': ['<id>', '<num>', '<str>', '<verdadeiro>', '<falso>']
 }
 
 console.log(buildParsingTable(grammar))
