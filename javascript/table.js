@@ -254,14 +254,14 @@ var firstSets = {
   '<enquanto>': ['<enquanto>'],
   'PASSO': ['<passo>', '/e/'],
   '<passo>': ['<passo>'],
-  'STROUT': ['<str>', '<id>', '<del|,>', '/e/'],
+  'STROUT': ['<str>', '<num>', '<verdadeiro>', '<falso>', '<id>', '<del|,>', '/e/'],
   '<str>': ['<str>'],
-  'EXPRESSAOLOGICA': ['<id>'],
-  'DATA': ['<num>', '<str>', '<verdadeiro>', '<falso>'],
+  'DATA': ['<num>', '<str>', '<verdadeiro>', '<falso>', '<id>'],
   '<num>': ['<num>'],
   '<verdadeiro>': ['<verdadeiro>'],
   '<falso>': ['<falso>'],
   'EXPRESSAO': ['<id>'],
+  'EXPRESSAOLOGICA': ['<id>'],
   'LOGICOP': ['<lop|>>', '<lop|>=>', '<lop|<>', '<lop|<=>', '<lop|=>', '<lop|<>>', '<lop|e>', '<lop|ou>'],
   '<lop|>>': ['<lop|>>'],
   '<lop|>=>': ['<lop|>=>'],
@@ -292,11 +292,11 @@ var followSets = {
   'PASSO': ['<faca>'],
   'ATRIBUICAO': ['<id>', '<leia>', '<escreva>', '<se>', '<para>', '<enquanto>', '<fimalgoritmo>', '<senao>', '<fimpara>', '<fimenquanto>'],
   'STROUT': ['<del|)>'],
-  'EXPRESSAOLOGICA': ['<entao>', '<faca>'],
-  'DATA': ['<id>', '<leia>', '<escreva>', '<se>', '<para>', '<enquanto>', '<fimalgoritmo>', '<senao>', '<fimpara>', '<fimenquanto>', '<entao>', '<faca>'],
-  'EXPRESSAO': ['<id>', '<leia>', '<escreva>', '<se>', '<para>', '<enquanto>', '<fimalgoritmo>', '<senao>', '<fimpara>', '<fimenquanto>'],
-  'LOGICOP': ['<id>', '<num>', '<str>', '<verdadeiro>', '<falso>'],
-  'OP': ['<id>', '<num>', '<str>', '<verdadeiro>', '<falso>']
+  'EXPRESSAOLOGICA': ['<entao>', '<faca>', '<id>', '<leia>', '<escreva>', '<se>', '<para>', '<enquanto>', '<fimalgoritmo>', '<senao>', '<fimpara>', '<fimenquanto>', '<str>', '<num>', '<verdadeiro>', '<falso>', '<del|,>', '<del|)>'],
+  'DATA': ['<id>', '<leia>', '<escreva>', '<se>', '<para>', '<enquanto>', '<fimalgoritmo>', '<senao>', '<fimpara>', '<fimenquanto>', '<str>', '<num>', '<verdadeiro>', '<falso>', '<del|,>', '<del|)>', '<entao>', '<faca>'],
+  'EXPRESSAO': ['<id>', '<leia>', '<escreva>', '<se>', '<para>', '<enquanto>', '<fimalgoritmo>', '<senao>', '<fimpara>', '<fimenquanto>', '<str>', '<num>', '<verdadeiro>', '<falso>', '<del|,>', '<del|)>', '<entao>', '<faca>'],
+  'LOGICOP': ['<num>', '<str>', '<verdadeiro>', '<falso>', '<id>'],
+  'OP': ['<num>', '<str>', '<verdadeiro>', '<falso>', '<id>']
 }
 
 console.log(buildParsingTable(grammar))
