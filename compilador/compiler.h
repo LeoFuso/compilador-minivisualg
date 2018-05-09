@@ -9,8 +9,24 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "token.h"
 
-#define LINE_SIZE 120
+struct Token
+{
+    TokenType tokenType;
+    const char *value;
+    const char *body;
+    const char *source;
+};
+
+struct Line
+{
+    int line_address;
+    char *body;
+    unsigned numtkns;
+    struct Token **tokens;
+    int error;
+};
 
 int
 compile(char *);

@@ -3,27 +3,43 @@
 //
 
 #include "compiler.h"
-#include "token.h"
-
-struct Token
-{
-    TokenType tokenType;
-    const char *value;
-    const char *body;
-    const char *source;
-};
-
-struct Line
-{
-    int line_address;
-    char *body;
-    unsigned numtkns;
-    struct Token **tokens;
-    int error;
-};
 
 struct Line **
-lexical_analysis(File *filePtr, int lncnt)
+lexical_analysis(FILE *, int);
+
+int
+syntax_analysis(struct Line **);
+
+FILE *
+_file_opener(char *);
+
+unsigned int
+_line_counter(FILE *);
+
+
+int
+compile(char *path)
+{
+    FILE *filePtr;
+    unsigned int lncnt = 0;
+    struct Line **program = NULL;
+
+    unsigned int lnum;
+
+    filePtr = _file_opener(path);
+
+    if (filePtr != NULL)
+        printf("\nName file '%s' opened successfully.\n", path);
+
+
+    lncnt = _line_counter(filePtr);
+
+    program = lexical_analysis(filePtr, lncnt);
+
+}
+
+struct Line **
+lexical_analysis(FILE *filePtr, int lncnt)
 {
     char *raw_line = NULL;
     struct Line **program = NULL;
@@ -52,7 +68,7 @@ lexical_analysis(File *filePtr, int lncnt)
             *(strchr(raw_line, '\n')) = '\0';
 
         /*
-         *  Produce the Tokens using the line information
+         *  Produces the Tokens using the line information
          */
         lncomplete = _strbldr(lnum, raw_line);
 
@@ -60,7 +76,7 @@ lexical_analysis(File *filePtr, int lncnt)
             program[lncnt++] = lncomplete;
         else
         {
-            printf("Unexpected behavior: L162 compiler.c - Closing ...");
+            printf("Unexpected behavior: compiler.c 97 - Closing ...");
             exit(1);
         }
 
@@ -70,10 +86,7 @@ lexical_analysis(File *filePtr, int lncnt)
     return program;
 }
 
-int
-syntax_analysis(struct Line **);
-
-File *
+FILE *
 _file_opener(char *path)
 {
     FILE *filePtr;
@@ -99,8 +112,8 @@ _file_opener(char *path)
     return filePtr;
 }
 
-int
-_line_counter(File *filePtr)
+unsigned int
+_line_counter(FILE *filePtr)
 {
     unsigned int lncnt = 0;
     char *raw_line = NULL;
@@ -123,25 +136,4 @@ _line_counter(File *filePtr)
 
     free(raw_line);
     return lncnt;
-}
-
-int
-compile(char *path)
-{
-    FILE *filePtr;
-    unsigned int lncnt = 0;
-    struct Line **program = NULL;
-    struct Line *lncomplete = NULL;
-
-    char *raw_line = NULL;
-
-    unsigned int lnum;
-
-    filePtr = _file_opener(path);
-
-    if (filePtr != NULL)
-        printf("\nName file '%s' opened successfully.\n", path);
-
-    lncnt = _line_counter(filePtr);
-
 }

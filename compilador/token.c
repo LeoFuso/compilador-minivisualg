@@ -57,8 +57,8 @@ char *LOGIC_OPERATORS[8] =
 
 char *BOOLEAN_OPERATORS[2] =
     {
-        "VERDADEIRO",
-        "FALSO"
+        "verdadeiro",
+        "falso"
     };
 
 char *DELIMITERS[4] =
@@ -91,21 +91,164 @@ struct Token *
 _new_tkn(struct Token *);
 
 int
-is_valid_id(const char *word)
+chrcntr(const char *haystack, char needle)
+{
+    unsigned int cnt = 0;
+
+    for (; *haystack != '\0'; ++haystack)
+        if (*haystack == needle)
+            ++cnt;
+
+    return cnt;
+}
+
+struct Line *
+_crtln(char *ln, unsigned int lnum)
+{
+    struct Line *line = NULL;
+
+    line = (struct Line *) malloc(sizeof(struct Line));
+
+    /*
+     * body: original line
+     * line_address: line number
+     * tokens: list with generated tokens in this line
+     */
+    line->body = ln;
+    line->line_address = lnum;
+    line->tokens = (struct Token **) malloc(LINE_SIZE * 2 * sizeof(struct Token *));
+    line->error = 0;
+
+    return line;
+}
+
+struct Line *
+_strbldr(unsigned int lnum, char *line)
+{
+    /*
+     *  Space Delimiters
+     */
+    char *dlim_spc = " ";
+    char *dlim_str = "\"";
+    char *dlim = dlim_spc;
+
+    /*
+     * Token in string form
+     */
+    char *token;
+
+    /*
+     * struct Line to be later used in parsing
+     */
+    struct Line *lnstrct = NULL;
+    struct Token *tmptknstrct = NULL;
+
+    unsigned int numtkns;
+
+    lnstrct = _crtln(line, lnum);
+    numtkns = 0;
+
+    /*
+     * A repeating structure that traverses the cut-out chunks of the string
+     * using the space delimiters as a parameter
+     */
+    for (token = strtok(line, dlim); token != NULL; token = strtok(NULL, dlim))
+    {
+        /*
+         * Checks if open comment is closed
+         */
+        if (chrcntr(token, '"') % 2 != 0)
+        {
+            token[strlen(token)] = ' ';
+            strtok(NULL, dlim_str);
+        }
+        else if (strchr(token, '"') != NULL)
+        {
+            token[strlen(token) - 1] = '\0';
+        }
+
+        /*
+         * Checking comments on line:
+         * Everything after the '//' is ignored
+         */
+        if (!strncmp(token, "//", 2))
+            break;
+
+        /*
+         * Attempts to create a token from the trimmed piece of string
+         */
+        tmptknstrct = _idtkn(lnum, token);
+
+        /*
+         * If successful, insert a new token in the token list
+         */
+        if (tmptknstrct == NULL)
+        {
+            printf("Unexpected behavior: token.c 187 - closing ...");
+            exit(1);
+        }
+
+        if (tmptknstrct->body != NULL)
+            lnstrct->tokens[numtkns++] = tmptknstrct;
+        else
+        {
+            lnstrct->error = 1;
+            break;
+        }
+    }
+
+    lnstrct->numtkns = numtkns;
+    return lnstrct;
+}
+
+int
+_lookup(const char *name)
+{
+    int i;
+    for (i = 0; i < var_count; i++)
+        if (!strcmp(ids[i], name))
+            return i;
+    return -1;
+}
+
+int
+_getid(const char *name)
+{
+    int x;
+    char *cp = NULL;
+    cp = (char *) malloc(strlen(name) * sizeof(char) + 1);
+
+    /*
+     *  Stack is empty
+     */
+    if (!var_count)
+    {
+        ids = realloc(ids, ++var_count * sizeof(char *) + 1);
+        ids[var_count - 1] = strcpy(cp, name);
+        return var_count - 1;
+    }
+
+    /*
+     * Check if it already exists
+     */
+    x = _lookup(name);
+
+    if (x != -1)
+        return x;
+
+    ids = realloc(ids, ++var_count * sizeof(char *) + 1);
+    ids[var_count - 1] = strcpy(cp, name);
+    return var_count - 1;
+}
+
+int
+is_valid_num(const char *word)
 {
     if (!*word)
         return 0;
 
-    if (isalpha(*word))
-        word++;
-    else
-        return 0;
-
-    if (!*word)
-        return 1;
-
     while (*word)
-        if (isalnum(*word) == 0)
+        if (isdigit(*word) == 0)
             return 0;
         else
             word++;
@@ -127,181 +270,25 @@ is_valid_txt(const char *word)
 }
 
 int
-is_valid_num(const char *word)
+is_valid_id(const char *word)
 {
     if (!*word)
         return 0;
 
+    if (isalpha(*word))
+        word++;
+    else
+        return 0;
+
+    if (!*word)
+        return 1;
+
     while (*word)
-        if (isdigit(*word) == 0)
+        if (isalnum(*word) == 0)
             return 0;
         else
             word++;
     return 1;
-}
-
-int
-chrcntr(const char *haystack, char needle)
-{
-    unsigned int cnt = 0;
-
-    for (; *haystack != '\0'; ++haystack)
-        if (*haystack == needle)
-            ++cnt;
-
-    return cnt;
-}
-
-struct Line *
-_crtln(char *ln, unsigned int lnum)
-{
-    struct Line *line = NULL;
-
-    line = (struct Line *) malloc(sizeof(struct Line));
-
-    /*
-    * body: linha original
-    * line_address: número da linha
-    * tokens: lista com os tokens gerados nesta linha
-    */
-    line->body = ln;
-    line->line_address = lnum;
-    line->tokens = (struct Token **) malloc(LINE_SIZE * sizeof(struct Token *));
-    line->error = 0;
-
-    return line;
-}
-
-struct Line *
-_strbldr(unsigned int lnum, char *line)
-{
-    /*
-     * Delimitadores de espaço
-     */
-    char *dlim_spc = " ";
-    char *dlim_str = "\"";
-    char *dlim = dlim_spc;
-
-    /*
-     * Token em forma de cadeia de caracteres
-     */
-    char *token;
-
-    /*
-     * struct Line para, mais tarde, ser jogado no arquivo de texto
-     */
-    struct Line *lnstrct = NULL;
-    struct Token *tmptknstrct = NULL;
-
-    unsigned int numtkns;
-
-    lnstrct = _crtln(line, lnum);
-    numtkns = 0;
-
-    /*
-     * Uma estrutura de repetição que percorre os pedaços recortados da string
-     * utilizando os delimitadores de espaço como parâmetro
-     */
-    for (token = strtok(line, dlim); token != NULL; token = strtok(NULL, dlim))
-    {
-        /*
-         * Verifica se dado comentário aberto, está fechado
-         */
-        if (chrcntr(token, '"') % 2 != 0)
-        {
-            token[strlen(token)] = ' ';
-            strtok(NULL, dlim_str);
-        }
-        else if (strchr(token, '"') != NULL)
-        {
-            token[strlen(token) - 1] = '\0';
-        }
-
-        /*
-         * Verificaçao de comentários na linha:
-         * Tudo que está após o '//', inclusive, é ignorado
-         */
-        if (!strncmp(token, "//", 2))
-            break;
-
-        /*
-         * Tenta criar um token a partir do pedaço da string recortada
-         */
-        tmptknstrct = _idtkn(lnum, token);
-
-        /*
-         * Se sucedido, insere um novo token na lista de tokens
-         */
-        if (tmptknstrct == NULL)
-        {
-            printf("Comportamento inesperado: L234token.c - encerrando...");
-            exit(1);
-        }
-
-        if (tmptknstrct->body != NULL)
-            lnstrct->tokens[numtkns++] = tmptknstrct;
-        else
-        {
-            lnstrct->error = 1;
-            break;
-        }
-    }
-
-    lnstrct->numtkns = numtkns;
-
-    return lnstrct;
-}
-
-int
-_lookup(const char *name)
-{
-    int i;
-    for (i = 0; i < var_count; i++)
-        if (!strcmp(ids[i], name))
-            return i;
-
-    return -1;
-}
-
-int
-_getid(const char *name)
-{
-    int x;
-    char *cp = NULL;
-    cp = (char *) malloc(strlen(name) * sizeof(char) + 1);
-
-    /*
-    * Pilha está vazia
-    */
-    if (!var_count)
-    {
-        ids = realloc(ids, ++var_count * sizeof(char *) + 1);
-        ids[var_count - 1] = strcpy(cp, name);
-        return var_count - 1;
-    }
-
-    /*
-     * Verifica se já existe
-     */
-    x = _lookup(name);
-
-    if (x != -1)
-        return x;
-
-    ids = realloc(ids, ++var_count * sizeof(char *) + 1);
-    ids[var_count - 1] = strcpy(cp, name);
-    return var_count - 1;
-}
-
-struct Token *
-_new_tkn(struct Token *token)
-{
-    token = (struct Token *) malloc(sizeof(struct Token) + 1);
-
-    token->value = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
-    token->body = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
-    token->source = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
-    return token;
 }
 
 struct Token *
@@ -361,7 +348,7 @@ _crtkn(TokenType type, const char *body, unsigned int lnum)
             snprintf(tmp_body, LINE_SIZE, "<del | %s >", body);
             break;
 
-        case UNDEFINED: printf("    Erro de parseamento na linha %d durante a palavra '%s' \n", lnum, body);
+        case UNDEFINED: printf("                   Parse error on line %d during word '%s' \n", lnum, body);
             tmp_value = NULL;
             tmp_body = NULL;
             break;
@@ -418,5 +405,16 @@ _idtkn(unsigned int lnum, const char *token)
         return _crtkn(NUMBER, token, 0);
     else
         return _crtkn(UNDEFINED, token, lnum);
+}
+
+struct Token *
+_new_tkn(struct Token *token)
+{
+    token = (struct Token *) malloc(sizeof(struct Token) + 1);
+
+    token->value = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
+    token->body = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
+    token->source = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
+    return token;
 }
 

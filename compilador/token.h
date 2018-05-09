@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "compiler.h"
 
 #define LINE_SIZE 120
 #define KEYWORDS_SIZE 21
@@ -30,33 +31,7 @@ typedef enum
     UNDEFINED
 } TokenType;
 
-struct Token
-{
-    TokenType tokenType;
-    const char *value;
-    const char *body;
-    const char *source;
-};
-
-struct Line
-{
-    int line_address;
-    char *body;
-    unsigned numtkns;
-    struct Token **tokens;
-    int error;
-};
-
 struct Line *
 _strbldr(unsigned int, char *);
-
-int
-is_valid_id(const char *);
-
-int
-is_valid_num(const char *);
-
-int
-is_valid_txt(const char *);
 
 #endif //TOKEN_H

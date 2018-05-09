@@ -1,7 +1,7 @@
 algoritmo "salario"
 // Se��o de Declara��es
 var sal : inteiro
-var ttt : VERDADEIRO
+var ttt : verdadeiro
 i , contador : inteiro
 
 inicio
