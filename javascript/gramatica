@@ -29,7 +29,6 @@ PASSO       -> <passo> <num>
 PASSO       -> /e/
 
 ATRIBUICAO  -> <id> <op|<-> DATA
-ATRIBUICAO  -> <id> <op|<-> EXPRESSAO
 
 STROUT      -> <str> STROUT
 STROUT      -> <id> STROUT
@@ -37,18 +36,16 @@ STROUT      -> <del|,> <id> STROUT
 STROUT      -> <del|,> <str> STROUT
 STROUT      -> /e/
 
-EXPRESSAOLOGICA -> EXPRESSAO LOGICOP EXPRESSAO
+EXPRESSAOLOGICA -> <id> LOGICOP DATA
 
 DATA        -> <num>
 DATA        -> <str>
 DATA        -> <verdadeiro>
 DATA        -> <falso>
+DATA        -> <id>
+DATA        -> EXPRESSAO
 
-EXPRESSAO   -> <id> EXPRESSAO
-EXPRESSAO   -> DATA EXPRESSAO
-EXPRESSAO   -> OP <id> EXPRESSAO
-EXPRESSAO   -> OP DATA EXPRESSAO
-EXPRESSAO   -> /e/
+EXPRESSAO   -> <id> OP DATA
 
 LOGICOP     -> <lop|>>
 LOGICOP     -> <lop|>=>
