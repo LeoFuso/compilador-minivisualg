@@ -5,7 +5,7 @@ var EPSILON = '/e/'
  * Given a grammar builds a LL(1) parsing table based on the
  * First and Follow sets of this grammar.
  */
-function buildParsingTable(grammar) {
+function buildParsingTable (grammar) {
   var parsingTable = {}
 
   for (var k in grammar) {
@@ -41,7 +41,7 @@ function buildParsingTable(grammar) {
 /**
  * Given production `S -> F`, returns `S`.
  */
-function getLHS(production) {
+function getLHS (production) {
   // return production.split('->')[0].replace(/\s+/g, '');
   return production[0]
 }
@@ -49,7 +49,7 @@ function getLHS(production) {
 /**
  * Given production `S -> F`, returns `F`.
  */
-function getRHS(production) {
+function getRHS (production) {
   // return production.split('->')[1].replace(/\s+/g, '');
   return production.slice(2)
 }
@@ -57,7 +57,7 @@ function getRHS(production) {
 /**
  * Returns First set of RHS.
  */
-function getFirstSetOfRHS(RHS) {
+function getFirstSetOfRHS (RHS) {
   // For simplicity, in this educational parser, we assume that
   // the first symbol (if it's a non-terminal) cannot produces `ε`.
   // Since in real parser, we need to get the First set of the whole RHS.
@@ -276,7 +276,9 @@ var firstSets = {
   '<lop|=>': ['<lop|=>'],
   '<lop|<>>': ['<lop|<>>'],
   '<lop|e>': ['<lop|e>'],
-  '<lop|ou>': ['<lop|ou>']
+  '<lop|ou>': ['<lop|ou>'],
+  'P': ['<passo>', '/e/'],
+  '<passo>': ['<passo>']
 }
 
 var followSets = {
@@ -294,7 +296,8 @@ var followSets = {
   'L': ['<id>', '<leia>', '<escreva>', '<se>', '<para>', '<enquanto>', '<fimalgoritmo>', '<senao>', '<fimpara>', '<fimenquanto>', '<num>', '<str>', '<verdadeiro>', '<falso>', '<op|+>', '<op|->', '<op|*>', '<op|/>', '<op|mod>', '<op|exp>', '<lop|>>', '<lop|>=>', '<lop|<>', '<lop|<=>', '<lop|=>', '<lop|<>>', '<lop|e>', '<lop|ou>'],
   'M': ['<id>', '<leia>', '<escreva>', '<se>', '<para>', '<enquanto>', '<fimalgoritmo>', '<senao>', '<fimpara>', '<fimenquanto>', '<lop|>>', '<lop|>=>', '<lop|<>', '<lop|<=>', '<lop|=>', '<lop|<>>', '<lop|e>', '<lop|ou>'],
   'N': ['<id>', '<num>', '<str>', '<verdadeiro>', '<falso>', '<op|+>', '<op|->', '<op|*>', '<op|/>', '<op|mod>', '<op|exp>', '<lop|>>', '<lop|>=>', '<lop|<>', '<lop|<=>', '<lop|=>', '<lop|<>>', '<lop|e>', '<lop|ou>', '<entao>', '<faca>'],
-  'O': ['<id>', '<num>', '<str>', '<verdadeiro>', '<falso>']
+  'O': ['<id>', '<num>', '<str>', '<verdadeiro>', '<falso>'],
+  'P': ['<faca>']
 }
 
 console.log(buildParsingTable(grammar))

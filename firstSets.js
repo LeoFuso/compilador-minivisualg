@@ -43,5 +43,7 @@ var firstSets = {
 	'<lop|=>': ['<lop|=>'],
 	'<lop|<>>': ['<lop|<>>'],
 	'<lop|e>': ['<lop|e>'],
-	'<lop|ou>': ['<lop|ou>']
+	'<lop|ou>': ['<lop|ou>'],
+	'P': ['<passo>', '/e/'],
+	'<passo>': ['<passo>']
 }
