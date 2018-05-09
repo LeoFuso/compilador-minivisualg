@@ -5,7 +5,14 @@
 #ifndef COMPILER_H
 #define COMPILER_H
 
-File *
+#include <ctype.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+#define LINE_SIZE 120
+
+int
 compile(char *);
 
 #endif //COMPILER_H
