@@ -15,6 +15,57 @@ IDLIST		-> <id> IDLIST
 IDLIST		-> <del|,> <id> IDLIST
 IDLIST		-> /e/
 
+CODIGO      -> COMANDO CODIGO
+CODIGO      -> /e/
+
+COMANDO     -> ATRIBUICAO
+COMANDO     -> <leia> <del|(> IDLIST <del|)>
+COMANDO     -> <escreva> <del|(> STROUT <del|)>
+COMANDO     -> <se> EXPRESSAOLOGICA <entao> CODIGO <senao> CODIGO <fimse>
+COMANDO     -> <para> <id> <de> <num> <ate> <num> <passo> <num> <faca> CODIGO <fimpara>
+COMANDO     -> <para> <id> <de> <num> <ate> <num> <faca> CODIGO <fimpara>
+COMANDO     -> <enquanto> EXPRESSAOLOGICA <faca> CODIGO <fimenquanto>
+
+ATRIBUICAO  -> <id> <op|<-> DATA
+ATRIBUICAO  -> <id> <op|<-> EXPRESSAO
+
+STROUT      -> <str> STROUT
+STROUT      -> <id> STROUT
+STROUT      -> <del|,> <id> STROUT
+STROUT      -> <del|,> <str> STROUT
+STROUT      -> /e/
+
+EXPRESSAOLOGICA -> EXPRESSAO LOGICOP EXPRESSAO
+
+DATA        -> <num>
+DATA        -> <str>
+DATA        -> <verdadeiro>
+DATA        -> <falso>
+
+EXPRESSAO   -> <id> EXPRESSAO
+EXPRESSAO   -> DATA EXPRESSAO
+EXPRESSAO   -> OP <id> EXPRESSAO
+EXPRESSAO   -> OP DATA EXPRESSAO
+EXPRESSAO   -> /e/
+
+LOGICOP     -> <lop|>>
+LOGICOP     -> <lop|>=>
+LOGICOP     -> <lop|<>
+LOGICOP     -> <lop|<=>
+LOGICOP     -> <lop|=>
+LOGICOP     -> <lop|<>>
+LOGICOP     -> <lop|e>
+LOGICOP     -> <lop|ou>
+
+OP          -> <op|+>
+OP          -> <op|->
+OP          -> <op|*>
+OP          -> <op|/>
+OP          -> <op|mod>
+OP          -> <op|exp>
+
+
+
 KEYWORDS
     <var>
     <inteiro>
