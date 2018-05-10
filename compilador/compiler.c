@@ -8,7 +8,7 @@ struct Line **
 lexical_analysis(FILE *, int);
 
 int
-syntax_analysis(struct Line **);
+syntax_analysis(struct Line **, unsigned int);
 
 FILE *
 _file_opener(char *);
@@ -51,6 +51,31 @@ compile(char *path)
 
     printf("\nSuccess. \nThe tokens were created in the file '%s'\nfrom this same directory.\n", path);
     fclose(filePtr);
+
+    printf("\nParsing tokens...\n");
+    if (syntax_analysis(program, lncnt))
+    {
+        printf("\nSuccess. \nThis is a valid program.\n");
+    }
+}
+
+void
+_stck(struct Token * token)
+{
+
+}
+
+int
+syntax_analysis(struct Line **program, unsigned int lncnt)
+{
+    int i;
+    int j;
+    for(i = 0; i < lncnt; ++i)
+        for(j = 0; j < program[i]->numtkns; ++j)
+            _stck(program[i]->tokens[j]);
+
+
+    return 1;
 }
 
 struct Line **

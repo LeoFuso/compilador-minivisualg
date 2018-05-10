@@ -22,6 +22,8 @@ typedef enum
     LOGIC_OPERATOR,
     OPERATOR,
     DELIMITER,
+    NF_S,
+    NF_F,
     UNDEFINED
 } TokenType;
 
@@ -37,9 +39,34 @@ struct Line
 {
     int line_address;
     char *body;
-    unsigned numtkns;
+    unsigned int numtkns;
     struct Token **tokens;
     int error;
+};
+
+typedef enum
+{
+    S,
+    F
+} NonTerminalType;
+
+struct Table
+{
+    unsigned int numNonTerminals;
+    struct NonTerminal **nonTerminals;
+};
+
+struct NonTerminal
+{
+    NonTerminalType nonTerminalType;
+    unsigned int numTerminals;
+    struct Terminal **terminals;
+};
+
+struct Terminal
+{
+    const unsigned int number;
+    const char *value;
 };
 
 int
