@@ -9,7 +9,21 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+
 #include "token.h"
+
+typedef enum
+{
+    IDENTIFIER,
+    KEYWORD,
+    BOOLEAN_OPERATOR,
+    NUMBER,
+    TEXT,
+    LOGIC_OPERATOR,
+    OPERATOR,
+    DELIMITER,
+    UNDEFINED
+} TokenType;
 
 struct Token
 {

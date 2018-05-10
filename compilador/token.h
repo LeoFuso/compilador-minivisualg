@@ -18,19 +18,6 @@
 #define BOOLEAN_DATA_SIZE 2
 #define DEL_SIZE 4
 
-typedef enum
-{
-    IDENTIFIER,
-    KEYWORD,
-    BOOLEAN_OPERATOR,
-    NUMBER,
-    TEXT,
-    LOGIC_OPERATOR,
-    OPERATOR,
-    DELIMITER,
-    UNDEFINED
-} TokenType;
-
 struct Line *
 _strbldr(unsigned int, char *);
 

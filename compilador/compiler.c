@@ -13,9 +13,11 @@ syntax_analysis(struct Line **);
 FILE *
 _file_opener(char *);
 
+void
+_token_printer(struct Line **, int, char *);
+
 unsigned int
 _line_counter(FILE *);
-
 
 int
 compile(char *path)
@@ -24,18 +26,31 @@ compile(char *path)
     unsigned int lncnt = 0;
     struct Line **program = NULL;
 
-    unsigned int lnum;
-
     filePtr = _file_opener(path);
 
-    if (filePtr != NULL)
+    if (filePtr == NULL)
+    {
+        printf("Unexpected behavior: compiler.c 33 - Closing ...");
+        exit(1);
+    }
+    else
         printf("\nName file '%s' opened successfully.\n", path);
 
-
     lncnt = _line_counter(filePtr);
-
     program = lexical_analysis(filePtr, lncnt);
 
+    if (program == NULL)
+    {
+        printf("Unexpected behavior: compiler.c 42 - Closing ...");
+        exit(1);
+    }
+    else
+        printf("\nWriting to file...\n");
+
+    _token_printer(program, lncnt, path);
+
+    printf("\nSuccess. \nThe tokens were created in the file '%s'\nfrom this same directory.\n", path);
+    fclose(filePtr);
 }
 
 struct Line **
@@ -56,7 +71,7 @@ lexical_analysis(FILE *filePtr, int lncnt)
     program = (struct Line **) malloc(lncnt * (sizeof(struct Line *)));
     lncnt = 0;
 
-    printf("Identified Tokens:\n");
+    printf("\nIdentified Tokens:\n\n");
 
     unsigned int lnum;
     for (lnum = 1; (fgets(raw_line, LINE_SIZE, filePtr) != NULL); ++lnum)
@@ -110,6 +125,34 @@ _file_opener(char *path)
 
     rewind(filePtr);
     return filePtr;
+}
+
+void
+_token_printer(struct Line **program, int lncnt, char *path)
+{
+    FILE *fileOut;
+
+    fileOut = fopen(strcat(path, ".token"), "w");
+
+    /*
+     * Checks if output file was created
+     */
+    if (fileOut == NULL)
+    {
+        printf("Error opening token file!\n");
+        exit(1);
+    }
+
+    int i;
+    int j;
+    for (i = 0; i < lncnt; i++)
+    {
+        for (j = 0; j < program[i]->numtkns; j++)
+            fprintf(fileOut, "%s", program[i]->tokens[j]->body);
+        fprintf(fileOut, "\n");
+    }
+
+    fclose(fileOut);
 }
 
 unsigned int
