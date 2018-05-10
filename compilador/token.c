@@ -298,69 +298,81 @@ _crtkn(TokenType type, const char *body, unsigned int lnum)
     struct Token *token = NULL;
     char *tmp_body = NULL;
     char *tmp_value = NULL;
+    char *tmp_to_parse = NULL;
 
     token = _new_tkn(token);
     tmp_body = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
     tmp_value = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
+    tmp_to_parse = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
 
     token->tokenType = type;
-    token->source = body;
 
     switch (type)
     {
         case IDENTIFIER: printf("              ID: %s\n", body);
             sprintf(tmp_value, "%d", _getid(body));
             snprintf(tmp_body, LINE_SIZE, "<id | %s >", tmp_value);
+            snprintf(tmp_to_parse, LINE_SIZE, "<id>");
             break;
 
         case KEYWORD: printf("         Keyword: %s\n", body);
             strcpy(tmp_value, body);
             snprintf(tmp_body, LINE_SIZE, "<%s>", body);
+            snprintf(tmp_to_parse, LINE_SIZE, "<%s>", body);
             break;
 
         case BOOLEAN_OPERATOR: printf("Boolean Operator: %s\n", body);
             strcpy(tmp_value, body);
             snprintf(tmp_body, LINE_SIZE, "<%s>", body);
+            snprintf(tmp_to_parse, LINE_SIZE, "<%s>", body);
             break;
 
         case NUMBER: printf("          Number: %s\n", body);
             strcpy(tmp_value, body);
             snprintf(tmp_body, LINE_SIZE, "<num | %s >", body);
+            snprintf(tmp_to_parse, LINE_SIZE, "<num>");
             break;
 
         case TEXT: printf("          String: %s\n", body);
             strcpy(tmp_value, body);
             snprintf(tmp_body, LINE_SIZE, "<str | \"%s\" >", body);
+            snprintf(tmp_to_parse, LINE_SIZE, "<str>");
             break;
 
         case LOGIC_OPERATOR: printf("  Logic Operator: %s\n", body);
             strcpy(tmp_value, body);
             snprintf(tmp_body, LINE_SIZE, "<lop | %s >", body);
+            snprintf(tmp_to_parse, LINE_SIZE, "<lop|%s>", body);
             break;
 
         case OPERATOR: printf("        Operator: %s\n", body);
             strcpy(tmp_value, body);
             snprintf(tmp_body, LINE_SIZE, "<op | %s >", body);
+            snprintf(tmp_to_parse, LINE_SIZE, "<op|%s>", body);
             break;
 
         case DELIMITER: printf("       Delimiter: %s\n", body);
             strcpy(tmp_value, body);
             snprintf(tmp_body, LINE_SIZE, "<del | %s >", body);
+            snprintf(tmp_to_parse, LINE_SIZE, "<del|%s>", body);
             break;
 
         case UNDEFINED: printf("                   Parse error on line %d during word '%s' \n", lnum, body);
             tmp_value = NULL;
             tmp_body = NULL;
+            tmp_to_parse = NULL;
             break;
 
         default: snprintf(tmp_body, LINE_SIZE, "<ERROR | %s >", body);
             tmp_value = NULL;
             tmp_body = NULL;
+            tmp_to_parse = NULL;
             break;
     }
 
     token->value =  tmp_value;
     token->body = tmp_body;
+    token->to_parse = tmp_to_parse;
 
     return token;
 }
@@ -414,7 +426,7 @@ _new_tkn(struct Token *token)
 
     token->value = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
     token->body = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
-    token->source = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
+    token->to_parse = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
     return token;
 }
 

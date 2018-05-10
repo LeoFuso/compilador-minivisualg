@@ -22,8 +22,6 @@ typedef enum
     LOGIC_OPERATOR,
     OPERATOR,
     DELIMITER,
-    NF_S,
-    NF_F,
     UNDEFINED
 } TokenType;
 
@@ -32,7 +30,7 @@ struct Token
     TokenType tokenType;
     const char *value;
     const char *body;
-    const char *source;
+    const char *to_parse;
 };
 
 struct Line
@@ -44,22 +42,27 @@ struct Line
     int error;
 };
 
-typedef enum
-{
-    S,
-    F
-} NonTerminalType;
-
 struct Table
 {
     unsigned int numNonTerminals;
     struct NonTerminal **nonTerminals;
 };
 
+struct Grammar
+{
+    unsigned int is_terminal;
+    unsigned int num;
+    char *value;
+
+    unsigned int num_rules;
+    struct Grammar **rules;
+};
+
 struct NonTerminal
 {
-    NonTerminalType nonTerminalType;
-    unsigned int numTerminals;
+    unsigned int num_rule;
+    char *non_terminal;
+    unsigned int num_terminals;
     struct Terminal **terminals;
 };
 

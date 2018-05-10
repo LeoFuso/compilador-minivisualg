@@ -14,11 +14,11 @@ main(int argc, char *argv[])
     if (argc != 2)
     {
         printf ("Syntax: main [file] (.visualg is implicit) \n");
-        printf ("No specified source file ending ... \n");
+        printf ("No specified to_parse file ending ... \n");
         exit (0);
     }
 
-    //compile(argv[1]);
+    compile(argv[1]);
 
     struct Node* root = NULL;
 
@@ -31,10 +31,8 @@ main(int argc, char *argv[])
     printf("%s popped from stack\n", pop(&root));
     printf("%s popped from stack\n", pop(&root));
     push(&root, "oi");
-    
+
     printf("Top element is %s\n", peek(root));
-
-
 
     return 0;
 
