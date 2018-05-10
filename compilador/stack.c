@@ -4,42 +4,57 @@
 
 #include "stack.h"
 
-struct StackNode* newNode(int data)
+int
+is_empty(struct Node *root)
 {
-    struct StackNode* stackNode =
-        (struct StackNode*) malloc(sizeof(struct StackNode));
-    stackNode->data = data;
-    stackNode->next = NULL;
-    return stackNode;
+    return root == NULL;
 }
 
-int isEmpty(struct StackNode *root)
+struct Node *
+new_node(char *data)
 {
-    return !root;
+    struct Node *node = NULL;
+    node = (struct Node *) malloc(sizeof(struct Node));
+    node->data = data;
+    node->next = NULL;
+    return node;
 }
 
-void push(struct StackNode** root, int data)
+void
+push(struct Node **root, char *data)
 {
-    struct StackNode* stackNode = newNode(data);
-    stackNode->next = *root;
-    *root = stackNode;
+    struct Node *node = NULL;
+    node = new_node(data);
+    node->next = *root;
+    *root = node;
 }
 
-int pop(struct StackNode** root)
+char *
+pop(struct Node **root)
 {
-    if (isEmpty(*root))
-        return INT_MIN;
-    struct StackNode* temp = *root;
+    if (is_empty(*root))
+        return NULL;
+
+    struct Node *temp = NULL;
+    temp = *root;
+
     *root = (*root)->next;
-    int popped = temp->data;
-    free(temp);
 
+    char *popped = NULL;
+    popped = temp->data;
+
+    free(temp);
     return popped;
 }
 
-int peek(struct StackNode* root)
+char *
+peek(struct Node *root)
 {
-    if (isEmpty(root))
-        return INT_MIN;
-    return root->data;
+    if (is_empty(root))
+        return NULL;
+
+    char *peeked = NULL;
+    peeked = root->data;
+
+    return peeked;
 }
