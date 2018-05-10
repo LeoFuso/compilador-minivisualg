@@ -28,9 +28,10 @@ COMANDO     -> <enquanto> EXPRESSAOLOGICA <faca> CODIGO <fimenquanto>
 PASSO       -> <passo> <num>
 PASSO       -> /e/
 
-EXPRESSAO   -> EXPRESSAO OP EXPRESSAO
-EXPRESSAO   -> DATA
-EXPRESSAO   -> /e/
+EXPRESSAO   -> DATA OPERANDO
+
+OPERANDO   -> OP DATA
+OPERANDO   -> /e/
 
 STROUT      -> PRINTABLE STROUT
 STROUT      -> <del|,> PRINTABLE STROUT

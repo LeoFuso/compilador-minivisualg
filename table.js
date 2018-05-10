@@ -56,7 +56,9 @@ var table = {
 		'<str>': 22,
 		'<verdadeiro>': 22,
 		'<falso>': 22,
-		'<id>': 24,
+		'<id>': 22
+	},
+	OPERANDO: {
 		'<op|+>': 23,
 		'<op|->': 23,
 		'<op|*>': 23,
@@ -71,6 +73,7 @@ var table = {
 		'<lop|<>>': 23,
 		'<lop|e>': 23,
 		'<lop|ou>': 23,
+		'<id>': 24,
 		'<leia>': 24,
 		'<escreva>': 24,
 		'<se>': 24,
