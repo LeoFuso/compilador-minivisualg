@@ -20,6 +20,7 @@ main(int argc, char *argv[])
 
     compile(argv[1]);
 
+   /*
     struct Node* root = NULL;
 
     push(&root, "oi");
@@ -33,7 +34,7 @@ main(int argc, char *argv[])
     push(&root, "oi");
 
     printf("Top element is %s\n", peek(root));
-
+*/
     return 0;
 
 }

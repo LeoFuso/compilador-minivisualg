@@ -69,6 +69,9 @@ char *DELIMITERS[4] =
         ")",
     };
 
+struct Line *
+_strbldr(unsigned int, char *);
+
 int
 chrcntr(const char *, char);
 
@@ -90,36 +93,52 @@ _crtkn(TokenType, const char *, unsigned int);
 struct Token *
 _new_tkn(struct Token *);
 
-int
-chrcntr(const char *haystack, char needle)
+struct Line **
+lexical_analysis(FILE *filePtr, int lncnt)
 {
-    unsigned int cnt = 0;
-
-    for (; *haystack != '\0'; ++haystack)
-        if (*haystack == needle)
-            ++cnt;
-
-    return cnt;
-}
-
-struct Line *
-_crtln(char *ln, unsigned int lnum)
-{
-    struct Line *line = NULL;
-
-    line = (struct Line *) malloc(sizeof(struct Line));
+    char *raw_line = NULL;
+    struct Line **program = NULL;
+    struct Line *lncomplete = NULL;
 
     /*
-     * body: original line
-     * line_address: line number
-     * tokens: list with generated tokens in this line
+     *  Allocates the memory space required for a to_parse line
      */
-    line->body = ln;
-    line->line_address = lnum;
-    line->tokens = (struct Token **) malloc(LINE_SIZE * 2 * sizeof(struct Token *));
-    line->error = 0;
+    raw_line = (char *) malloc(LINE_SIZE * sizeof(char) + 1);
 
-    return line;
+    /*
+     *  Allocates the memory space required for the entire program
+     */
+    program = (struct Line **) malloc(lncnt * (sizeof(struct Line *)));
+    lncnt = 0;
+
+    printf("\nIdentified Tokens:\n\n");
+
+    unsigned int lnum;
+    for (lnum = 1; (fgets(raw_line, LINE_SIZE, filePtr) != NULL); ++lnum)
+    {
+        /*
+         *  It does the exchange of '\n' for '\0'
+         */
+        if (strchr(raw_line, '\n') != NULL)
+            *(strchr(raw_line, '\n')) = '\0';
+
+        /*
+         *  Produces the Tokens using the line information
+         */
+        lncomplete = _strbldr(lnum, raw_line);
+
+        if (lncomplete != NULL)
+            program[lncnt++] = lncomplete;
+        else
+        {
+            printf("Unexpected behavior: token.c 128 - Closing ...");
+            exit(1);
+        }
+
+        if (lncomplete->error != 0)
+            break;
+    }
+    return program;
 }
 
 struct Line *
@@ -184,7 +203,7 @@ _strbldr(unsigned int lnum, char *line)
          */
         if (tmptknstrct == NULL)
         {
-            printf("Unexpected behavior: token.c 187 - closing ...");
+            printf("Unexpected behavior: token.c 199 - Closing ...");
             exit(1);
         }
 
@@ -199,6 +218,38 @@ _strbldr(unsigned int lnum, char *line)
 
     lnstrct->numtkns = numtkns;
     return lnstrct;
+}
+
+int
+chrcntr(const char *haystack, char needle)
+{
+    unsigned int cnt = 0;
+
+    for (; *haystack != '\0'; ++haystack)
+        if (*haystack == needle)
+            ++cnt;
+
+    return cnt;
+}
+
+struct Line *
+_crtln(char *ln, unsigned int lnum)
+{
+    struct Line *line = NULL;
+
+    line = (struct Line *) malloc(sizeof(struct Line));
+
+    /*
+     * body: original line
+     * line_address: line number
+     * tokens: list with generated tokens in this line
+     */
+    line->body = ln;
+    line->line_address = lnum;
+    line->tokens = (struct Token **) malloc(LINE_SIZE * 2 * sizeof(struct Token *));
+    line->error = 0;
+
+    return line;
 }
 
 int
