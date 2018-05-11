@@ -8,7 +8,7 @@
 #include <assert.h>
 #define len(X) (sizeof(X)/sizeof(X[0]))
 
-static const char grammar[52][11][16] = {
+static const char grammar2[52][11][16] = {
     {"A", "<algoritmo>", "<str>", "LISTADECLAR", "<inicio>", "CODIGO", "<fimalgoritmo>"},
     {"LISTADECLAR", "UNIDECLAR", "LISTADECLAR"},
     {"LISTADECLAR", "MULTIDECLAR", "LISTADECLAR"},
@@ -64,9 +64,28 @@ static const char grammar[52][11][16] = {
     {"OP", "LOGICOP"}
 };
 
+static const char grammar[3][11][16] =
+    {
+        {"A", "F"},
+        {"A", "<del|(>", "A", "<op|+>", "F", "<del|)>"},
+        {"F", "<id>"}
+    };
+
+static const char table[3][5][16] = {
+    {"&", "<del|(>", "<del|)>", "<id>", "<op|+>"},
+    {"A", "1", "&", "0", "&"},
+    {"F", "&", "&", "2", "&"}
+};
+
+static const unsigned int num_nonterminals = 3;
+static const unsigned int num_terminals = 5;
+
+/*
 static const unsigned int num_nonterminals = 18;
 static const unsigned int num_terminals = 45;
-static const char table[18][45][16] =
+*/
+/*
+static const char table2[18][45][16] =
     {
         {NULL, "<var>", "<inteiro>", "<logico>", "<leia>", "<escreva>", "<escreval>", "<se>", "<entao>", "<senao>",
          "<fimse>", "<para>", "<de>", "<ate>", "<fimpara>", "<enquanto>", "<faca>", "<passo>", "<fimenquanto>",
@@ -129,6 +148,9 @@ static const char table[18][45][16] =
 static const size_t grammar_ln[52] =
     {7, 3, 3, 2, 5, 4, 2, 2, 3, 4, 2, 3, 2, 4, 5, 5, 8, 11, 6, 3, 2, 3, 3, 2, 3, 4, 2, 2, 2, 3, 4, 2, 2, 2, 2, 2, 2,
      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
+*/
+
+static const size_t grammar_ln[3] = {2, 6, 2};
 
 static struct Node *stack = NULL;
 static const char *EMPTY = "/e/";
@@ -238,7 +260,7 @@ _getProd(char *nonterminal, char *terminal)
 
     strcpy(str_rulenum, table[i_nonterminal][i_terminal]);
 
-    if (str_rulenum == NULL)
+    if (strcmp("&", str_rulenum) == 0)
         exit(1);
 
     rulenum = (int) strtol(str_rulenum, (char **) NULL, 10);
@@ -261,6 +283,8 @@ _getProdOrigin(int rulenum)
         rule[i] = (char *) malloc(16 * sizeof(char));
         strcpy(rule[i], grammar[rulenum][i + 1]);
     }
+    rule[rulenum - 1] = NULL;
+
     return rule;
 }
 
