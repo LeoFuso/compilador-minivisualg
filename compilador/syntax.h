@@ -11,16 +11,6 @@ struct Table
     struct NonTerminal **nonTerminals;
 };
 
-struct Grammar
-{
-    unsigned int is_terminal;
-    unsigned int num;
-    char *value;
-
-    unsigned int num_rules;
-    struct Grammar **rules;
-};
-
 struct NonTerminal
 {
     unsigned int num_rule;
@@ -36,6 +26,7 @@ struct Terminal
 };
 
 #include "compiler.h"
+#include "stack.h"
 
 int
 syntax_analysis(struct Line **, unsigned int);

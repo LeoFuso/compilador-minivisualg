@@ -4,25 +4,289 @@
 
 #include "syntax.h"
 
+#include <stdlib.h>
+#include <assert.h>
+#define len(X) (sizeof(X)/sizeof(X[0]))
+
+static const char grammar[52][11][16] = {
+    {"A", "<algoritmo>", "<str>", "LISTADECLAR", "<inicio>", "CODIGO", "<fimalgoritmo>"},
+    {"LISTADECLAR", "UNIDECLAR", "LISTADECLAR"},
+    {"LISTADECLAR", "MULTIDECLAR", "LISTADECLAR"},
+    {"LISTADECLAR", "/e/"},
+    {"UNIDECLAR", "<var>", "<id>", "<del|:>", "TIPO"},
+    {"MULTIDECLAR", "IDLIST", "<del|:>", "TIPO"},
+    {"TIPO", "<inteiro>"},
+    {"TIPO", "<logico>"},
+    {"IDLIST", "<id>", "IDLIST"},
+    {"IDLIST", "<del|,>", "<id>", "IDLIST"},
+    {"IDLIST", "/e/"},
+    {"CODIGO", "COMANDO", "CODIGO"},
+    {"CODIGO", "/e/"},
+    {"COMANDO", "<id>", "<op|<->", "EXPRESSAO"},
+    {"COMANDO", "<leia>", "<del|(>", "IDLIST", "<del|)>"},
+    {"COMANDO", "<escreva>", "<del|(>", "STROUT", "<del|)>"},
+    {"COMANDO", "<se>", "EXPRESSAOLOGICA", "<entao>", "CODIGO", "<senao>", "CODIGO", "<fimse>"},
+    {"COMANDO", "<para>", "<id>", "<de>", "<num>", "<ate>", "<num>", "PASSO", "<faca>", "CODIGO",
+     "<fimpara>"},
+    {"COMANDO", "<enquanto>", "EXPRESSAOLOGICA", "<faca>", "CODIGO", "<fimenquanto>"},
+    {"PASSO", "<passo>", "<num>"},
+    {"PASSO", "/e/"},
+    {"EXPRESSAO", "DATA", "OPERANDO"},
+    {"OPERANDO", "OP", "DATA"},
+    {"OPERANDO", "/e/"},
+    {"STROUT", "PRINTABLE", "STROUT"},
+    {"STROUT", "<del|,>", "PRINTABLE", "STROUT"},
+    {"STROUT", "/e/"},
+    {"PRINTABLE", "<id>"},
+    {"PRINTABLE", "<str>"},
+    {"EXPRESSAOLOGICA", "DATA", "EXPRESSAOLOGICA"},
+    {"EXPRESSAOLOGICA", "LOGICOP", "DATA", "EXPRESSAOLOGICA"},
+    {"EXPRESSAOLOGICA", "/e/"},
+    {"DATA", "<num>"},
+    {"DATA", "<str>"},
+    {"DATA", "<verdadeiro>"},
+    {"DATA", "<falso>"},
+    {"DATA", "<id>"},
+    {"LOGICOP", "<lop|>>"},
+    {"LOGICOP", "<lop|>=>"},
+    {"LOGICOP", "<lop|<>"},
+    {"LOGICOP", "<lop|<=>"},
+    {"LOGICOP", "<lop|=>"},
+    {"LOGICOP", "<lop|<>>"},
+    {"LOGICOP", "<lop|e>"},
+    {"LOGICOP", "<lop|ou>"},
+    {"OP", "<op|+>"},
+    {"OP", "<op|->"},
+    {"OP", "<op|*>"},
+    {"OP", "<op|/>"},
+    {"OP", "<op|mod>"},
+    {"OP", "<op|exp>"},
+    {"OP", "LOGICOP"}
+};
+
+static const unsigned int num_nonterminals = 18;
+static const unsigned int num_terminals = 45;
+static const char table[18][45][16] =
+    {
+        {NULL, "<var>", "<inteiro>", "<logico>", "<leia>", "<escreva>", "<escreval>", "<se>", "<entao>", "<senao>",
+         "<fimse>", "<para>", "<de>", "<ate>", "<fimpara>", "<enquanto>", "<faca>", "<passo>", "<fimenquanto>",
+         "<algoritmo>", "<inicio>", "<fimalgoritmo>", "<op|+>", "<op|->", "<op|*>", "<op|/>", "<op|mod>", "<op|exp>",
+         "<op|<->", "<verdadeiro>", "<falso>", "<num>", "<str>", "<del|,>", "<del|:>", "<del|(>", "<del|)>", "<lop|>>",
+         "<lop|>=>", "<lop|<>", "<lop|<=>", "<lop|=>", "<lop|<>>", "<lop|e>", "<lop|ou>", "<id>"},
+        {"A", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, "0", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
+        {"LISTADECLAR", "1", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, NULL, "3", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "2", "2", NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "2"},
+        {"UNIDECLAR", "4", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
+        {"MULTIDECLAR", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "5", NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "5"},
+        {"TIPO", NULL, "6", "7", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
+        {"IDLIST", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "9", "10", NULL,
+         "10", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "8"},
+        {"CODIGO", NULL, NULL, NULL, "11", "11", NULL, "11", NULL, "12", "12", "11", NULL, NULL, "12", "11", NULL, NULL,
+         "12", NULL, NULL, "12", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "11"},
+        {"COMANDO", NULL, NULL, NULL, "14", "15", NULL, "16", NULL, NULL, NULL, "17", NULL, NULL, NULL, "18", NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "13"},
+        {"PASSO", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "20", "19",
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
+        {"EXPRESSAO", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "21", "21", "21", "21", NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "21"},
+        {"OPERANDO", NULL, NULL, NULL, "23", "23", NULL, "23", NULL, "23", NULL, "23", NULL, NULL, "23", "23", NULL,
+         NULL, "23", NULL, NULL, "23", "22", "22", "22", "22", "22", "22", NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, "22", "22", "22", "22", "22", "22", "22", "22", "23"},
+        {"STROUT", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "24", "25", NULL, NULL,
+         "26", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "24"},
+        {"PRINTABLE", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "28", NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "27"},
+        {"EXPRESSAOLOGICA", NULL, NULL, NULL, NULL, NULL, NULL, NULL, "31", NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         "31", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "29", "29", "29", "29", NULL,
+         NULL, NULL, NULL, "30", "30", "30", "30", "30", "30", "30", "30", "29"},
+        {"DATA", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "34", "35", "32", "33", NULL, NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "36"},
+        {"LOGICOP", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, "37", "38", "39", "40", "41", "42", "43", "44", NULL},
+        {"OP", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, NULL, NULL, NULL, "45", "46", "47", "48", "49", "50", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+         NULL, "51", "51", "51", "51", "51", "51", "51", "51", NULL}
+    };
+
+static const size_t grammar_ln[52] =
+    {7, 3, 3, 2, 5, 4, 2, 2, 3, 4, 2, 3, 2, 4, 5, 5, 8, 11, 6, 3, 2, 3, 3, 2, 3, 4, 2, 2, 2, 3, 4, 2, 2, 2, 2, 2, 2,
+     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
+
+static struct Node *stack = NULL;
+static const char *EMPTY = "/e/";
+
+int
+print_grammar(void)
+{
+    int i;
+    int j;
+    for (i = 0; i < len(grammar); i++)
+        for (j = 0; j < grammar_ln[i]; ++j)
+            printf("\n%s", grammar[i][j]);
+
+    return 0;
+}
+
 void
 _stck(struct Token *);
 
 int
+_parse(struct Token *);
+
+int
+_isterminal(char *);
+
+char **
+_getProd(char *, char *);
+
+int
+_getIndex(char *, int);
+
+char **
+_getProdOrigin(int);
+
+int
 syntax_analysis(struct Line **program, unsigned int lncnt)
 {
+    int f_parse;
+    push(&stack, "$");
+    push(&stack, "A");
+
+//    printf("%s popped from stack\n", pop(&stack));
+    printf("Top element is %s\n", peek(stack));
+
+    print_grammar();
     int i;
     int j;
     for (i = 0; i < lncnt; ++i)
         for (j = 0; j < program[i]->numtkns; ++j)
-            _stck(program[i]->tokens[j]);
+            if (_parse(program[i]->tokens[j]))
+                --j;
 
     return 1;
 }
 
-void
-_stck(struct Token * tkn)
+int
+_parse(struct Token *source)
 {
-    printf("\n%s",tkn->to_parse);
+    char *current = (char *) malloc(16 * sizeof(char));
+    char *top = NULL;
+    char **prod_elements = NULL;
+
+    int prod_elements_ln = -1;
+
+    strcpy(current, source->to_parse);
+    top = pop(&stack);
+
+    while (strcmp(top, EMPTY) == 0)
+        top = pop(&stack);
+
+    if (_isterminal(top) && (strcmp(top, current) == 0))
+        return 0;
+    else
+        prod_elements = _getProd(top, current);
+
+    while (prod_elements[++prod_elements_ln] != NULL) { /* do nothing */}
+
+    int i;
+    for (i = prod_elements_ln - 1; i > 0; i--)
+        push(&stack, prod_elements[prod_elements_ln]);
+
+    return 1;
+}
+
+int
+_isterminal(char *to_check)
+{
+    unsigned int i;
+    for (i = 1; i < num_terminals; ++i)
+        if (strcmp(to_check, table[0][i]) == 0)
+            return i;
+    return 0;
+}
+
+char **
+_getProd(char *nonterminal, char *terminal)
+{
+    int rulenum;
+
+    char *str_rulenum = (char *) malloc(16 * sizeof(char));
+    char **stack = NULL;
+    int i_nonterminal = _getIndex(nonterminal, 0);
+    int i_terminal = _getIndex(terminal, 1);
+
+    if ((!i_nonterminal) || (!i_terminal))
+        exit(1);
+
+    strcpy(str_rulenum, table[i_nonterminal][i_terminal]);
+
+    if (str_rulenum == NULL)
+        exit(1);
+
+    rulenum = (int) strtol(str_rulenum, (char **) NULL, 10);
+
+    stack = _getProdOrigin(rulenum);
+
+    if (!stack)
+        exit(1);
+}
+
+char **
+_getProdOrigin(int rulenum)
+{
+    char **rule = NULL;
+    rule = (char **) malloc(grammar_ln[rulenum] * sizeof(char *));
+
+    unsigned int i;
+    for (i = 0; i < grammar_ln[rulenum] - 1; ++i)
+    {
+        rule[i] = (char *) malloc(16 * sizeof(char));
+        strcpy(rule[i], grammar[rulenum][i + 1]);
+    }
+    return rule;
+}
+
+int
+_getIndex(char *find, int t)
+{
+    unsigned int i;
+    if (t)
+    {
+        for (i = 1; i < num_terminals; ++i)
+            if (strcmp(find, table[0][i]) == 0)
+                return i;
+    }
+    else
+    {
+        for (i = 1; i < num_nonterminals; ++i)
+            if (strcmp(find, table[i][0]) == 0)
+                return i;
+    }
+    return 0;
+}
+
+void
+_stck(struct Token *tkn)
+{
+    //printf("\n%s", tkn->to_parse);
 }
 
 /*
