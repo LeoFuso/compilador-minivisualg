@@ -69,6 +69,9 @@ char *DELIMITERS[4] =
         ")",
     };
 
+struct Line *
+_strbldr(unsigned int, char *);
+
 int
 chrcntr(const char *, char);
 
@@ -90,36 +93,52 @@ _crtkn(TokenType, const char *, unsigned int);
 struct Token *
 _new_tkn(struct Token *);
 
-int
-chrcntr(const char *haystack, char needle)
+struct Line **
+lexical_analysis(FILE *filePtr, int lncnt)
 {
-    unsigned int cnt = 0;
-
-    for (; *haystack != '\0'; ++haystack)
-        if (*haystack == needle)
-            ++cnt;
-
-    return cnt;
-}
-
-struct Line *
-_crtln(char *ln, unsigned int lnum)
-{
-    struct Line *line = NULL;
-
-    line = (struct Line *) malloc(sizeof(struct Line));
+    char *raw_line = NULL;
+    struct Line **program = NULL;
+    struct Line *lncomplete = NULL;
 
     /*
-     * body: original line
-     * line_address: line number
-     * tokens: list with generated tokens in this line
+     *  Allocates the memory space required for a to_parse line
      */
-    line->body = ln;
-    line->line_address = lnum;
-    line->tokens = (struct Token **) malloc(LINE_SIZE * 2 * sizeof(struct Token *));
-    line->error = 0;
+    raw_line = (char *) malloc(LINE_SIZE * sizeof(char) + 1);
 
-    return line;
+    /*
+     *  Allocates the memory space required for the entire program
+     */
+    program = (struct Line **) malloc(lncnt * (sizeof(struct Line *)));
+    lncnt = 0;
+
+    printf("\nIdentified Tokens:\n\n");
+
+    unsigned int lnum;
+    for (lnum = 1; (fgets(raw_line, LINE_SIZE, filePtr) != NULL); ++lnum)
+    {
+        /*
+         *  It does the exchange of '\n' for '\0'
+         */
+        if (strchr(raw_line, '\n') != NULL)
+            *(strchr(raw_line, '\n')) = '\0';
+
+        /*
+         *  Produces the Tokens using the line information
+         */
+        lncomplete = _strbldr(lnum, raw_line);
+
+        if (lncomplete != NULL)
+            program[lncnt++] = lncomplete;
+        else
+        {
+            printf("Unexpected behavior: token.c 128 - Closing ...");
+            exit(1);
+        }
+
+        if (lncomplete->error != 0)
+            break;
+    }
+    return program;
 }
 
 struct Line *
@@ -184,7 +203,7 @@ _strbldr(unsigned int lnum, char *line)
          */
         if (tmptknstrct == NULL)
         {
-            printf("Unexpected behavior: token.c 187 - closing ...");
+            printf("Unexpected behavior: token.c 199 - Closing ...");
             exit(1);
         }
 
@@ -199,6 +218,38 @@ _strbldr(unsigned int lnum, char *line)
 
     lnstrct->numtkns = numtkns;
     return lnstrct;
+}
+
+int
+chrcntr(const char *haystack, char needle)
+{
+    unsigned int cnt = 0;
+
+    for (; *haystack != '\0'; ++haystack)
+        if (*haystack == needle)
+            ++cnt;
+
+    return cnt;
+}
+
+struct Line *
+_crtln(char *ln, unsigned int lnum)
+{
+    struct Line *line = NULL;
+
+    line = (struct Line *) malloc(sizeof(struct Line));
+
+    /*
+     * body: original line
+     * line_address: line number
+     * tokens: list with generated tokens in this line
+     */
+    line->body = ln;
+    line->line_address = lnum;
+    line->tokens = (struct Token **) malloc(LINE_SIZE * 2 * sizeof(struct Token *));
+    line->error = 0;
+
+    return line;
 }
 
 int
@@ -298,69 +349,81 @@ _crtkn(TokenType type, const char *body, unsigned int lnum)
     struct Token *token = NULL;
     char *tmp_body = NULL;
     char *tmp_value = NULL;
+    char *tmp_to_parse = NULL;
 
     token = _new_tkn(token);
     tmp_body = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
     tmp_value = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
+    tmp_to_parse = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
 
     token->tokenType = type;
-    token->source = body;
 
     switch (type)
     {
         case IDENTIFIER: printf("              ID: %s\n", body);
             sprintf(tmp_value, "%d", _getid(body));
             snprintf(tmp_body, LINE_SIZE, "<id | %s >", tmp_value);
+            snprintf(tmp_to_parse, LINE_SIZE, "<id>");
             break;
 
         case KEYWORD: printf("         Keyword: %s\n", body);
             strcpy(tmp_value, body);
             snprintf(tmp_body, LINE_SIZE, "<%s>", body);
+            snprintf(tmp_to_parse, LINE_SIZE, "<%s>", body);
             break;
 
         case BOOLEAN_OPERATOR: printf("Boolean Operator: %s\n", body);
             strcpy(tmp_value, body);
             snprintf(tmp_body, LINE_SIZE, "<%s>", body);
+            snprintf(tmp_to_parse, LINE_SIZE, "<%s>", body);
             break;
 
         case NUMBER: printf("          Number: %s\n", body);
             strcpy(tmp_value, body);
             snprintf(tmp_body, LINE_SIZE, "<num | %s >", body);
+            snprintf(tmp_to_parse, LINE_SIZE, "<num>");
             break;
 
         case TEXT: printf("          String: %s\n", body);
             strcpy(tmp_value, body);
             snprintf(tmp_body, LINE_SIZE, "<str | \"%s\" >", body);
+            snprintf(tmp_to_parse, LINE_SIZE, "<str>");
             break;
 
         case LOGIC_OPERATOR: printf("  Logic Operator: %s\n", body);
             strcpy(tmp_value, body);
             snprintf(tmp_body, LINE_SIZE, "<lop | %s >", body);
+            snprintf(tmp_to_parse, LINE_SIZE, "<lop|%s>", body);
             break;
 
         case OPERATOR: printf("        Operator: %s\n", body);
             strcpy(tmp_value, body);
             snprintf(tmp_body, LINE_SIZE, "<op | %s >", body);
+            snprintf(tmp_to_parse, LINE_SIZE, "<op|%s>", body);
             break;
 
         case DELIMITER: printf("       Delimiter: %s\n", body);
             strcpy(tmp_value, body);
             snprintf(tmp_body, LINE_SIZE, "<del | %s >", body);
+            snprintf(tmp_to_parse, LINE_SIZE, "<del|%s>", body);
             break;
 
         case UNDEFINED: printf("                   Parse error on line %d during word '%s' \n", lnum, body);
             tmp_value = NULL;
             tmp_body = NULL;
+            tmp_to_parse = NULL;
             break;
 
         default: snprintf(tmp_body, LINE_SIZE, "<ERROR | %s >", body);
             tmp_value = NULL;
             tmp_body = NULL;
+            tmp_to_parse = NULL;
             break;
     }
 
     token->value =  tmp_value;
     token->body = tmp_body;
+    token->to_parse = tmp_to_parse;
 
     return token;
 }
@@ -414,7 +477,7 @@ _new_tkn(struct Token *token)
 
     token->value = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
     token->body = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
-    token->source = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
+    token->to_parse = (char *) malloc(sizeof(char) * LINE_SIZE + 1);
     return token;
 }
 

@@ -8,14 +8,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <string.h>
 
 // A structure to represent a stack
-struct StackNode
+struct Node
 {
-    struct Token * data;
-    struct StackNode* next;
+    char * data;
+    struct Node* next;
 };
 
-struct StackNode* new_node(struct Token * data);
+void
+push(struct Node **, char *);
+
+char *
+pop(struct Node **);
+
+char *
+peek(struct Node *);
 
 #endif //STACK_H

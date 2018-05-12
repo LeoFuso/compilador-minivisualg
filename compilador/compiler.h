@@ -10,31 +10,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "token.h"
-
-typedef enum
-{
-    IDENTIFIER,
-    KEYWORD,
-    BOOLEAN_OPERATOR,
-    NUMBER,
-    TEXT,
-    LOGIC_OPERATOR,
-    OPERATOR,
-    DELIMITER,
-    NF_S,
-    NF_F,
-    UNDEFINED
-} TokenType;
-
-struct Token
-{
-    TokenType tokenType;
-    const char *value;
-    const char *body;
-    const char *source;
-};
-
+#define LINE_SIZE 120
 struct Line
 {
     int line_address;
@@ -44,30 +20,8 @@ struct Line
     int error;
 };
 
-typedef enum
-{
-    S,
-    F
-} NonTerminalType;
-
-struct Table
-{
-    unsigned int numNonTerminals;
-    struct NonTerminal **nonTerminals;
-};
-
-struct NonTerminal
-{
-    NonTerminalType nonTerminalType;
-    unsigned int numTerminals;
-    struct Terminal **terminals;
-};
-
-struct Terminal
-{
-    const unsigned int number;
-    const char *value;
-};
+#include "token.h"
+#include "syntax.h"
 
 int
 compile(char *);

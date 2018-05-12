@@ -4,29 +4,24 @@
 
 #include "compiler.h"
 
-struct Line **
-lexical_analysis(FILE *, int);
-
-int
-syntax_analysis(struct Line **, unsigned int);
-
 FILE *
-_file_opener(char *);
+_openfl(char *);
 
 void
 _token_printer(struct Line **, int, char *);
 
 unsigned int
-_line_counter(FILE *);
+_count_ln(FILE *);
 
 int
 compile(char *path)
 {
     FILE *filePtr;
     unsigned int lncnt = 0;
+    int syntax_result;
     struct Line **program = NULL;
 
-    filePtr = _file_opener(path);
+    filePtr = _openfl(path);
 
     if (filePtr == NULL)
     {
@@ -36,7 +31,7 @@ compile(char *path)
     else
         printf("\nName file '%s' opened successfully.\n", path);
 
-    lncnt = _line_counter(filePtr);
+    lncnt = _count_ln(filePtr);
     program = lexical_analysis(filePtr, lncnt);
 
     if (program == NULL)
@@ -53,81 +48,16 @@ compile(char *path)
     fclose(filePtr);
 
     printf("\nParsing tokens...\n");
-    if (syntax_analysis(program, lncnt))
+
+    syntax_result = syntax_analysis(program, lncnt);
+    if (syntax_result)
     {
         printf("\nSuccess. \nThis is a valid program.\n");
     }
 }
 
-void
-_stck(struct Token * token)
-{
-
-}
-
-int
-syntax_analysis(struct Line **program, unsigned int lncnt)
-{
-    int i;
-    int j;
-    for(i = 0; i < lncnt; ++i)
-        for(j = 0; j < program[i]->numtkns; ++j)
-            _stck(program[i]->tokens[j]);
-
-
-    return 1;
-}
-
-struct Line **
-lexical_analysis(FILE *filePtr, int lncnt)
-{
-    char *raw_line = NULL;
-    struct Line **program = NULL;
-    struct Line *lncomplete = NULL;
-
-    /*
-     *  Allocates the memory space required for a source line
-     */
-    raw_line = (char *) malloc(LINE_SIZE * sizeof(char) + 1);
-
-    /*
-     *  Allocates the memory space required for the entire program
-     */
-    program = (struct Line **) malloc(lncnt * (sizeof(struct Line *)));
-    lncnt = 0;
-
-    printf("\nIdentified Tokens:\n\n");
-
-    unsigned int lnum;
-    for (lnum = 1; (fgets(raw_line, LINE_SIZE, filePtr) != NULL); ++lnum)
-    {
-        /*
-         *  It does the exchange of '\n' for '\0'
-         */
-        if (strchr(raw_line, '\n') != NULL)
-            *(strchr(raw_line, '\n')) = '\0';
-
-        /*
-         *  Produces the Tokens using the line information
-         */
-        lncomplete = _strbldr(lnum, raw_line);
-
-        if (lncomplete != NULL)
-            program[lncnt++] = lncomplete;
-        else
-        {
-            printf("Unexpected behavior: compiler.c 97 - Closing ...");
-            exit(1);
-        }
-
-        if (lncomplete->error != 0)
-            break;
-    }
-    return program;
-}
-
 FILE *
-_file_opener(char *path)
+_openfl(char *path)
 {
     FILE *filePtr;
 
@@ -181,13 +111,13 @@ _token_printer(struct Line **program, int lncnt, char *path)
 }
 
 unsigned int
-_line_counter(FILE *filePtr)
+_count_ln(FILE *filePtr)
 {
     unsigned int lncnt = 0;
     char *raw_line = NULL;
 
     /*
-     *  Allocates the memory space required for a source line
+     *  Allocates the memory space required for a to_parse line
      */
     raw_line = (char *) malloc(LINE_SIZE * sizeof(char) + 1);
 
