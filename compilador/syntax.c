@@ -82,6 +82,14 @@ static const char grammar[52][11][16] = {
 
 static const char table[18][46][16] =
     {
+
+   m""                #                "                                               "             m
+ mm#mm  m   m   mmm   #   m          mmm    mmm   m   m   mmm    mmm    mmm    m mm  mmm    mmmm   mm#mm
+   #    #   #  #"  "  # m"             #   "   #  "m m"  "   #  #   "  #"  "   #"  "   #    #" "#    #
+   #    #   #  #      #"#              #   m"""#   #m#   m"""#   """m  #       #       #    #   #    #
+   #    "mm"#  "#mm"  #  "m            #   "mm"#    #    "mm"#  "mmm"  "#mm"   #     mm#mm  ##m#"    "mm
+                                       #                                                    #
+                                     ""                                                     "
         {"&", "<var>", "<inteiro>", "<logico>", "<leia>", "<escreva>", "<escreval>", "<se>", "<entao>", "<senao>",
          "<fimse>", "<para>", "<de>", "<ate>", "<fimpara>", "<enquanto>", "<faca>", "<passo>", "<fimenquanto>",
          "<algoritmo>", "<inicio>", "<fimalgoritmo>", "<op|+>", "<op|->", "<op|*>", "<op|/>", "<op|mod>", "<op|exp>",
