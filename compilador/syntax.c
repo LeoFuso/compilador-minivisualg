@@ -6,6 +6,7 @@
 
 #define len(X) (sizeof(X)/sizeof(X[0]))
 
+/*
 static const char grammar[3][11][16] =
     {
         {"A", "F"},
@@ -20,10 +21,14 @@ static const char table[3][5][16] = {
     {"A", "1", "&", "0", "&"},
     {"F", "&", "&", "2", "&"}
 };
-
+*/
 
 /*
-static const char grammar2[52][11][16] = {
+static const unsigned int num_terminals = 5;
+static const unsigned int num_non_terminals = 3;
+ */
+
+static const char grammar[52][11][16] = {
     {"A", "<algoritmo>", "<str>", "LISTADECLAR", "<inicio>", "CODIGO", "<fimalgoritmo>"},
     {"LISTADECLAR", "UNIDECLAR", "LISTADECLAR"},
     {"LISTADECLAR", "MULTIDECLAR", "LISTADECLAR"},
@@ -78,83 +83,74 @@ static const char grammar2[52][11][16] = {
     {"OP", "<op|exp>"},
     {"OP", "LOGICOP"}
 };
-*/
 
-
-/*
-static const char table2[18][45][16] =
+static const char table[18][46][16] =
     {
-        {NULL, "<var>", "<inteiro>", "<logico>", "<leia>", "<escreva>", "<escreval>", "<se>", "<entao>", "<senao>",
+        {"&", "<var>", "<inteiro>", "<logico>", "<leia>", "<escreva>", "<escreval>", "<se>", "<entao>", "<senao>",
          "<fimse>", "<para>", "<de>", "<ate>", "<fimpara>", "<enquanto>", "<faca>", "<passo>", "<fimenquanto>",
          "<algoritmo>", "<inicio>", "<fimalgoritmo>", "<op|+>", "<op|->", "<op|*>", "<op|/>", "<op|mod>", "<op|exp>",
          "<op|<->", "<verdadeiro>", "<falso>", "<num>", "<str>", "<del|,>", "<del|:>", "<del|(>", "<del|)>", "<lop|>>",
          "<lop|>=>", "<lop|<>", "<lop|<=>", "<lop|=>", "<lop|<>>", "<lop|e>", "<lop|ou>", "<id>"},
-        {"A", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, "0", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
-        {"LISTADECLAR", "1", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, NULL, "3", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "2", "2", NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "2"},
-        {"UNIDECLAR", "4", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
-        {"MULTIDECLAR", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "5", NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "5"},
-        {"TIPO", NULL, "6", "7", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
-        {"IDLIST", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "9", "10", NULL,
-         "10", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "8"},
-        {"CODIGO", NULL, NULL, NULL, "11", "11", NULL, "11", NULL, "12", "12", "11", NULL, NULL, "12", "11", NULL, NULL,
-         "12", NULL, NULL, "12", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "11"},
-        {"COMANDO", NULL, NULL, NULL, "14", "15", NULL, "16", NULL, NULL, NULL, "17", NULL, NULL, NULL, "18", NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "13"},
-        {"PASSO", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "20", "19",
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL},
-        {"EXPRESSAO", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "21", "21", "21", "21", NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "21"},
-        {"OPERANDO", NULL, NULL, NULL, "23", "23", NULL, "23", NULL, "23", NULL, "23", NULL, NULL, "23", "23", NULL,
-         NULL, "23", NULL, NULL, "23", "22", "22", "22", "22", "22", "22", NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, "22", "22", "22", "22", "22", "22", "22", "22", "23"},
-        {"STROUT", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "24", "25", NULL, NULL,
-         "26", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "24"},
-        {"PRINTABLE", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "28", NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "27"},
-        {"EXPRESSAOLOGICA", NULL, NULL, NULL, NULL, NULL, NULL, NULL, "31", NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         "31", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "29", "29", "29", "29", NULL,
-         NULL, NULL, NULL, "30", "30", "30", "30", "30", "30", "30", "30", "29"},
-        {"DATA", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "34", "35", "32", "33", NULL, NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, "36"},
-        {"LOGICOP", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, "37", "38", "39", "40", "41", "42", "43", "44", NULL},
-        {"OP", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, NULL, NULL, NULL, "45", "46", "47", "48", "49", "50", NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-         NULL, "51", "51", "51", "51", "51", "51", "51", "51", NULL}
+        {"A", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "0", "&", "&",
+         "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&"},
+        {"LISTADECLAR", "1", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "3", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "2", "2", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&", "2"},
+        {"UNIDECLAR", "4", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&", "&"},
+        {"MULTIDECLAR", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "5", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&", "5"},
+        {"TIPO", "&", "6", "7", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&"},
+        {"IDLIST", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "9", "10", "&", "10", "&", "&", "&", "&", "&", "&",
+         "&", "&", "8"},
+        {"CODIGO", "&", "&", "&", "11", "11", "&", "11", "&", "12", "12", "11", "&", "&", "12", "11", "&", "&", "12",
+         "&", "&", "12", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&", "&", "11"},
+        {"COMANDO", "&", "&", "&", "14", "15", "&", "16", "&", "&", "&", "17", "&", "&", "&", "18", "&", "&", "&", "&",
+         "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&", "13"},
+        {"PASSO", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "20", "19", "&", "&", "&",
+         "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&"},
+        {"EXPRESSAO", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&", "&", "&", "&", "&", "&", "&", "21", "21", "21", "21", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&", "&", "21"},
+        {"OPERANDO", "&", "&", "&", "23", "23", "&", "23", "&", "23", "&", "23", "&", "&", "23", "23", "&", "&", "23",
+         "&", "&", "23", "22", "22", "22", "22", "22", "22", "&", "&", "&", "&", "&", "&", "&", "&", "&", "22", "22",
+         "22", "22", "22", "22", "22", "22", "23"},
+        {"STROUT", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "24", "25", "&", "&", "26", "&", "&", "&", "&", "&",
+         "&", "&", "&", "24"},
+        {"PRINTABLE", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "28", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&", "27"},
+        {"EXPRESSAOLOGICA", "&", "&", "&", "&", "&", "&", "&", "31", "&", "&", "&", "&", "&", "&", "&", "31", "&", "&",
+         "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "29", "29", "29", "29", "&", "&", "&", "&", "30", "30", "30",
+         "30", "30", "30", "30", "30", "29"},
+        {"DATA", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&", "&", "&", "&", "&", "&", "34", "35", "32", "33", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&", "36"},
+        {"LOGICOP", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "37", "38", "39", "40", "41",
+         "42", "43", "44", "&"},
+        {"OP", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&", "&",
+         "45", "46", "47", "48", "49", "50", "&", "&", "&", "&", "&", "&", "&", "&", "&", "51", "51", "51", "51", "51",
+         "51", "51", "51", "&"}
+
     };
 
 static const size_t grammar_ln[52] =
     {7, 3, 3, 2, 5, 4, 2, 2, 3, 4, 2, 3, 2, 4, 5, 5, 8, 11, 6, 3, 2, 3, 3, 2, 3, 4, 2, 2, 2, 3, 4, 2, 2, 2, 2, 2, 2,
      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
-*/
 
-
-static const unsigned int num_terminals = 5;
-static const unsigned int num_nonterminals = 3;
-
-/*
-static const unsigned int num_nonterminals = 18;
+static const unsigned int num_non_terminals = 18;
 static const unsigned int num_terminals = 45;
-*/
 
 static struct Node *stack = NULL;
 static const char *EMPTY = "/e/";
@@ -200,7 +196,6 @@ _parse(struct Token *source)
     char *current = (char *) malloc(16 * sizeof(char));
     char *top = NULL;
     char **prod_elements = NULL;
-    char *debug = NULL;
 
     strcpy(current, source->to_parse);
     top = pop(&stack);
@@ -214,10 +209,7 @@ _parse(struct Token *source)
         prod_elements = _getProd(top, current);
 
     int prod_elements_num;
-    for (prod_elements_num = 0; prod_elements[prod_elements_num] != NULL; prod_elements_num++)
-    {
-        /* do nothing */
-    }
+    for (prod_elements_num = 0; prod_elements[prod_elements_num] != NULL; prod_elements_num++);
 
     int i;
     for (i = prod_elements_num - 1; i >= 0; i--)
@@ -290,7 +282,7 @@ _getIndex(char *find, int t)
     }
     else
     {
-        for (i = 1; i < num_nonterminals; ++i)
+        for (i = 1; i < num_non_terminals; ++i)
             if (strcmp(find, table[i][0]) == 0)
                 return i;
     }
