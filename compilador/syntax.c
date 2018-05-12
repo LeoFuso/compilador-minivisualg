@@ -8,6 +8,23 @@
 #include <assert.h>
 #define len(X) (sizeof(X)/sizeof(X[0]))
 
+static const char grammar[3][11][16] =
+    {
+        {"A", "F"},
+        {"A", "<del|(>", "A", "<op|+>", "F", "<del|)>"},
+        {"F", "<id>"}
+    };
+
+static const size_t grammar_ln[3] = {2, 6, 2};
+
+static const char table[3][5][16] = {
+    {"&", "<del|(>", "<del|)>", "<id>", "<op|+>"},
+    {"A", "1", "&", "0", "&"},
+    {"F", "&", "&", "2", "&"}
+};
+
+
+/*
 static const char grammar2[52][11][16] = {
     {"A", "<algoritmo>", "<str>", "LISTADECLAR", "<inicio>", "CODIGO", "<fimalgoritmo>"},
     {"LISTADECLAR", "UNIDECLAR", "LISTADECLAR"},
@@ -63,27 +80,9 @@ static const char grammar2[52][11][16] = {
     {"OP", "<op|exp>"},
     {"OP", "LOGICOP"}
 };
-
-static const char grammar[3][11][16] =
-    {
-        {"A", "F"},
-        {"A", "<del|(>", "A", "<op|+>", "F", "<del|)>"},
-        {"F", "<id>"}
-    };
-
-static const char table[3][5][16] = {
-    {"&", "<del|(>", "<del|)>", "<id>", "<op|+>"},
-    {"A", "1", "&", "0", "&"},
-    {"F", "&", "&", "2", "&"}
-};
-
-static const unsigned int num_nonterminals = 3;
-static const unsigned int num_terminals = 5;
-
-/*
-static const unsigned int num_nonterminals = 18;
-static const unsigned int num_terminals = 45;
 */
+
+
 /*
 static const char table2[18][45][16] =
     {
@@ -150,7 +149,14 @@ static const size_t grammar_ln[52] =
      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 */
 
-static const size_t grammar_ln[3] = {2, 6, 2};
+
+static const unsigned int num_terminals = 5;
+static const unsigned int num_nonterminals = 3;
+
+/*
+static const unsigned int num_nonterminals = 18;
+static const unsigned int num_terminals = 45;
+*/
 
 static struct Node *stack = NULL;
 static const char *EMPTY = "/e/";
@@ -275,13 +281,15 @@ char **
 _getProdOrigin(int rulenum)
 {
     char **rule = NULL;
-    rule = (char **) malloc(grammar_ln[rulenum] * sizeof(char *));
-
+    const size_t rule_num_size = grammar_ln[rulenum];
+    rule = (char **) malloc(rule_num_size * sizeof(char *));
+    char * tmp = NULL;
     unsigned int i;
     for (i = 0; i < grammar_ln[rulenum] - 1; ++i)
     {
         rule[i] = (char *) malloc(16 * sizeof(char));
         strcpy(rule[i], grammar[rulenum][i + 1]);
+        printf("\n%s", rule[i]);
     }
     rule[rulenum - 1] = NULL;
 
