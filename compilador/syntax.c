@@ -6,7 +6,6 @@
 
 #define len(X) (sizeof(X)/sizeof(X[0]))
 
-/*
 static const char grammar[3][11][16] =
     {
         {"A", "F"},
@@ -21,13 +20,10 @@ static const char table[3][5][16] = {
     {"A", "1", "&", "0", "&"},
     {"F", "&", "&", "2", "&"}
 };
-*/
 
-/*
 static const unsigned int num_terminals = 5;
 static const unsigned int num_non_terminals = 3;
- */
-
+/*
 static const char grammar[52][11][16] = {
     {"A", "<algoritmo>", "<str>", "LISTADECLAR", "<inicio>", "CODIGO", "<fimalgoritmo>"},
     {"LISTADECLAR", "UNIDECLAR", "LISTADECLAR"},
@@ -150,7 +146,7 @@ static const size_t grammar_ln[52] =
      2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
 static const unsigned int num_non_terminals = 18;
-static const unsigned int num_terminals = 45;
+static const unsigned int num_terminals = 45;*/
 
 static struct Node *stack = NULL;
 static const char *EMPTY = "/e/";
