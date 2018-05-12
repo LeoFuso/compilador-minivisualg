@@ -4,8 +4,6 @@
 
 #include "syntax.h"
 
-#include <stdlib.h>
-#include <assert.h>
 #define len(X) (sizeof(X)/sizeof(X[0]))
 
 static const char grammar[3][11][16] =
@@ -219,8 +217,6 @@ _parse(struct Token *source)
     char *top = NULL;
     char **prod_elements = NULL;
 
-    int prod_elements_ln = -1;
-
     strcpy(current, source->to_parse);
     top = pop(&stack);
 
@@ -232,11 +228,17 @@ _parse(struct Token *source)
     else
         prod_elements = _getProd(top, current);
 
-    while (prod_elements[++prod_elements_ln] != NULL) { /* do nothing */}
+    printf("\nProd elements: ");
+    int prod_elements_num;
+    for (prod_elements_num = 0; prod_elements[prod_elements_num] != NULL; prod_elements_num++)
+        printf("\n%s", prod_elements[prod_elements_num]);
 
     int i;
-    for (i = prod_elements_ln - 1; i > 0; i--)
-        push(&stack, prod_elements[prod_elements_ln]);
+    for (i = prod_elements_num - 1; i > 0; i--)
+    {
+        printf("\n%s pushed to stack", prod_elements[i]);
+        push(&stack, prod_elements[i]);
+    }
 
     return 1;
 }
@@ -252,46 +254,43 @@ _isterminal(char *to_check)
 }
 
 char **
-_getProd(char *nonterminal, char *terminal)
+_getProd(char *non_terminal, char *terminal)
 {
     int rulenum;
 
-    char *str_rulenum = (char *) malloc(16 * sizeof(char));
+    char *str_rule_num = (char *) malloc(16 * sizeof(char));
     char **stack = NULL;
-    int i_nonterminal = _getIndex(nonterminal, 0);
+    int i_non_terminal = _getIndex(non_terminal, 0);
     int i_terminal = _getIndex(terminal, 1);
 
-    if ((!i_nonterminal) || (!i_terminal))
+    if ((!i_non_terminal) || (!i_terminal))
         exit(1);
 
-    strcpy(str_rulenum, table[i_nonterminal][i_terminal]);
+    strcpy(str_rule_num, table[i_non_terminal][i_terminal]);
 
-    if (strcmp("&", str_rulenum) == 0)
+    if (strcmp("&", str_rule_num) == 0)
         exit(1);
 
-    rulenum = (int) strtol(str_rulenum, (char **) NULL, 10);
+    rulenum = (int) strtol(str_rule_num, (char **) NULL, 10);
 
     stack = _getProdOrigin(rulenum);
 
     if (!stack)
         exit(1);
+
+    return stack;
 }
 
 char **
-_getProdOrigin(int rulenum)
+_getProdOrigin(int rule_num)
 {
     char **rule = NULL;
-    const size_t rule_num_size = grammar_ln[rulenum];
-    rule = (char **) malloc(rule_num_size * sizeof(char *));
-    char * tmp = NULL;
+    const size_t rule_num_size = grammar_ln[rule_num];
+    rule = (char **) calloc(rule_num_size, sizeof(char *));
+
     unsigned int i;
-    for (i = 0; i < grammar_ln[rulenum] - 1; ++i)
-    {
-        rule[i] = (char *) malloc(16 * sizeof(char));
-        strcpy(rule[i], grammar[rulenum][i + 1]);
-        printf("\n%s", rule[i]);
-    }
-    rule[rulenum - 1] = NULL;
+    for (i = 1; i < rule_num_size; i++)
+        rule[i - 1] = strdup(grammar[rule_num][i]);
 
     return rule;
 }
