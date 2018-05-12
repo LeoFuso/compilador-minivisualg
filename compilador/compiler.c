@@ -54,6 +54,11 @@ compile(char *path)
     {
         printf("\nSuccess. \nThis is a valid program.\n");
     }
+    else
+    {
+        printf("\nError. \nThis is not a valid program.\n");
+    }
+
 }
 
 FILE *

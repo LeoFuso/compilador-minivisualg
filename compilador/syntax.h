@@ -5,26 +5,6 @@
 #ifndef SYNTAX_H
 #define SYNTAX_H
 
-struct Table
-{
-    unsigned int numNonTerminals;
-    struct NonTerminal **nonTerminals;
-};
-
-struct NonTerminal
-{
-    unsigned int num_rule;
-    char *non_terminal;
-    unsigned int num_terminals;
-    struct Terminal **terminals;
-};
-
-struct Terminal
-{
-    const unsigned int number;
-    const char *value;
-};
-
 #include "compiler.h"
 #include "stack.h"
 

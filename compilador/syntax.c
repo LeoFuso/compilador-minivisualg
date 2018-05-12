@@ -158,21 +158,8 @@ static const unsigned int num_terminals = 45;
 
 static struct Node *stack = NULL;
 static const char *EMPTY = "/e/";
-
-int
-print_grammar(void)
-{
-    int i;
-    int j;
-    for (i = 0; i < len(grammar); i++)
-        for (j = 0; j < grammar_ln[i]; ++j)
-            printf("\n%s", grammar[i][j]);
-
-    return 0;
-}
-
-void
-_stck(struct Token *);
+static const char *FINAL = "$";
+static const char *NULL_CHAR = "&";
 
 int
 _parse(struct Token *);
@@ -192,22 +179,19 @@ _getProdOrigin(int);
 int
 syntax_analysis(struct Line **program, unsigned int lncnt)
 {
-    int f_parse;
+    char *final = NULL;
     push(&stack, "$");
     push(&stack, "A");
 
-//    printf("%s popped from stack\n", pop(&stack));
-    printf("Top element is %s\n", peek(stack));
-
-    print_grammar();
     int i;
     int j;
     for (i = 0; i < lncnt; ++i)
-        for (j = 0; j < program[i]->numtkns; ++j)
+        for (j = 0; j < program[i]->numtkns;)
             if (_parse(program[i]->tokens[j]))
-                --j;
+                j++;
 
-    return 1;
+    final = peek(stack);
+    return !strcmp(final, FINAL);
 }
 
 int
@@ -216,6 +200,7 @@ _parse(struct Token *source)
     char *current = (char *) malloc(16 * sizeof(char));
     char *top = NULL;
     char **prod_elements = NULL;
+    char *debug = NULL;
 
     strcpy(current, source->to_parse);
     top = pop(&stack);
@@ -224,23 +209,21 @@ _parse(struct Token *source)
         top = pop(&stack);
 
     if (_isterminal(top) && (strcmp(top, current) == 0))
-        return 0;
+        return 1;
     else
         prod_elements = _getProd(top, current);
 
-    printf("\nProd elements: ");
     int prod_elements_num;
     for (prod_elements_num = 0; prod_elements[prod_elements_num] != NULL; prod_elements_num++)
-        printf("\n%s", prod_elements[prod_elements_num]);
-
-    int i;
-    for (i = prod_elements_num - 1; i > 0; i--)
     {
-        printf("\n%s pushed to stack", prod_elements[i]);
-        push(&stack, prod_elements[i]);
+        /* do nothing */
     }
 
-    return 1;
+    int i;
+    for (i = prod_elements_num - 1; i >= 0; i--)
+        push(&stack, prod_elements[i]);
+
+    return 0;
 }
 
 int
@@ -256,7 +239,7 @@ _isterminal(char *to_check)
 char **
 _getProd(char *non_terminal, char *terminal)
 {
-    int rulenum;
+    int rule_num;
 
     char *str_rule_num = (char *) malloc(16 * sizeof(char));
     char **stack = NULL;
@@ -268,12 +251,12 @@ _getProd(char *non_terminal, char *terminal)
 
     strcpy(str_rule_num, table[i_non_terminal][i_terminal]);
 
-    if (strcmp("&", str_rule_num) == 0)
+    if (strcmp(NULL_CHAR, str_rule_num) == 0)
         exit(1);
 
-    rulenum = (int) strtol(str_rule_num, (char **) NULL, 10);
+    rule_num = (int) strtol(str_rule_num, (char **) NULL, 10);
 
-    stack = _getProdOrigin(rulenum);
+    stack = _getProdOrigin(rule_num);
 
     if (!stack)
         exit(1);
@@ -313,206 +296,3 @@ _getIndex(char *find, int t)
     }
     return 0;
 }
-
-void
-_stck(struct Token *tkn)
-{
-    //printf("\n%s", tkn->to_parse);
-}
-
-/*
-
-int
-_fndn_listType(char **type_list, int list_size, char *chr_grammar)
-{
-    int i;
-    for (i = 0; i < list_size; i++)
-    {
-        char *toCompare = type_list[i];
-        if (strcmp(toCompare, chr_grammar) == 0)
-            return i;
-    }
-    return -1;
-}
-
-void
-lol(struct Token *token)
-{
-    FILE *fileGrammar;
-    char *raw_line = NULL;
-
-    char **type_list = NULL;
-    int **grammar_list = NULL;
-
-    raw_line = (char *) malloc(LINE_SIZE * sizeof(char));
-
-    if ((fileGrammar = fopen("../grammar", "r")) == NULL)
-    {
-        printf("File not found.\n");
-        exit(0);
-    }
-
-    FILE *fileTypeList;
-
-    if ((fileTypeList = fopen("../typeList", "r")) == NULL)
-    {
-        printf("File not found.\n");
-        exit(0);
-    }
-    unsigned int lnum;
-    int list_size;
-    for (lnum = 0; (fgets(raw_line, LINE_SIZE, fileTypeList) != NULL); ++lnum)
-    {
-        if (lnum == 0)
-        {
-            list_size = (int) strtol(raw_line, (char **) NULL, 10);
-            type_list = (char **) malloc(list_size * sizeof(char *) + 1);
-            type_list[0] = raw_line;
-        }
-        else
-        {
-            type_list[lnum] = raw_line;
-        }
-
-        printf("\n%s", type_list[lnum]);
-    }
-
-    char *dlim_spc = " ";
-    char *chr_grammar;
-    unsigned int snum;
-    for (lnum = 0; (fgets(raw_line, LINE_SIZE, fileGrammar) != NULL); ++lnum)
-    {
-        snum = 0;
-        if (lnum == 0)
-        {
-            int ln_size = (int) strtol(raw_line, (char **) NULL, 10);
-            grammar_list = (int **) malloc(ln_size * sizeof(int *));
-            grammar_list[0][snum] = ln_size;
-        }
-        else
-        {
-            for (chr_grammar = strtok(raw_line, dlim_spc); chr_grammar != NULL; chr_grammar = strtok(NULL, dlim_spc))
-            {
-                if (snum == 0)
-                {
-                    int cl_size = (int) strtol(chr_grammar, (char **) NULL, 10);
-                    grammar_list[lnum] = (int *) malloc(cl_size * sizeof(int));
-                    grammar_list[lnum][snum] = cl_size;
-                }
-                else if (snum == 1)
-                {
-                    int val = (int) strtol(chr_grammar, (char **) NULL, 10);
-                    grammar_list[lnum][snum] = val;
-                }
-                else
-                {
-                    int found = _fndn_listType(type_list, list_size, chr_grammar);
-                    if (found == -1)
-                        exit(1);
-
-                    grammar_list[lnum][snum] = found;
-                }
-                snum++;
-            }
-
-            */
-/*
-             *  It does the exchange of '\n' for '\0'
-             *//*
-
-            if (strchr(raw_line, '\n') != NULL)
-                *(strchr(raw_line, '\n')) = '\0';
-
-            type_list[lnum] = raw_line;
-            printf("\n%s", type_list[lnum]);
-
-        }
-
-    }
-
-
-    */
-/* struct Grammar ** nonTerminals = NULL;
-     nonTerminals =  (struct Grammar**) malloc(2 * sizeof(struct Grammar*));
-     struct Grammar * nonTerminal1 = NULL;
-     struct Grammar * nonTerminal2 = NULL;
-     struct Grammar * nonTerminal3 = NULL;
-
-     nonTerminals[0] = (struct Grammar*)malloc(sizeof(struct Grammar));
-
-     nonTerminal1 = nonTerminals[0];
-
-     nonTerminal1->is_terminal = 0;
-     nonTerminal1->num = 1;
-     nonTerminal1->value = (char *)malloc(LINE_SIZE * sizeof(char));
-     nonTerminal1->value = "UNIDECLAR";
-     nonTerminal1->num_rules = 4;
-     nonTerminal1->rules = (struct Grammar**)malloc(4 * sizeof(struct Grammar*));
-
-     nonTerminal1->rules[0] = (struct Grammar*)malloc(sizeof(struct Grammar));
-     nonTerminal1->rules[0]->is_terminal = 1;
-     nonTerminal1->rules[0]->num = 1;
-     nonTerminal1->rules[0]->value = (char *)malloc(LINE_SIZE * sizeof(char));
-     nonTerminal1->rules[0]->value = "<var>";
-     nonTerminal1->rules[0]->num_rules = 0;
-     nonTerminal1->rules[0]->rules = NULL;
-
-     nonTerminal1->rules[1] = (struct Grammar*)malloc(sizeof(struct Grammar));
-     nonTerminal1->rules[1]->is_terminal = 1;
-     nonTerminal1->rules[1]->num = 2;
-     nonTerminal1->rules[1]->value = (char *)malloc(LINE_SIZE * sizeof(char));
-     nonTerminal1->rules[1]->value = "<id>";
-     nonTerminal1->rules[1]->num_rules = 0;
-     nonTerminal1->rules[1]->rules = NULL;
-
-     nonTerminal1->rules[2] = (struct Grammar*)malloc(sizeof(struct Grammar));
-     nonTerminal1->rules[2]->is_terminal = 1;
-     nonTerminal1->rules[2]->num = 3;
-     nonTerminal1->rules[2]->value = (char *)malloc(LINE_SIZE * sizeof(char));
-     nonTerminal1->rules[2]->value = "<del|:>";
-     nonTerminal1->rules[2]->num_rules = 0;
-     nonTerminal1->rules[2]->rules = NULL;
-
-     nonTerminal1->rules[3] = (struct Grammar*)malloc(sizeof(struct Grammar));
-     nonTerminal1->rules[3]->is_terminal = 0;
-     nonTerminal1->rules[3]->num = 4;
-     nonTerminal1->rules[3]->value = (char *)malloc(LINE_SIZE * sizeof(char));
-     nonTerminal1->rules[3]->value = "TIPO";
-     nonTerminal1->rules[3]->num_rules = 0;
-     nonTerminal1->rules[3]->rules = NULL;
-
-     nonTerminal2 = nonTerminals[1];
-     nonTerminal2->is_terminal = 0;
-     nonTerminal2->num = 2;
-     nonTerminal2->value = (char *)malloc(LINE_SIZE * sizeof(char));
-     nonTerminal2->value = "TIPO";
-     nonTerminal2->num_rules = 1;
-     nonTerminal2->rules = (struct Grammar**)malloc(1 * sizeof(struct Grammar*));
-
-     nonTerminal2->rules[0] = (struct Grammar*)malloc(sizeof(struct Grammar));
-     nonTerminal2->rules[0]->is_terminal = 1;
-     nonTerminal2->rules[0]->num = 1;
-     nonTerminal2->rules[0]->value = (char *)malloc(LINE_SIZE * sizeof(char));
-     nonTerminal2->rules[0]->value = "<inteiro>";
-     nonTerminal2->rules[0]->num_rules = 0;
-     nonTerminal2->rules[0]->rules = NULL;
-
-     nonTerminal3 = nonTerminals[2];
-     nonTerminal3->is_terminal = 0;
-     nonTerminal3->num = 3;
-     nonTerminal3->value = (char *)malloc(LINE_SIZE * sizeof(char));
-     nonTerminal3->value = "TIPO";
-     nonTerminal3->num_rules = 1;
-     nonTerminal3->rules = (struct Grammar**)malloc(1 * sizeof(struct Grammar*));
-
-     nonTerminal3->rules[0] = (struct Grammar*)malloc(sizeof(struct Grammar));
-     nonTerminal3->rules[0]->is_terminal = 1;
-     nonTerminal3->rules[0]->num = 1;
-     nonTerminal3->rules[0]->value = (char *)malloc(LINE_SIZE * sizeof(char));
-     nonTerminal3->rules[0]->value = "<logico>";
-     nonTerminal3->rules[0]->num_rules = 0;
-     nonTerminal3->rules[0]->rules = NULL;
- *//*
-
-    //printf("\n%s", token->to_parse);
-}*/
