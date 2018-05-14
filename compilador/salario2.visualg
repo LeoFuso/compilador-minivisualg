@@ -13,6 +13,7 @@ para i de 1 ate 5 passo 1 faca
    leia ( sal )
    se sal > 500 entao
       contador <- contador + 1
+   senao
    fimse
 fimpara
 escreva ( contador )
