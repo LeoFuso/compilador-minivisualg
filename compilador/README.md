@@ -11,3 +11,17 @@
 |  Leonardo Fuso Nuzzo   |  31500129  |
 |  Virgínia Maria S. Melo Baroni    | 31844960  |
 |  Werner W. Marin    |  31301614  |
+
+
+### Usando o CMake
+
+Este projeto pode ser compilado usando o `CMake`, para isto, basta executá-lo dentro do diretório `compilador` dessa forma:
+
+```bash
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+$ ./main salario2
+
+```
