@@ -4,26 +4,56 @@
 
 #include "syntax.h"
 
-#define len(X) (sizeof(X)/sizeof(X[0]))
+
+/* Number of rules */
+#define GRAMMAR_HEIGHT 52
+
+/* Max number of productions */
+#define GRAMMAR_LENGTH 11
+
+/* Height of Parsing Table */
+#define NON_TERMINAL_SIZE 18
+
+/* Length of Parsing table */
+#define TERMINAL_SIZE 46
+
+/* this is the actual size of the biggest word + '\0' character */
+#define WORD_SIZE 16
+
+#define FINAL_SYMBOL "$"
+#define INITIAL_SYMBOL "A"
+#define NULL_SYMBOL "&"
+#define EMPTY_SYMBOL "/e/"
+
 /*
-static const char grammar[3][11][16] =
+ *
+ * This is a prototype grammar, and a prototype parsing table.
+ *
+ * GRAMMAR_HEIGHT = 3
+ * GRAMMAR_LENGTH = 11
+ *
+ * NON_TERMINAL_SIZE = 3
+ * TERMINAL_SIZE = 5
+ *
+ * WORD_SIZE = 16
+ *
+static const char grammar[GRAMMAR_HEIGHT][GRAMMAR_LENGTH][WORD_SIZE] =
 	{
 		{"A", "F"},
 		{"A", "<del|(>", "A", "<op|+>", "F", "<del|)>"},
 		{"F", "<id>"}
 	};
 
-static const size_t grammar_ln[3] = {2, 6, 2};
+static const size_t grammar_ln[GRAMMAR_HEIGHT] = {2, 6, 2};
 
-static const char table[3][5][16] = {
+static const char table[NON_TERMINAL_SIZE][TERMINAL_SIZE][WORD_SIZE] = {
 	{"&", "<del|(>", "<del|)>", "<id>", "<op|+>"},
 	{"A", "1", "&", "0", "&"},
 	{"F", "&", "&", "2", "&"}
 };
+*/
 
-static const unsigned int num_terminals = 5;
-static const unsigned int num_non_terminals = 3;*/
-static const char grammar[52][11][16] = {
+static const char grammar[GRAMMAR_HEIGHT][GRAMMAR_LENGTH][WORD_SIZE] = {
 	{"A", "<algoritmo>", "<str>", "LISTADECLAR", "<inicio>", "CODIGO", "<fimalgoritmo>"},
 	{"LISTADECLAR", "UNIDECLAR", "LISTADECLAR"},
 	{"LISTADECLAR", "MULTIDECLAR", "LISTADECLAR"},
@@ -79,7 +109,7 @@ static const char grammar[52][11][16] = {
 	{"OP", "LOGICOP"}
 };
 
-static const char table[18][46][16] =
+static const char table[NON_TERMINAL_SIZE][TERMINAL_SIZE][WORD_SIZE] =
 	{
 		{"&", "<var>", "<inteiro>", "<logico>", "<leia>", "<escreva>", "<escreval>", "<se>", "<entao>", "<senao>",
 		 "<fimse>", "<para>", "<de>", "<ate>", "<fimpara>", "<enquanto>", "<faca>", "<passo>", "<fimenquanto>",
@@ -140,21 +170,11 @@ static const char table[18][46][16] =
 
 	};
 
-static const size_t grammar_ln[52] =
+static const size_t grammar_ln[GRAMMAR_HEIGHT] =
 	{7, 3, 3, 2, 5, 4, 2, 2, 3, 4, 2, 3, 2, 4, 5, 5, 8, 11, 6, 3, 2, 3, 3, 2, 3, 4, 2, 2, 2, 3, 4, 2, 2, 2, 2, 2, 2,
 	 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 
-static const unsigned int num_non_terminals = 18;
-static const unsigned int num_terminals = 46;
-
 static struct Node *stack = NULL;
-
-/* this is the actual size of the biggest word + '\0' character */
-static const int WORD_SIZE = 16;
-
-static const char *EMPTY = "/e/";
-static const char *FINAL = "$";
-static const char *NULL_CHAR = "&";
 
 int
 _parse(struct Token *);
@@ -175,8 +195,8 @@ int
 syntax_analysis(struct Line **program, unsigned int lncnt)
 {
 	char *final = NULL;
-	push(&stack, "$");
-	push(&stack, "A");
+	push(&stack, FINAL_SYMBOL);
+	push(&stack, INITIAL_SYMBOL);
 
 	int i;
 	int j;
@@ -186,7 +206,7 @@ syntax_analysis(struct Line **program, unsigned int lncnt)
 				j++;
 
 	final = peek(stack);
-	return !strcmp(final, FINAL);
+	return !strcmp(final, FINAL_SYMBOL);
 }
 
 int
@@ -199,7 +219,7 @@ _parse(struct Token *source)
 	strcpy(current, source->to_parse);
 	top = pop(&stack);
 
-	while (strcmp(top, EMPTY) == 0)
+	while (strcmp(top, EMPTY_SYMBOL) == 0)
 		top = pop(&stack);
 
 	if (_isterminal(top) && (strcmp(top, current) == 0))
@@ -221,7 +241,7 @@ int
 _isterminal(char *to_check)
 {
 	unsigned int i;
-	for (i = 1; i < num_terminals; ++i)
+	for (i = 1; i < TERMINAL_SIZE; ++i)
 		if (strcmp(to_check, table[0][i]) == 0)
 			return i;
 	return 0;
@@ -252,9 +272,12 @@ _getProd(char *non_terminal, char *terminal)
 
 	strcpy(str_rule_num, table[i_non_terminal][i_terminal]);
 
-	if (strcmp(NULL_CHAR, str_rule_num) == 0)
+	if (strcmp(NULL_SYMBOL, str_rule_num) == 0)
 	{
-		printf("Unexpected behavior: syntax.c 253 - Closing ...\"");
+		printf(
+			"\nError. Rule for Non Terminal Word '%s' and Terminal Word '%s' not found in in Production Table.\nThis is not a valid program. Closing...",
+			non_terminal,
+			terminal);
 		exit(1);
 	}
 
@@ -292,13 +315,13 @@ _getIndex(char *find, int t)
 	unsigned int i;
 	if (t)
 	{
-		for (i = 1; i < num_terminals; ++i)
+		for (i = 1; i < TERMINAL_SIZE; ++i)
 			if (strcmp(find, table[0][i]) == 0)
 				return i;
 	}
 	else
 	{
-		for (i = 1; i < num_non_terminals; ++i)
+		for (i = 1; i < NON_TERMINAL_SIZE; ++i)
 			if (strcmp(find, table[i][0]) == 0)
 				return i;
 	}
