@@ -22,6 +22,8 @@ $ mkdir build
 $ cd build
 $ cmake ..
 $ make
-$ ./main salario2
+$ ./main ../salario
+$ ./main ../salario2
+$ ./main ../salario4
 
 ```
