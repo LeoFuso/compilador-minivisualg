@@ -9,19 +9,17 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-
-#define LINE_SIZE 120
 #define KEYWORDS_SIZE 21
+
 #define OP_SIZE 7
 #define LOGIC_OP_SIZE 8
 #define BOOLEAN_DATA_SIZE 2
 #define DEL_SIZE 4
-
 typedef enum
 {
     IDENTIFIER,
     KEYWORD,
-    LOGIC,
+    BOOLEAN_OPERATOR,
     NUMBER,
     TEXT,
     LOGIC_OPERATOR,
@@ -34,28 +32,13 @@ struct Token
 {
     TokenType tokenType;
     const char *value;
-    const char *raw;
+    const char *body;
+    const char *to_parse;
 };
 
-struct Line
-{
-    int line_address;
-    char *body;
-    unsigned numtkns;
-    struct Token **tokens;
-    int error;
-};
+#include "compiler.h"
 
-struct Line *
-_strbldr(unsigned int, char *);
-
-int
-is_valid_id(const char *);
-
-int
-is_valid_num(const char *);
-
-int
-is_valid_txt(const char *);
+struct Line **
+lexical_analysis(FILE *filePtr, int lncnt);
 
 #endif //TOKEN_H
