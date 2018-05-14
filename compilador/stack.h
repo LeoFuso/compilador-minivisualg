@@ -10,7 +10,7 @@
 #include <limits.h>
 #include <string.h>
 
-// A structure to represent a stack
+/* A structure to represent a stack */
 struct Node
 {
     char * data;

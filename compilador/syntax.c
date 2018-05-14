@@ -148,6 +148,10 @@ static const unsigned int num_non_terminals = 18;
 static const unsigned int num_terminals = 46;
 
 static struct Node *stack = NULL;
+
+/* this is the actual size of the biggest word + '\0' character */
+static const int WORD_SIZE = 16;
+
 static const char *EMPTY = "/e/";
 static const char *FINAL = "$";
 static const char *NULL_CHAR = "&";
@@ -188,7 +192,7 @@ syntax_analysis(struct Line **program, unsigned int lncnt)
 int
 _parse(struct Token *source)
 {
-	char *current = (char *) malloc(16 * sizeof(char));
+	char *current = (char *) malloc(WORD_SIZE * sizeof(char));
 	char *top = NULL;
 	char **prod_elements = NULL;
 
@@ -228,7 +232,7 @@ _getProd(char *non_terminal, char *terminal)
 {
 	int rule_num;
 
-	char *str_rule_num = (char *) malloc(16 * sizeof(char));
+	char *str_rule_num = (char *) malloc(WORD_SIZE * sizeof(char));
 	char **stack = NULL;
 	int i_non_terminal = _getIndex(non_terminal, 0);
 	int i_terminal = _getIndex(terminal, 1);
@@ -250,10 +254,11 @@ _getProd(char *non_terminal, char *terminal)
 
 	if (strcmp(NULL_CHAR, str_rule_num) == 0)
 	{
-		printf("Unexpected behavior. Closing...");
+		printf("Unexpected behavior: syntax.c 253 - Closing ...\"");
 		exit(1);
 	}
 
+	/* 10 is the numerical base for conversion */
 	rule_num = (int) strtol(str_rule_num, (char **) NULL, 10);
 
 	stack = _getProdOrigin(rule_num);
