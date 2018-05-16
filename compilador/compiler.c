@@ -58,7 +58,6 @@ compile(char *path)
 	{
 		printf("\nError. \nThis is not a valid program.\n");
 	}
-
 }
 
 FILE *
@@ -122,7 +121,7 @@ _count_ln(FILE *filePtr)
 	char *raw_line = NULL;
 
 	/*
-	 *  Allocates the memory space required for a to_parse line
+	 *  Allocates the memory space required for a program line
 	 */
 	raw_line = (char *) malloc(LINE_SIZE * sizeof(char) + 1);
 

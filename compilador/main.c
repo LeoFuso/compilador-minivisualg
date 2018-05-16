@@ -9,12 +9,12 @@ int
 main(int argc, char *argv[])
 {
     /*
-     *  Tenta ler o arquivo
+     *  Try to read the file
      */
     if (argc != 2)
     {
         printf ("Syntax: main [file] (.visualg is implicit) \n");
-        printf ("No specified to_parse file ending ... \n");
+        printf ("No source code specified. Closing program ... \n");
         exit (0);
     }
 
