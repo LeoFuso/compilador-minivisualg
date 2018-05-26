@@ -22,6 +22,7 @@ struct Line
 
 #include "token.h"
 #include "syntax.h"
+#include "idvalidation.h"
 
 int
 compile(char *);

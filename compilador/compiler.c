@@ -19,6 +19,7 @@ compile(char *path)
 	FILE *filePtr;
 	unsigned int lncnt = 0;
 	int syntax_result;
+  int ids_result;
 	struct Line **program = NULL;
 
 	filePtr = _openfl(path);
@@ -58,6 +59,9 @@ compile(char *path)
 	{
 		printf("\nError. \nThis is not a valid program.\n");
 	}
+  
+  ids_result = id_validation(program, lncnt);
+  
 }
 
 FILE *
