@@ -5,6 +5,7 @@ int declared[10];
 int
 id_validation(struct Line **program, unsigned int lncnt) {
   int declaredOK = _chckDclrd(program,lncnt);
+  return 1;
 }
 
 int
@@ -26,8 +27,8 @@ _chckDclrd(struct Line **program, unsigned int lncnt) {
         // recupera tipo e id
         if(strcmp("<var>", program[i]->tokens[0]->body))
         {
-          // int id = (int) program[i]->tokens[1]->value - "0"; // VOODOOoooo.....
-          int id = (int) strtol(program[i]->tokens[1]->value, (char **)NULL, 10);
+          // int id = (int) program[i]->tokens[1]->value - "0"; // VOODOOoooo..... que nao funciona eu acho.
+          int id = (int) strtol(program[i]->tokens[1]->value, (char **) NULL, 10);
           int type = strcmp("<inteiro>",program[i]->tokens[3]->body); // 1 se for int, 0 se for bool
           declared[id] = type;
         }
@@ -38,7 +39,7 @@ _chckDclrd(struct Line **program, unsigned int lncnt) {
           {
             if(strcmp("<id>", program[i]->tokens[3]->to_parse) == 1)
             {
-              int id = (int) strtol(program[i]->tokens[j]->value, (char **)NULL, 10);
+              int id = (int) strtol(program[i]->tokens[j]->value, (char **) NULL, 10);
               int type = strcmp("<inteiro>",program[i]->tokens[program[i]->numtkns-1]->body);
               declared[id] = type;
             }
@@ -46,6 +47,8 @@ _chckDclrd(struct Line **program, unsigned int lncnt) {
         }
       }
     }
+    
+    // Em teoria, se chegassemos aqui sem segfault, teriamos um array com as vars e seus tipos...
     
     for(int i=0; i<10; ++i)
     {
