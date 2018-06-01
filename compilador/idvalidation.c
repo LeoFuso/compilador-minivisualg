@@ -1,6 +1,6 @@
 #include "idvalidation.h"
 
-int declared[10];
+int declared[100];
 
 int
 id_validation(struct Line **program, unsigned int lncnt) {
@@ -8,53 +8,44 @@ id_validation(struct Line **program, unsigned int lncnt) {
   return 1;
 }
 
+/**
+  * retorna 1 se OK, 0 se alguma var foi usada sem declarar
+  **/
 int
 _chckDclrd(struct Line **program, unsigned int lncnt) {
-  int declaration_state = 0;
+  int isDeclaring = 1;
+  for(int i=0; i<100; ++i)
+    declared[i] = 0;
   for(int i=0; i<lncnt; ++i)
-    // printf(" >>%s:%s:%s<<\n", program[i]->tokens[j]->value, program[i]->tokens[j]->body, program[i]->tokens[j]->to_parse);
-    // Estamos listando vars declaradas
-    if(declaration_state == 0)
+  {
+    for(int j=0; j<program[i]->numtkns; ++j)
     {
-      // Se chegamos em inicio, nao estamos mais declarando. Mudar estado para 1
-      if(strcmp("<inicio>", program[i]->tokens[0]->body) == 1)
+      // printf("ola %d\n", isDeclaring);
+      if(isDeclaring == 1) // Se estamos declarando
       {
-        declaration_state = 1;
-      }
-      else
-      {
-        // Se conseguimos ID como primeiro token, declaracao unica,
-        // recupera tipo e id
-        if(strcmp("<var>", program[i]->tokens[0]->body))
+        // printf(" inicio == %s\n", program[i]->tokens[j]->value);
+        if(strcmp("inicio", program[i]->tokens[j]->value) == 0) // checa se chegamos em inicio
         {
-          // int id = (int) program[i]->tokens[1]->value - "0"; // VOODOOoooo..... que nao funciona eu acho.
-          int id = (int) strtol(program[i]->tokens[1]->value, (char **) NULL, 10);
-          int type = strcmp("<inteiro>",program[i]->tokens[3]->body); // 1 se for int, 0 se for bool
-          declared[id] = type;
+          isDeclaring = 0;// se chagamos, nao estamos mais declarando
         }
-        // multivar declare, mais dificil...
-        else
+        else if(strcmp("<id>", program[i]->tokens[j]->to_parse) == 0)// enquanto declaramos, se temos um id
         {
-          for(int j=0; j<program[i]->numtkns;++j)
-          {
-            if(strcmp("<id>", program[i]->tokens[3]->to_parse) == 1)
-            {
-              int id = (int) strtol(program[i]->tokens[j]->value, (char **) NULL, 10);
-              int type = strcmp("<inteiro>",program[i]->tokens[program[i]->numtkns-1]->body);
-              declared[id] = type;
-            }
-          }
+          printf(" !! Its a ID! %s !!\n", program[i]->tokens[j]->value);
+          int idIndex = atoi(program[i]->tokens[j]->value);
+          declared[idIndex] = 1; // flag como declarada
         }
       }
+      else if(strcmp("<id>", program[i]->tokens[j]->to_parse) == 0)// se nao estivemos declarando
+      {
+        int idIndex = atoi(program[i]->tokens[j]->value);
+        int wasDeclared = declared[idIndex];
+        printf(" !! Its a ID! %s declared: %d !!\n", program[i]->tokens[j]->value, wasDeclared);
+        if(wasDeclared == 0)
+         return 0;
+      }
+      // printf(" >> %s:%s:%s <<\n", program[i]->tokens[j]->value, program[i]->tokens[j]->body, program[i]->tokens[j]->to_parse);    
     }
-    
-    // Em teoria, se chegassemos aqui sem segfault, teriamos um array com as vars e seus tipos...
-    
-    for(int i=0; i<10; ++i)
-    {
-      printf("%d \n", declared[i]);
-    }
-    
+  }
   return 1;
 }
 
