@@ -1,10 +1,17 @@
 #include "idvalidation.h"
 
-int declared[100];
+int typeTable[100];
 
 int
 id_validation(struct Line **program, unsigned int lncnt) {
   int declaredOK = _chckDclrd(program,lncnt);
+  _buildTypeTable(program,lncnt);
+  
+  for(int i=0; i<15; ++i)
+    printf("ty %d: %d\n", i, typeTable[i]);
+    
+    
+   
   return 1;
 }
 
@@ -13,6 +20,7 @@ id_validation(struct Line **program, unsigned int lncnt) {
   **/
 int
 _chckDclrd(struct Line **program, unsigned int lncnt) {
+  int declared[100];
   int isDeclaring = 1;
   for(int i=0; i<100; ++i)
     declared[i] = 0;
@@ -47,6 +55,22 @@ _chckDclrd(struct Line **program, unsigned int lncnt) {
     }
   }
   return 1;
+}
+
+void
+_buildTypeTable(struct Line **program, unsigned int lncnt) {
+  for(int i=0; i<100; ++i)
+    typeTable[i] = 5;
+  for(int i=0; i<lncnt; ++i)
+  {
+    if(strcmp("inicio", program[i]->tokens[0]->value) == 0)
+      break;
+    if(strcmp("var", program[i]->tokens[0]->value) == 0)
+      typeTable[atoi(program[i]->tokens[1]->value)] = (strcmp("inteiro", program[i]->tokens[3]->value) == 0) ? 1 : 0;
+    if(strcmp("<id>", program[i]->tokens[0]->to_parse) == 0)
+      for(int j=0; j<program[i]->numtkns - 2; j+=2)
+        typeTable[atoi(program[i]->tokens[j]->value)] = (strcmp("inteiro", program[i]->tokens[program[i]->numtkns - 1]->value) == 0) ? 1 : 0;
+  }
 }
 
 /*
