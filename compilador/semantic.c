@@ -167,10 +167,21 @@ _check_3_illegal_tokens(struct Token *tkn1, struct Token *tkn2, struct Token *tk
   }
   
   printf("%s, %s, %s\n", cTkn1,cTkn2,cTkn3);
-  //printf("value %s, %s, %s\n", tkn1->value,tkn2->value,tkn3->value);
-  //printf("%s, %s, %s\n", tkn1->body,tkn2->body,tkn3->body);
-  printf("%s, %s, %s\n", tkn1->to_parse,tkn2->to_parse,tkn3->to_parse);
-  printf("---\n");
+  
+  // BEGIN PSEUDOCODE //
+  tknsToVerify = concat(cTkn1 + cTkn2 + cTkn3)
+  // casos ilegais
+  switch(tknsToVerify)
+  {
+    case "idBOOL<op|<-><num>":
+      return 1;
+    case "idNUM<op|<-><verdadeiro>":
+      return 1;
+    case "idNUM<op|<-><falso>":
+      return 1;
+  }
+  
+  // END PSEUDOCODE //
 
   return 0;
 }
