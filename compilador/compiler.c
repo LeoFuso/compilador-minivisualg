@@ -61,6 +61,14 @@ compile(char *path)
 	}
   
   ids_result = id_validation(program, lncnt);
+  if(ids_result)
+  {
+    printf("\nSuccess. \nVariables OK\n");
+  }
+  else
+  {
+    printf("\nError. \nVariables not ok.\n");
+  }
   
 }
 
