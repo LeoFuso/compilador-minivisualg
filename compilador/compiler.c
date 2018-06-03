@@ -8,7 +8,7 @@ FILE *
 _openfl(char *);
 
 void
-_token_printer(struct Line **, int, char *);
+_token_printer(struct Source *, char *);
 
 unsigned int
 _count_ln(FILE *);
@@ -19,7 +19,9 @@ compile(char *path)
 	FILE *filePtr;
 	unsigned int lncnt = 0;
 	int syntax_result;
-  int ids_result;
+	int semantic_result;
+
+	struct Source *source = NULL;
 	struct Line **program = NULL;
 
 	filePtr = _openfl(path);
@@ -33,24 +35,24 @@ compile(char *path)
 		printf("\nName file '%s' opened successfully.\n", path);
 
 	lncnt = _count_ln(filePtr);
-	program = lexical_analysis(filePtr, lncnt);
+	source = lexical_analysis(filePtr, lncnt);
 
-	if (program == NULL)
+	if (source == NULL || source->program == NULL)
 	{
-		printf("Unexpected behavior: compiler.c 35 - Closing ...");
+		printf("Unexpected behavior: compiler.c 39 - Closing ...");
 		exit(1);
 	}
 	else
 		printf("\nWriting to file...\n");
 
-	_token_printer(program, lncnt, path);
+	_token_printer(source, path);
 
 	printf("\nSuccess. \nThe tokens were created in the file '%s'\nfrom this same directory.\n", path);
 	fclose(filePtr);
 
 	printf("\nParsing tokens...\n");
 
-	syntax_result = syntax_analysis(program, lncnt);
+	syntax_result = syntax_analysis(source);
 	if (syntax_result)
 	{
 		printf("\nSuccess. \nThis is a valid program.\n");
@@ -59,17 +61,17 @@ compile(char *path)
 	{
 		printf("\nError. \nThis is not a valid program.\n");
 	}
-  
-  ids_result = id_validation(program, lncnt);
-  if(ids_result)
-  {
-    printf("\nSuccess. \nVariables OK\n");
-  }
-  else
-  {
-    printf("\nError. \nVariables not ok.\n");
-  }
-  
+
+	semantic_result = semantic_analysis(source);
+	if (semantic_result)
+	{
+		printf("\nSuccess. \nVariables OK\n");
+	}
+	else
+	{
+		printf("\nError. \nVariables not ok.\n");
+	}
+
 }
 
 FILE *
@@ -99,11 +101,12 @@ _openfl(char *path)
 }
 
 void
-_token_printer(struct Line **program, int lncnt, char *path)
+_token_printer(struct Source *source, char *path)
 {
 	FILE *fileOut;
 
 	fileOut = fopen(strcat(path, ".token"), "w");
+	struct Line **program = source->program;
 
 	/*
 	 * Checks if output file was created
@@ -116,7 +119,7 @@ _token_printer(struct Line **program, int lncnt, char *path)
 
 	int i;
 	int j;
-	for (i = 0; i < lncnt; i++)
+	for (i = 0; i < source->line_num; i++)
 	{
 		for (j = 0; j < program[i]->numtkns; j++)
 			fprintf(fileOut, "%s", program[i]->tokens[j]->body);
