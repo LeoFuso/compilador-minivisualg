@@ -3,7 +3,7 @@
 /**
   * typeTable[id] = idType
   * id: numero do id
-  * idType: 1 = boolean; 0 = numeric; -1 = nao existe/inicializado
+  * idType: 0 = boolean; 1 = numeric; -1 = nao existe/inicializado
   **/
 int typeTable[100];
 
@@ -22,11 +22,15 @@ _check_3_illegal_tokens(struct Token *tkn1, struct Token *tkn2, struct Token *tk
 int
 semantic_analysis(struct Source *source)
 {
+
 	if (!_is_var_declared(source))
 		return 0;
 
 	_build_typeTable(source);
   
+  for(int i=0;i<15;++i)
+    printf("%d\n",typeTable[i]);
+    
   if(!_is_var_in_the_right_place(source))
     return 0;
 
@@ -123,7 +127,51 @@ _is_var_in_the_right_place(struct Source *source)
 int
 _check_3_illegal_tokens(struct Token *tkn1, struct Token *tkn2, struct Token *tkn3)
 {
-  printf("%s, %s, %s\n", tkn1->body,tkn2->body,tkn3->body);
+  char *cTkn1 = tkn1->to_parse;
+  if(!strcmp("<id>",cTkn1))
+  {
+    if(typeTable[atoi(tkn1->value)] == 0)
+    {
+      cTkn1 = "idBOOL";
+    }
+    else
+    {
+      cTkn1 = "idNUM";
+    }
+  }
+  
+  char *cTkn2 = tkn2->to_parse;
+  if(!strcmp("<id>",cTkn2))
+  {
+    if(typeTable[atoi(tkn2->value)] == 0)
+    {
+      cTkn2 = "idBOOL";
+    }
+    else
+    {
+      cTkn2 = "idNUM";
+    }
+  }
+  
+  char *cTkn3 = tkn3->to_parse;
+  if(!strcmp("<id>",cTkn3))
+  {
+    if(typeTable[atoi(tkn3->value)] == 0)
+    {
+      cTkn3 = "idBOOL";
+    }
+    else
+    {
+      cTkn3 = "idNUM";
+    }
+  }
+  
+  printf("%s, %s, %s\n", cTkn1,cTkn2,cTkn3);
+  //printf("value %s, %s, %s\n", tkn1->value,tkn2->value,tkn3->value);
+  //printf("%s, %s, %s\n", tkn1->body,tkn2->body,tkn3->body);
+  printf("%s, %s, %s\n", tkn1->to_parse,tkn2->to_parse,tkn3->to_parse);
+  printf("---\n");
+
   return 0;
 }
 
