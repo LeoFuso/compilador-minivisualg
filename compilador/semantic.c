@@ -14,12 +14,21 @@ void
 _build_typeTable(struct Source *);
 
 int
+_is_var_in_the_right_place(struct Source *source);
+
+int
+_check_3_illegal_tokens(struct Token *tkn1, struct Token *tkn2, struct Token *tkn3);
+
+int
 semantic_analysis(struct Source *source)
 {
 	if (!_is_var_declared(source))
 		return 0;
 
 	_build_typeTable(source);
+  
+  if(!_is_var_in_the_right_place(source))
+    return 0;
 
 	return 1;
 }
@@ -93,6 +102,29 @@ _build_typeTable(struct Source *source)
 						(strcmp("inteiro", program[i]->tokens[program[i]->numtkns - 1]->value) == 0) ? 1 : 0;
 		}
 	}
+}
+
+int
+_is_var_in_the_right_place(struct Source *source)
+{
+  struct Line **program = source->program;
+  int lncnt = source->line_num;
+  
+  for(int i=0; i < lncnt; ++i)
+  {
+    if(program[i]->numtkns >= 3)
+      for(int j = 2; j<program[i]->numtkns; ++j)
+        if(_check_3_illegal_tokens(program[i]->tokens[j-2], program[i]->tokens[j-1], program[i]->tokens[j]))
+          return 0;
+  }
+  return 1;
+}
+
+int
+_check_3_illegal_tokens(struct Token *tkn1, struct Token *tkn2, struct Token *tkn3)
+{
+  printf("%s, %s, %s\n", tkn1->body,tkn2->body,tkn3->body);
+  return 0;
 }
 
 /*
