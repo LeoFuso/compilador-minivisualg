@@ -158,7 +158,7 @@ _check_3_illegal_tokens(struct Token *token1, struct Token *token2, struct Token
 
 	printf("%s, %s, %s\n", values[0], values[1], values[2]);
 
-	char *tokensToVerify = (char *) calloc(strlen(values[0]) + strlen(values[1]) + strlen(values[2]) + 1, sizeof(char));
+	char *tokensToVerify = (char *) calloc(strlen(values[0]) + strlen(values[1]) + strlen(values[2]) + 3, sizeof(char));
 	strcpy(tokensToVerify, values[0]);
 	strcat(tokensToVerify, values[1]);
 	strcat(tokensToVerify, values[2]);
