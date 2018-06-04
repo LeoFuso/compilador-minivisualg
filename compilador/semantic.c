@@ -17,7 +17,7 @@ int
 _is_var_in_the_right_place(struct Source *source);
 
 int
-_check_3_illegal_tokens(struct Token *tkn1, struct Token *tkn2, struct Token *tkn3);
+_check_3_illegal_tokens(struct Token *token1, struct Token *token2, struct Token *token3);
 
 int
 semantic_analysis(struct Source *source)
@@ -27,12 +27,12 @@ semantic_analysis(struct Source *source)
 		return 0;
 
 	_build_typeTable(source);
-  
-  for(int i=0;i<15;++i)
-    printf("%d\n",typeTable[i]);
-    
-  if(!_is_var_in_the_right_place(source))
-    return 0;
+
+	for (int i = 0; i < 15; ++i)
+		printf("%d\n", typeTable[i]);
+
+	if (!_is_var_in_the_right_place(source))
+		return 0;
 
 	return 1;
 }
@@ -111,79 +111,72 @@ _build_typeTable(struct Source *source)
 int
 _is_var_in_the_right_place(struct Source *source)
 {
-  struct Line **program = source->program;
-  int lncnt = source->line_num;
-  
-  for(int i=0; i < lncnt; ++i)
-  {
-    if(program[i]->numtkns >= 3)
-      for(int j = 2; j<program[i]->numtkns; ++j)
-        if(_check_3_illegal_tokens(program[i]->tokens[j-2], program[i]->tokens[j-1], program[i]->tokens[j]))
-          return 0;
-  }
-  return 1;
+	struct Line **program = source->program;
+	int lncnt = source->line_num;
+
+	for (int i = 0; i < lncnt; ++i)
+	{
+		if (program[i]->numtkns >= 3)
+			for (int j = 2; j < program[i]->numtkns; ++j)
+				if (_check_3_illegal_tokens(program[i]->tokens[j - 2],
+				                            program[i]->tokens[j - 1],
+				                            program[i]->tokens[j]))
+					return 0;
+	}
+	return 1;
 }
 
+/* i'm not sure if this is a good way of doing this? But i'm trusting you - A friend*/
 int
-_check_3_illegal_tokens(struct Token *tkn1, struct Token *tkn2, struct Token *tkn3)
+_check_3_illegal_tokens(struct Token *token1, struct Token *token2, struct Token *token3)
 {
-  char *cTkn1 = tkn1->to_parse;
-  if(!strcmp("<id>",cTkn1))
-  {
-    if(typeTable[atoi(tkn1->value)] == 0)
-    {
-      cTkn1 = "idBOOL";
-    }
-    else
-    {
-      cTkn1 = "idNUM";
-    }
-  }
-  
-  char *cTkn2 = tkn2->to_parse;
-  if(!strcmp("<id>",cTkn2))
-  {
-    if(typeTable[atoi(tkn2->value)] == 0)
-    {
-      cTkn2 = "idBOOL";
-    }
-    else
-    {
-      cTkn2 = "idNUM";
-    }
-  }
-  
-  char *cTkn3 = tkn3->to_parse;
-  if(!strcmp("<id>",cTkn3))
-  {
-    if(typeTable[atoi(tkn3->value)] == 0)
-    {
-      cTkn3 = "idBOOL";
-    }
-    else
-    {
-      cTkn3 = "idNUM";
-    }
-  }
-  
-  printf("%s, %s, %s\n", cTkn1,cTkn2,cTkn3);
-  
-  // BEGIN PSEUDOCODE //
-  tknsToVerify = concat(cTkn1 + cTkn2 + cTkn3)
-  // casos ilegais
-  switch(tknsToVerify)
-  {
-    case "idBOOL<op|<-><num>":
-      return 1;
-    case "idNUM<op|<-><verdadeiro>":
-      return 1;
-    case "idNUM<op|<-><falso>":
-      return 1;
-  }
-  
-  // END PSEUDOCODE //
+	struct Token **tokens = (struct Token **) malloc(3 * sizeof(struct Token *));
+	char **values = (char **) calloc(3, sizeof(char *));
 
-  return 0;
+	tokens[0] = token1;
+	tokens[1] = token2;
+	tokens[2] = token3;
+
+	char *token_body = NULL;
+	int id_num;
+
+	unsigned int i;
+	for (i = 0; i < 3; ++i)
+	{
+		token_body = (char *) malloc(strlen(tokens[i]->to_parse) * sizeof(char) + 1);
+		strcpy(token_body, tokens[i]->to_parse);
+
+		if (!strcmp("<id>", token_body))
+		{
+			id_num = (int) strtol(tokens[i]->value, (char **) NULL, 10);
+			if (typeTable[id_num] == 0)
+				values[i] = "idBOOL";
+			else
+				values[i] = "idNUM";
+		}
+	}
+
+	printf("%s, %s, %s\n", values[0], values[1], values[2]);
+
+	char *tokensToVerify = (char *) calloc(strlen(values[0]) + strlen(values[1]) + strlen(values[2]) + 1, sizeof(char));
+	strcpy(tokensToVerify, values[0]);
+	strcat(tokensToVerify, values[1]);
+	strcat(tokensToVerify, values[2]);
+
+	if (strcmp(tokensToVerify, "idBOOL<op|<-><num>") == 0)
+	{
+
+	}
+	else if (strcmp(tokensToVerify, "idNUM<op|<-><verdadeiro>") == 0)
+	{
+
+	}
+	else if (strcmp(tokensToVerify, "idNUM<op|<-><falso>") == 0)
+	{
+
+	};
+
+	return 0;
 }
 
 /*
