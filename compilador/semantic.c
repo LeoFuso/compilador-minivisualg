@@ -153,6 +153,8 @@ _check_3_illegal_tokens(struct Token *token1, struct Token *token2, struct Token
 				values[i] = "idBOOL";
 			else
 				values[i] = "idNUM";
+		}else{
+			values[i] = token_body;
 		}
 	}
 
