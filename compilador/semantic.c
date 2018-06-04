@@ -175,6 +175,83 @@ _check_3_illegal_tokens(struct Token *token1, struct Token *token2, struct Token
 	{
 
 	};
+  
+  /*
+      CASOS INVALIDOS
+      SE tokensToVerify CONTER ALGUMA DESTAS STRINGS, RETORNAR 1.
+  
+      idNUM<op|<->idBOOL
+      idBOOL<op|<->idNUM
+      
+      idBOOL<op|+>
+      idBOOL<op|->
+      idBOOL<op|/>
+      idBOOL<op|*>
+      <op|+>idBOOL
+      <op|->idBOOL
+      <op|/>idBOOL
+      <op|*>idBOOL
+      
+      <verdadeiro><op|+>
+      <verdadeiro><op|->
+      <verdadeiro><op|/>
+      <verdadeiro><op|*>
+      <op|+><verdadeiro>
+      <op|-><verdadeiro>
+      <op|/><verdadeiro>
+      <op|*><verdadeiro>
+      
+      <falso><op|+>
+      <falso><op|->
+      <falso><op|/>
+      <falso><op|*>
+      <op|+><falso>
+      <op|-><falso>
+      <op|/><falso>
+      <op|*><falso>
+      
+      idNUM<lop|e>
+      idNUM<lop|ou>
+      <lop|e>idNUM
+      <lop|ou>idNUM
+      
+      <num><lop|e>
+      <num><lop|ou>
+      <lop|e><num>
+      <lop|ou><num>
+      
+      idBOOL<lop|>>
+      idBOOL<lop|>=>
+      idBOOL<lop|<>
+      idBOOL<lop|<=>
+      <lop|>>idBOOL
+      <lop|>=>idBOOL
+      <lop|<>idBOOL
+      <lop|<=>idBOOL
+      
+      <verdadeiro><lop|>>
+      <verdadeiro><lop|>=>
+      <verdadeiro><lop|<>
+      <verdadeiro><lop|<=>
+      <lop|>><verdadeiro>
+      <lop|>=><verdadeiro>
+      <lop|<><verdadeiro>
+      <lop|<=><verdadeiro>
+      
+      <falso><lop|>>
+      <falso><lop|>=>
+      <falso><lop|<>
+      <falso><lop|<=>
+      <lop|>><falso>
+      <lop|>=><falso>
+      <lop|<><falso>
+      <lop|<=><falso>
+      
+      <para>idBOOL<de>
+      <para><verdadeiro><de>
+      <para><falso><de>
+  
+  */
 
 	return 0;
 }
