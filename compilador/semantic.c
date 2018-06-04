@@ -24,15 +24,18 @@ semantic_analysis(struct Source *source)
 {
 
 	if (!_is_var_declared(source))
-		return 0;
+  {
+    printf("Error: Variable used without declaration!\n");
+		return 0; 
+  }
 
 	_build_typeTable(source);
 
-	for (int i = 0; i < 15; ++i)
-		printf("%d\n", typeTable[i]);
-
 	if (!_is_var_in_the_right_place(source))
-		return 0;
+  {
+    printf("Error: Type mismatch!\n");
+		return 0; 
+  }
 
 	return 1;
 }
@@ -157,8 +160,6 @@ _check_3_illegal_tokens(struct Token *token1, struct Token *token2, struct Token
 			values[i] = token_body;
 		}
 	}
-
-	printf("%s, %s, %s\n", values[0], values[1], values[2]);
 
 	char *tokensToVerify = (char *) calloc(strlen(values[0]) + strlen(values[1]) + strlen(values[2]) + 3, sizeof(char));
 	strcpy(tokensToVerify, values[0]);

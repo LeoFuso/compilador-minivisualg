@@ -8,7 +8,7 @@ inicio
 // Se��o de Comandos
 i <- 0
 contador <- 0
-para i de 1 ate 5 passo 1 faca
+para ttt de 1 ate 5 passo 1 faca
    escreva ( i )
    leia ( sal )
    se sal > 500 entao

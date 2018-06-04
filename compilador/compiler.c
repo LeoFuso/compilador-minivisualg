@@ -65,11 +65,11 @@ compile(char *path)
 	semantic_result = semantic_analysis(source);
 	if (semantic_result)
 	{
-		printf("\nSuccess. \nVariables OK\n");
+		printf("Success. \nSemantic valid\n");
 	}
 	else
 	{
-		printf("\nError. \nVariables not ok.\n");
+		printf("Error. \nSemantic not valid\n");
 	}
 
 }
