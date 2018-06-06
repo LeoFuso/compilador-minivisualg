@@ -385,7 +385,8 @@ _crtkn(TokenType type, const char *body, unsigned int lnum)
 		case BOOLEAN_OPERATOR: printf("Boolean Operator: %s\n", body);
 			strcpy(tmp_value, body);
 			snprintf(tmp_body, LINE_SIZE, "<%s>", body);
-			snprintf(tmp_to_parse, LINE_SIZE, "<logico>");
+			// snprintf(tmp_to_parse, LINE_SIZE, "<logico>");
+      snprintf(tmp_to_parse, LINE_SIZE, "<%s>", body);
 			break;
 
 		case NUMBER: printf("          Number: %s\n", body);

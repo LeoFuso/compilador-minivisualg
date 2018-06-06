@@ -182,7 +182,7 @@ int
 _isterminal(char *);
 
 char **
-_getProd(char *, char *);
+_getProd(char *, char *, char *);
 
 int
 _getIndex(char *, int);
@@ -226,7 +226,7 @@ _parse(struct Token *source)
 	if (_isterminal(top) && (strcmp(top, current) == 0))
 		return 1;
 	else
-		prod_elements = _getProd(top, current);
+		prod_elements = _getProd(top, current, source->value);
 
 	int prod_elements_num;
 	for (prod_elements_num = 0; prod_elements[prod_elements_num] != NULL; prod_elements_num++);
@@ -249,7 +249,7 @@ _isterminal(char *to_check)
 }
 
 char **
-_getProd(char *non_terminal, char *terminal)
+_getProd(char *non_terminal, char *terminal, char *to_parse_debug)
 {
 	int rule_num;
 
@@ -277,9 +277,10 @@ _getProd(char *non_terminal, char *terminal)
 	if (strcmp(NULL_SYMBOL, str_rule_num) == 0)
 	{
 		printf(
-			"\nError. Rule for Non Terminal Word '%s' and Terminal Word '%s' not found in in Production Table.\nThis is not a valid program. Closing...\n",
+			"\nError. Rule for Non Terminal Word '%s' and Terminal Word '%s' (%s) not found in in Production Table.\nThis is not a valid program. Closing...\n",
 			non_terminal,
-			terminal);
+			terminal,
+      to_parse_debug);
 		exit(1);
 	}
 
