@@ -20,8 +20,16 @@ struct Line
     int error;
 };
 
+struct Source
+{
+	struct Line ** program;
+	unsigned int line_num;
+	unsigned int var_num;
+};
+
 #include "token.h"
 #include "syntax.h"
+#include "semantic.h"
 
 int
 compile(char *);

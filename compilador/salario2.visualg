@@ -1,20 +1,22 @@
-algoritmo "salario"
-// Se��o de Declara��es
-var sal : inteiro
-var ttt : verdadeiro
-i , contador : inteiro
+algoritmo "salario" 
+// Seção de Declarações 
+var i : inteiro 
+contador : inteiro 
+b : logico 
 
-inicio
-// Se��o de Comandos
-i <- 0
+inicio 
+// Seção de Comandos 
+i <- 0 
 contador <- 0
-para i de 1 ate 5 passo 1 faca
-   escreva ( i )
-   leia ( sal )
-   se sal > 500 entao
-      contador <- contador + 1
+b <- verdadeiro 
+b <- falso 
+para i de 1 ate 5 passo 1 faca 
+   escreva ( i ) 
+   leia ( i ) 
+   se contador > 500 entao 
+      contador <- contador + 1 
    senao
-   fimse
-fimpara
-escreva ( contador )
-fimalgoritmo
+   fimse 
+fimpara 
+escreva ( contador ) 
+fimalgoritmo 

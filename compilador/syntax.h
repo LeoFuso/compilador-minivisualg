@@ -9,6 +9,6 @@
 #include "stack.h"
 
 int
-syntax_analysis(struct Line **, unsigned int);
+syntax_analysis(struct Source *);
 
 #endif //SYNTAX_H

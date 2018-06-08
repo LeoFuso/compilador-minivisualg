@@ -38,7 +38,7 @@ struct Token
 
 #include "compiler.h"
 
-struct Line **
-lexical_analysis(FILE *filePtr, int lncnt);
+struct Source *
+lexical_analysis(FILE *, unsigned int);
 
 #endif //TOKEN_H
